@@ -5,3 +5,4 @@
 - [x] Implement `trainer.py` with Checkpointing & CLI <!-- id: 8 -->
 - [x] Implement `library.js` (JS equivalents of Primitives) <!-- id: 9 -->
 - [x] Implement Transpiler (Python AST -> JS Code) <!-- id: 10 -->
+- [x] Implement CI/CD Pipeline (GitHub Actions) <!-- id: 11 -->
