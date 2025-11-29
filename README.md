@@ -71,5 +71,8 @@ node test_library.js
 - [ ] **Transpiler (Python -> JS)** (Next Step)
 - [ ] Automated CI/CD Pipeline
 
+## 👥 Credits
+Created by **Paul Hunck**.
+
 ## 📄 License
 MIT
