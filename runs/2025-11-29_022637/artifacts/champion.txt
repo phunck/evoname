@@ -1,1 +1,0 @@
-make_name_obj(raw_input, get_first_string(split_on_space(raw_input)), get_last_string(split_on_space(raw_input)), EMPTY_STR_LIST, EMPTY_STR_LIST, raw_input, FEMALE, EMPTY_STR_LIST, EMPTY_STR_LIST)
