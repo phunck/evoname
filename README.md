@@ -58,17 +58,39 @@ Generate synthetic training data:
    ```
    The best model is saved to `runs/LATEST/artifacts/champion.pkl`.
 
-3. **Transpile to JavaScript**:
+3. **Save Champion (Best Practice)**:
+   To share your best model or use it on other machines, copy it to the `model/` directory and commit it:
    ```bash
-   python transpiler.py --input runs/LATEST/artifacts/champion.pkl --output dist/evoname.js
+   cp runs/LATEST/artifacts/champion.pkl model/champion.pkl
+   git add model/champion.pkl
+   git commit -m "Update champion model"
    ```
 
-### JavaScript Runtime
-To use the parser in your project, take the generated `dist/evoname.js` and `library.js`.
+4. **Transpile to JavaScript**:
+   ```bash
+   python transpiler.py --input model/champion.pkl --output dist/evoname.js
+   ```
 
-Verify the JS library implementation locally:
+### JavaScript Runtime (Self-Contained)
+The generated `dist/evoname.js` is a **zero-dependency** file. It contains the parser logic, the runtime library, and all regex definitions.
+
+**Node.js:**
+```javascript
+const { parseName } = require('./dist/evoname');
+console.log(parseName("Dr. Hans Müller"));
+```
+
+**Browser:**
+```html
+<script src="dist/evoname.js"></script>
+<script>
+    console.log(EvoName.parseName("Dr. Hans Müller"));
+</script>
+```
+
+Verify the build locally:
 ```bash
-node test_library.js
+node test_bundle.js
 ```
 
 ## 📅 Roadmap

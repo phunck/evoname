@@ -56,16 +56,28 @@ class NameObj {
 
 let REGEX_CACHE = {};
 
-function loadRegexDefinitions(locale = "de") {
+function loadRegexDefinitions(locale = "de", injectedDefinitions = null) {
     const cacheKey = locale;
     if (REGEX_CACHE[cacheKey]) {
         return REGEX_CACHE[cacheKey];
     }
 
-    // In a real browser build, this JSON should be bundled or fetched.
-    // For Node.js, we read it from disk.
-    const defsPath = path.join(__dirname, 'regex_definitions.json');
-    const defs = JSON.parse(fs.readFileSync(defsPath, 'utf8'));
+    let defs;
+    if (injectedDefinitions) {
+        defs = injectedDefinitions;
+    } else if (typeof REGEX_DEFINITIONS !== 'undefined') {
+        // Check for global injection (Bundled mode)
+        defs = REGEX_DEFINITIONS;
+    } else {
+        // Node.js mode (Development)
+        try {
+            const defsPath = path.join(__dirname, 'regex_definitions.json');
+            defs = JSON.parse(fs.readFileSync(defsPath, 'utf8'));
+        } catch (e) {
+            console.warn("Could not load regex_definitions.json from disk. Ensure it is injected or present.");
+            defs = {};
+        }
+    }
 
     const patterns = {};
 
@@ -102,20 +114,8 @@ function loadRegexDefinitions(locale = "de") {
             patternStr = target;
         }
 
-        // Python (?i) -> JS /.../i
-        // We assume flagsStr contains 'i' if needed.
-        // Python re.IGNORECASE is 'i' in JS.
-        let flags = "g"; // Global by default for tokenization loop? No, we use sticky or match loop.
-        // Actually, Python's match() checks from start. JS exec() or match() behavior differs.
-        // We will use 'y' (sticky) if available or just 'g' and check index.
-        // Let's use 'g' and manage lastIndex manually or use match at substring.
-
+        let flags = "g";
         if (flagsStr.includes("i")) flags += "i";
-
-        // Python named groups (?P<name>...) are not fully supported in all JS versions,
-        // but our regexes shouldn't use them heavily for the core tokens.
-        // If they do, we might need to strip them.
-        // For now, assume compatibility.
 
         patterns[tokenEnum] = new RegExp(patternStr, flags);
     }

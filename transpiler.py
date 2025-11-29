@@ -2,6 +2,7 @@ import pickle
 import argparse
 import os
 import sys
+import json
 from deap import gp, creator, base
 from primitive_set import *  # Import all to match trainer's namespace for unpickling
 import primitive_set # Keep module reference for checks
@@ -28,57 +29,70 @@ def transpile_terminal(node):
         return f"lib.{name}"
         
     # 3. Enums (RegexToken, Gender)
-    # Sometimes val is the Enum object, sometimes it might be the name if pickled weirdly
     if isinstance(val, primitive_set.RegexToken):
         return f"lib.RegexToken.{val.name}"
     if isinstance(val, primitive_set.Gender):
         return f"lib.Gender.{val.name}"
     
-    # Fallback for Enums if they appear as strings (e.g. "SALUTATION")
-    # We check if the name matches a RegexToken member
+    # Fallback for Enums if they appear as strings
     if name in primitive_set.RegexToken.__members__:
         return f"lib.RegexToken.{name}"
     if name in primitive_set.Gender.__members__:
         return f"lib.Gender.{name}"
 
     # 4. Literals
-    # Strings
     if isinstance(val, str):
-        if val == "":
-            return '""' 
-        return f'"{val}"'
-        
-    # Booleans
+        return '""' if val == "" else f'"{val}"'
     if isinstance(val, bool):
         return "true" if val else "false"
-        
-    # Numbers
     if isinstance(val, (int, float)):
         return str(val)
-        
-    # Lists (Empty constants fallback)
     if isinstance(val, list):
         return "[]"
         
-    # Fallback
     return str(val)
 
 def transpile_primitive(node, args):
     func_name = node.name
-    
-    # Map operator module functions if used
-    if func_name == "add": return f"({args[0]} + {args[1]})"
-    if func_name == "sub": return f"({args[0]} - {args[1]})"
-    if func_name == "mul": return f"({args[0]} * {args[1]})"
-    
     # Standard Primitives -> lib.funcName
     return f"lib.{func_name}({', '.join(args)})"
 
+import re
+
+def bundle_library():
+    """Reads and sanitizes library.js and regex_definitions.json."""
+    # 1. Load Regex Definitions
+    with open("regex_definitions.json", "r", encoding="utf-8") as f:
+        regex_defs = f.read()
+    
+    # 2. Load Library Source
+    with open("library.js", "r", encoding="utf-8") as f:
+        lib_src = f.read()
+        
+    # 3. Sanitize Library
+    # Remove imports that are not needed in bundle or handled via injection
+    lib_src = lib_src.replace("const fs = require('fs');", "// const fs = require('fs');")
+    lib_src = lib_src.replace("const path = require('path');", "// const path = require('path');")
+    
+    # Replace module.exports with const lib
+    # Use regex to handle potential whitespace differences
+    # We match "module.exports = {" and replace with "const lib = {"
+    lib_src, count = re.subn(r"module\.exports\s*=\s*\{", "const lib = {", lib_src)
+    
+    if count == 0:
+        print("WARNING: Could not find 'module.exports = {' in library.js to replace with 'const lib = {'. Bundling might fail.")
+    else:
+        print(f"Successfully replaced module.exports (count: {count})")
+    
+    return regex_defs, lib_src
+
 def generate_js(individual):
     """
-    Wraps the transpiled expression in a JS module structure.
+    Wraps the transpiled expression in a self-contained JS module.
     """
-    # DEAP trees are flat lists in pre-order (Polish notation)
+    regex_defs, lib_src = bundle_library()
+    
+    # DEAP trees are flat lists in pre-order
     iterator = iter(individual)
     
     def walk():
@@ -94,22 +108,41 @@ def generate_js(individual):
     expr = walk()
     
     js_code = f"""/**
- * evoname - Generated Parser
+ * evoname - Generated Parser (Self-Contained)
  * Transpiled from Python GP Tree
  */
-const lib = require('../library');
 
-function parse(raw_input) {{
-    // The evolved tree expects 'raw_input' as argument
+// --- 1. Injected Configuration ---
+const REGEX_DEFINITIONS = {regex_defs};
+
+// --- 2. Runtime Library ---
+{lib_src}
+
+// --- 3. Champion Logic ---
+function champion(raw_input) {{
     return {expr};
 }}
 
-module.exports = parse;
+// --- 4. Public API ---
+function parseName(input, options = {{}}) {{
+    // Wrapper to call the champion
+    return champion(input);
+}}
+
+// Export for CommonJS (Node.js)
+if (typeof module !== 'undefined' && module.exports) {{
+    module.exports = {{ parseName }};
+}}
+
+// Export for Browser (Global Variable)
+if (typeof window !== 'undefined') {{
+    window.EvoName = {{ parseName }};
+}}
 """
     return js_code
 
 def main():
-    parser = argparse.ArgumentParser(description="Transpile Python GP Tree to JavaScript")
+    parser = argparse.ArgumentParser(description="Transpile Python GP Tree to Self-Contained JavaScript")
     parser.add_argument("--input", required=True, help="Path to champion.pkl")
     parser.add_argument("--output", required=True, help="Path to output .js file")
     
@@ -119,14 +152,14 @@ def main():
     with open(args.input, "rb") as f:
         champion = pickle.load(f)
         
-    print("Transpiling...")
+    print("Transpiling and Bundling...")
     js_code = generate_js(champion)
     
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(js_code)
         
-    print(f"Saved transpiled parser to {args.output}")
+    print(f"Saved self-contained parser to {args.output}")
 
 if __name__ == "__main__":
     main()
