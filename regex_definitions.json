@@ -1,0 +1,305 @@
+{
+    "TOKEN_SALUTATION": {
+        "de": {
+            "pattern": "(Herrn?|Frau|Fr\\.)",
+            "flags": "i",
+            "description": "Deutsche Anreden (geschlechtsbezogene Anredeformen)",
+            "examples": [
+                "Herr",
+                "Herrn",
+                "Frau",
+                "Fr."
+            ],
+            "category": "salutation"
+        },
+        "en": {
+            "pattern": "(Mr\\.?|Mrs\\.?|Ms\\.?|Miss|Mx\\.?)",
+            "flags": "i",
+            "description": "Englische Anreden (geschlechtsbezogene oder neutrale Anredeformen)",
+            "examples": [
+                "Mr.",
+                "Mrs",
+                "Ms.",
+                "Miss",
+                "Mx."
+            ],
+            "category": "salutation"
+        },
+        "fr": {
+            "pattern": "(Monsieur|Madame|Mademoiselle|M\\.|Mme|Mlle)",
+            "flags": "i",
+            "description": "Französische Anreden",
+            "examples": [
+                "Monsieur",
+                "Madame",
+                "Mlle",
+                "M.",
+                "Mme"
+            ],
+            "category": "salutation"
+        }
+    },
+    "TOKEN_TITLE": {
+        "de": {
+            "pattern": "(Dr\\.?|Prof\\.?|Prof\\.? Dr\\.?( med\\.)?|Dipl\\.-?Ing\\.?|Dipl\\.-?Kfm\\.?|Mag\\.)",
+            "flags": "i",
+            "description": "Deutsche akademische und berufliche Titel",
+            "examples": [
+                "Dr.",
+                "Prof.",
+                "Prof. Dr.",
+                "Dipl.-Ing.",
+                "Mag."
+            ],
+            "category": "title"
+        },
+        "en": {
+            "pattern": "(Dr\\.?|Prof\\.?|Sir|Dame|Lord|Lady)",
+            "flags": "i",
+            "description": "Englische akademische und Ehren-Titel",
+            "examples": [
+                "Dr.",
+                "Prof.",
+                "Sir",
+                "Dame",
+                "Lord",
+                "Lady"
+            ],
+            "category": "title"
+        },
+        "fr": {
+            "pattern": "(Dr\\.?|Pr\\.?|Me)",
+            "flags": "i",
+            "description": "Französische akademische und berufliche Titel (Docteur, Professeur, Maître)",
+            "examples": [
+                "Dr.",
+                "Pr.",
+                "Me"
+            ],
+            "category": "title"
+        }
+    },
+    "TOKEN_DEGREE": {
+        "de": {
+            "pattern": "(B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|Dr\\. h\\.c\\.|PhD)",
+            "flags": "i",
+            "description": "Akademische Grade im DACH-Raum (teils nachgestellt)",
+            "examples": [
+                "B.A.",
+                "M.A.",
+                "B.Sc.",
+                "M.Sc.",
+                "Dr. h.c.",
+                "PhD"
+            ],
+            "category": "degree"
+        },
+        "en": {
+            "pattern": "(Ph\\.?D\\.?|M\\.?D\\.?|B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|M\\.?B\\.?A\\.?|MBA|Esq\\.?)",
+            "flags": "i",
+            "description": "Englische / angelsächsische akademische Grade",
+            "examples": [
+                "PhD",
+                "M.D.",
+                "B.A.",
+                "M.Sc.",
+                "MBA",
+                "Esq."
+            ],
+            "category": "degree"
+        },
+        "fr": {
+            "pattern": "(Ph\\.?D\\.?|M\\.?D\\.?|Doc\\.)",
+            "flags": "i",
+            "description": "Französische akademische Grade",
+            "examples": [
+                "PhD",
+                "M.D.",
+                "Doc."
+            ],
+            "category": "degree"
+        }
+    },
+    "TOKEN_INITIAL": {
+        "de": {
+            "pattern": "[A-ZÄÖÜ]\\.",
+            "flags": "",
+            "description": "Initiale mit Punkt (Deutsch)",
+            "examples": [
+                "H.",
+                "J.",
+                "Ö."
+            ],
+            "category": "initial"
+        },
+        "en": {
+            "pattern": "[A-Z]\\.",
+            "flags": "",
+            "description": "Initiale mit Punkt (Englisch)",
+            "examples": [
+                "J.",
+                "K.",
+                "L."
+            ],
+            "category": "initial"
+        },
+        "fr": {
+            "pattern": "[A-ZÀ-ÖØ-Þ]\\.",
+            "flags": "",
+            "description": "Initiale mit Punkt (Französisch)",
+            "examples": [
+                "É.",
+                "J.",
+                "C."
+            ],
+            "category": "initial"
+        }
+    },
+    "TOKEN_PARTICLE": {
+        "de": {
+            "pattern": "(von(?: der| dem| den)?|zu(?:r|m)?|auf|aus|am|an|im|in)",
+            "flags": "i",
+            "description": "Deutsche Adelsprädikate und Namenspartikel",
+            "examples": [
+                "von",
+                "von der",
+                "zu",
+                "von dem"
+            ],
+            "category": "particle"
+        },
+        "en": {
+            "pattern": "(van(?: der)?|von|de(?: la)?|du|da|del|della|di|dos|st\\.|st)",
+            "flags": "i",
+            "description": "Häufige Namenspartikel in englischsprachigen Kontexten (oft aus anderen Sprachen übernommen)",
+            "examples": [
+                "van",
+                "van der",
+                "de",
+                "del",
+                "da",
+                "St.",
+                "st"
+            ],
+            "category": "particle"
+        },
+        "fr": {
+            "pattern": "(de(?: la)?|du|des|d['’]|l['’]|le|la)",
+            "flags": "i",
+            "description": "Französische Partikel und Artikel in Namen",
+            "examples": [
+                "de",
+                "de la",
+                "du",
+                "d'",
+                "l'"
+            ],
+            "category": "particle"
+        }
+    },
+    "TOKEN_SUFFIX": {
+        "de": {
+            "pattern": "(jun\\.|sen\\.)",
+            "flags": "i",
+            "description": "Seltene deutsche Namenszusätze",
+            "examples": [
+                "jun.",
+                "sen."
+            ],
+            "category": "suffix"
+        },
+        "en": {
+            "pattern": "(Jr\\.?|Sr\\.?|II|III|IV|V|2nd|3rd)",
+            "flags": "i",
+            "description": "Englische Generationensuffixe",
+            "examples": [
+                "Jr.",
+                "Sr.",
+                "III"
+            ],
+            "category": "suffix"
+        },
+        "fr": {
+            "pattern": "(fils|père)",
+            "flags": "i",
+            "description": "Sehr seltene französische Zusätze (fils/père)",
+            "examples": [
+                "fils",
+                "père"
+            ],
+            "category": "suffix"
+        }
+    },
+    "TOKEN_WORD": {
+        "de": {
+            "pattern": "[A-Za-zÄÖÜäöüß]+(?:-[A-Za-zÄÖÜäöüß]+)*",
+            "flags": "",
+            "description": "Wort (Name) inkl. deutscher Umlaute und Bindestriche",
+            "examples": [
+                "Müller",
+                "Hans-Peter",
+                "Groß"
+            ],
+            "category": "word"
+        },
+        "en": {
+            "pattern": "[A-Za-z]+(?:['’][A-Za-z]+)*(?:-[A-Za-z]+)*",
+            "flags": "",
+            "description": "Wort (Name) inkl. Apostroph- und Bindestrich-Varianten",
+            "examples": [
+                "Smith",
+                "Mary-Jane",
+                "O'Connor",
+                "D'Angelo"
+            ],
+            "category": "word"
+        },
+        "fr": {
+            "pattern": "[A-Za-zÀ-ÖØ-öø-ÿ]+(?:['’][A-Za-zÀ-ÖØ-öø-ÿ]+)*(?:-[A-Za-zÀ-ÖØ-öø-ÿ]+)*",
+            "flags": "",
+            "description": "Wort (Name) inkl. französischer Akzente, Apostroph- und Bindestrich-Varianten",
+            "examples": [
+                "François",
+                "Jean-Pierre",
+                "D'Almeida",
+                "Hélène"
+            ],
+            "category": "word"
+        }
+    },
+    "TOKEN_PUNCT": {
+        "de": {
+            "pattern": "[,.-]",
+            "flags": "",
+            "description": "Satzzeichen",
+            "examples": [
+                ",",
+                ".",
+                "-"
+            ],
+            "category": "punctuation"
+        },
+        "en": {
+            "pattern": "[,.-]",
+            "flags": "",
+            "description": "Punctuation",
+            "examples": [
+                ",",
+                ".",
+                "-"
+            ],
+            "category": "punctuation"
+        },
+        "fr": {
+            "pattern": "[,.-]",
+            "flags": "",
+            "description": "Ponctuation",
+            "examples": [
+                ",",
+                ".",
+                "-"
+            ],
+            "category": "punctuation"
+        }
+    }
+}
