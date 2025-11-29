@@ -269,6 +269,7 @@ def main():
     parser.add_argument("--data-dir", type=str, default="data")
     parser.add_argument("--checkpoint", type=str, help="Path to checkpoint to resume")
     parser.add_argument("--run-id", type=str, help="Custom Run ID")
+    parser.add_argument("--monitor", action="store_true", help="Enable live monitoring (writes monitor.json)")
     
     args = parser.parse_args()
     
@@ -329,6 +330,13 @@ def main():
     stats.register("min", min)
     stats.register("max", max)
     
+    # Monitor Setup
+    monitor_samples = []
+    if args.monitor:
+        # Select 5 random samples for consistent tracking
+        monitor_samples = random.sample(train_data, min(5, len(train_data)))
+        print(f"Monitoring enabled. Tracking {len(monitor_samples)} samples.")
+
     # Evolution Loop
     print(f"Starting evolution for {args.generations} generations...")
     
@@ -366,6 +374,39 @@ def main():
         record = stats.compile(pop)
         logbook.record(gen=gen, nevals=len(invalid_ind), **record)
         print(logbook.stream)
+        
+        # Monitor Update
+        if args.monitor:
+            try:
+                best_ind = hof[0]
+                func = gp.compile(best_ind, pset)
+                
+                sample_results = []
+                for sample in monitor_samples:
+                    try:
+                        pred = func(sample["raw"])
+                        # Convert NameObj to simple dict for JSON
+                        pred_json = pred.to_json() if hasattr(pred, "to_json") else str(pred)
+                    except Exception as e:
+                        pred_json = {"error": str(e)}
+                        
+                    sample_results.append({
+                        "raw": sample["raw"],
+                        "truth": sample["solution"],
+                        "pred": pred_json
+                    })
+                
+                monitor_data = {
+                    "generation": gen,
+                    "best_fitness": best_ind.fitness.values[0],
+                    "avg_fitness": record["avg"],
+                    "samples": sample_results
+                }
+                
+                with open("monitor.json", "w", encoding="utf-8") as f:
+                    json.dump(monitor_data, f, indent=2)
+            except Exception as e:
+                print(f"Monitor Error: {e}")
         
         # Checkpointing (every 10 gens or last)
         if gen % 10 == 0 or gen == args.generations - 1:

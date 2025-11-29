@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoName Control Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --text: #e0e0e0;
+            --accent: #00ff9d;
+            --panel: #2d2d2d;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--panel);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--accent);
+            font-size: 1.2rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+
+        /* Controls */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            background: #444;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-start {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-stop {
+            background: #ff4757;
+            color: white;
+        }
+
+        .btn-test {
+            background: #3742fa;
+            color: white;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #333;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        /* Monitor Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            color: #888;
+        }
+
+        .diff-bad {
+            color: #ff6b6b;
+        }
+
+        .diff-good {
+            color: var(--accent);
+        }
+
+        /* Playground */
+        #playground-result {
+            background: #111;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            min-height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Sidebar: Controls & Playground -->
+        <div class="sidebar">
+            <div class="panel">
+                <h2>Controls</h2>
+                <div class="form-group">
+                    <label>Generations</label>
+                    <input type="number" id="generations" value="50">
+                </div>
+                <div class="form-group">
+                    <label>Population Size</label>
+                    <input type="number" id="pop_size" value="300">
+                </div>
+                <div class="form-group">
+                    <label>Seed</label>
+                    <input type="number" id="seed" value="42">
+                </div>
+                <div class="btn-group">
+                    <button class="btn-start" onclick="startTraining()">START</button>
+                    <button class="btn-stop" onclick="stopTraining()">STOP</button>
+                </div>
+                <div id="status-msg" style="margin-top: 10px; font-size: 0.8rem; text-align: center;">Ready</div>
+            </div>
+
+            <div class="panel" style="margin-top: 20px;">
+                <h2>Playground</h2>
+                <div class="form-group">
+                    <label>Test Name</label>
+                    <input type="text" id="test-input" placeholder="Dr. Hans Müller">
+                </div>
+                <button class="btn-test" onclick="runTest()">Test Champion</button>
+                <div id="playground-result">Result will appear here...</div>
+            </div>
+        </div>
+
+        <!-- Main: Monitor -->
+        <div class="main-content">
+            <div class="panel">
+                <h2>Live Monitor</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-gen">0</div>
+                        <div class="stat-label">Generation</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-fitness">0.00</div>
+                        <div class="stat-label">Best Fitness</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-avg">0.00</div>
+                        <div class="stat-label">Avg Fitness</div>
+                    </div>
+                </div>
+
+                <canvas id="fitnessChart" height="100"></canvas>
+            </div>
+
+            <div class="panel" style="margin-top: 20px;">
+                <h2>Guinea Pigs (Live Samples)</h2>
+                <table id="monitor-table">
+                    <thead>
+                        <tr>
+                            <th>Input</th>
+                            <th>Prediction (Given / Family)</th>
+                            <th>Truth</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">Waiting for data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chart;
+        let pollingInterval;
+        let lastGen = -1;
+
+        // Init Chart
+        const ctx = document.getElementById('fitnessChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Best Fitness',
+                    borderColor: '#00ff9d',
+                    data: [],
+                    tension: 0.1
+                }, {
+                    label: 'Avg Fitness',
+                    borderColor: '#3742fa',
+                    data: [],
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, max: 1.0, grid: { color: '#444' } },
+                    x: { grid: { color: '#444' } }
+                }
+            }
+        });
+
+        async function startTraining() {
+            const gens = document.getElementById('generations').value;
+            const pop = document.getElementById('pop_size').value;
+            const seed = document.getElementById('seed').value;
+
+            const res = await fetch('/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ generations: gens, pop_size: pop, seed: seed })
+            });
+            const data = await res.json();
+            document.getElementById('status-msg').innerText = data.message;
+
+            if (data.status === 'success') {
+                resetCharts();
+                startPolling();
+            }
+        }
+
+        async function stopTraining() {
+            const res = await fetch('/stop', { method: 'POST' });
+            const data = await res.json();
+            document.getElementById('status-msg').innerText = data.message;
+            stopPolling();
+        }
+
+        function startPolling() {
+            if (pollingInterval) clearInterval(pollingInterval);
+            pollingInterval = setInterval(updateStats, 1000);
+        }
+
+        function stopPolling() {
+            if (pollingInterval) clearInterval(pollingInterval);
+        }
+
+        function resetCharts() {
+            chart.data.labels = [];
+            chart.data.datasets[0].data = [];
+            chart.data.datasets[1].data = [];
+            chart.update();
+            lastGen = -1;
+        }
+
+        async function updateStats() {
+            try {
+                const res = await fetch('/stats');
+                const data = await res.json();
+
+                if (!data.running && lastGen > 0) {
+                    document.getElementById('status-msg').innerText = "Training Finished";
+                    // stopPolling(); // Keep polling to see final state or if restarted
+                }
+
+                const stats = data.stats;
+                if (!stats || stats.generation === undefined) return;
+
+                // Update Text Stats
+                document.getElementById('stat-gen').innerText = stats.generation;
+                document.getElementById('stat-fitness').innerText = stats.best_fitness.toFixed(4);
+                document.getElementById('stat-avg').innerText = stats.avg_fitness.toFixed(4);
+
+                // Update Chart (only if new gen)
+                if (stats.generation > lastGen) {
+                    lastGen = stats.generation;
+                    chart.data.labels.push(stats.generation);
+                    chart.data.datasets[0].data.push(stats.best_fitness);
+                    chart.data.datasets[1].data.push(stats.avg_fitness);
+
+                    // Keep chart clean (last 50 points)
+                    if (chart.data.labels.length > 50) {
+                        chart.data.labels.shift();
+                        chart.data.datasets[0].data.shift();
+                        chart.data.datasets[1].data.shift();
+                    }
+                    chart.update();
+
+                    // Update Table
+                    updateTable(stats.samples);
+
+                    // Auto-Transpile every 5 gens? Or just let user do it?
+                    // Let's trigger transpile silently so playground is ready
+                    fetch('/transpile', { method: 'POST' });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function updateTable(samples) {
+            const tbody = document.querySelector('#monitor-table tbody');
+            tbody.innerHTML = '';
+
+            samples.forEach(s => {
+                const tr = document.createElement('tr');
+                const pred = s.pred;
+                const truth = s.truth;
+
+                // Simple diff check for color
+                const givenMatch = pred.given === truth.given;
+                const familyMatch = pred.family === truth.family;
+                const cls = (givenMatch && familyMatch) ? 'diff-good' : 'diff-bad';
+
+                tr.innerHTML = `
+                <td>${s.raw}</td>
+                <td class="${cls}">${pred.given || '-'} / ${pred.family || '-'}</td>
+                <td>${truth.given} / ${truth.family}</td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Playground Logic
+        async function runTest() {
+            // Reload the JS file
+            // We need to remove the old script tag and add a new one to force reload
+            const oldScript = document.getElementById('champion-script');
+            if (oldScript) oldScript.remove();
+
+            // Remove global object
+            window.EvoName = undefined;
+
+            const script = document.createElement('script');
+            script.id = 'champion-script';
+            script.src = '/champion.js?t=' + new Date().getTime(); // Cache bust
+
+            script.onload = () => {
+                const input = document.getElementById('test-input').value;
+                if (window.EvoName) {
+                    try {
+                        const res = window.EvoName.parseName(input);
+                        document.getElementById('playground-result').innerText = JSON.stringify(res, null, 2);
+                    } catch (e) {
+                        document.getElementById('playground-result').innerText = "Error: " + e.message;
+                    }
+                } else {
+                    document.getElementById('playground-result').innerText = "Error: EvoName object not found in script.";
+                }
+            };
+
+            script.onerror = () => {
+                document.getElementById('playground-result').innerText = "Error: Could not load champion.js. Has training started?";
+            };
+
+            document.body.appendChild(script);
+        }
+    </script>
+</body>
+
+</html>

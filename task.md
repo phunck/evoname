@@ -6,4 +6,6 @@
 - [x] Implement `library.js` (JS equivalents of Primitives) <!-- id: 9 -->
 - [x] Implement Transpiler (Python AST -> JS Code) <!-- id: 10 -->
 - [x] Create Self-Contained NPM Package (Bundler) <!-- id: 11 -->
+- [x] Implement Analysis Script (Detailed Performance Breakdown) <!-- id: 12 -->
+- [x] Create Evolution Dashboard (Web UI for Training & Testing) <!-- id: 13 -->
 

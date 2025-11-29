@@ -1,0 +1,150 @@
+{
+  "generation": 49,
+  "best_fitness": 0.5055833333333334,
+  "avg_fitness": 0.4766179166666667,
+  "samples": [
+    {
+      "raw": "Mr. John David Schulz",
+      "truth": {
+        "given": "John",
+        "family": "Schulz",
+        "middle": [
+          "David"
+        ],
+        "title": [],
+        "salutation": "Mr.",
+        "gender": "m",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "Mr. John David Schulz",
+        "solution": {
+          "title": [],
+          "given": "Mr. John David Schulz",
+          "middle": [],
+          "family": "Schulz",
+          "suffix": [],
+          "particles": [],
+          "salutation": "Mr. John David Schulz",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    },
+    {
+      "raw": "Mr. William Thomas Wagner",
+      "truth": {
+        "given": "William",
+        "family": "Wagner",
+        "middle": [
+          "Thomas"
+        ],
+        "title": [],
+        "salutation": "Mr.",
+        "gender": "m",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "Mr. William Thomas Wagner",
+        "solution": {
+          "title": [],
+          "given": "Mr. William Thomas Wagner",
+          "middle": [],
+          "family": "Wagner",
+          "suffix": [],
+          "particles": [],
+          "salutation": "Mr. William Thomas Wagner",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    },
+    {
+      "raw": "Ms Jennifer Williams",
+      "truth": {
+        "given": "Jennifer",
+        "family": "Williams",
+        "middle": [],
+        "title": [],
+        "salutation": "Ms",
+        "gender": "f",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "Ms Jennifer Williams",
+        "solution": {
+          "title": [],
+          "given": "Ms Jennifer Williams",
+          "middle": [],
+          "family": "Williams",
+          "suffix": [],
+          "particles": [],
+          "salutation": "Ms Jennifer Williams",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    },
+    {
+      "raw": "Mrs Ursula M\u00fcller",
+      "truth": {
+        "given": "Ursula",
+        "family": "M\u00fcller",
+        "middle": [],
+        "title": [],
+        "salutation": "Mrs",
+        "gender": "f",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "Mrs Ursula M\u00fcller",
+        "solution": {
+          "title": [],
+          "given": "Mrs Ursula M\u00fcller",
+          "middle": [],
+          "family": "M\u00fcller",
+          "suffix": [],
+          "particles": [],
+          "salutation": "Mrs Ursula M\u00fcller",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    },
+    {
+      "raw": "Dr. med. Ursula Schmidt",
+      "truth": {
+        "given": "Ursula",
+        "family": "Schmidt",
+        "middle": [],
+        "title": [
+          "Dr. med."
+        ],
+        "salutation": "",
+        "gender": "f",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "Dr. med. Ursula Schmidt",
+        "solution": {
+          "title": [
+            "Dr."
+          ],
+          "given": "Dr. med. Ursula Schmidt",
+          "middle": [],
+          "family": "Schmidt",
+          "suffix": [],
+          "particles": [],
+          "salutation": "Dr. med. Ursula Schmidt",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    }
+  ]
+}
