@@ -68,8 +68,8 @@ node test_library.js
 - [x] Data Generation (Synthetic)
 - [x] Trainer Implementation
 - [x] JavaScript Runtime (`library.js`)
-- [ ] **Transpiler (Python -> JS)** (Next Step)
-- [ ] Automated CI/CD Pipeline
+- [x] Transpiler (Python -> JS)
+- [x] Automated CI/CD Pipeline
 
 ## 👥 Credits
 Created by **Paul Hunck**.
