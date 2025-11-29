@@ -33,7 +33,7 @@ jobs:
       run: python generate_data.py
 
     - name: Run Trainer (Production Mode)
-      run: python trainer.py --generations 300 --pop-size 1000
+      run: python -u trainer.py --generations 300 --pop-size 1000
 
     - name: Transpile Champion
       run: |
