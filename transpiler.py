@@ -76,8 +76,8 @@ def bundle_library():
     
     # Replace module.exports with const lib
     # Use regex to handle potential whitespace differences
-    # We match "module.exports = {" and replace with "const lib = {"
-    lib_src, count = re.subn(r"module\.exports\s*=\s*\{", "const lib = {", lib_src)
+    # We match "module.exports =" and replace with "const lib ="
+    lib_src, count = re.subn(r"module\.exports\s*=", "const lib =", lib_src)
     
     if count == 0:
         print("WARNING: Could not find 'module.exports = {' in library.js to replace with 'const lib = {'. Bundling might fail.")
