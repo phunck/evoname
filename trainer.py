@@ -71,14 +71,26 @@ def gen_rand_float():
     return round(random.random(), 2)
 
 def evaluate_individual(individual, pset, data: List[Dict]) -> Tuple[float]:
-    # Compile the tree into a function
     func = gp.compile(individual, pset)
     
-    f1_given_sum = 0.0
-    f1_family_sum = 0.0
-    f1_title_sum = 0.0
-    f1_gender_sum = 0.0
+    # --- METRICS ACCUMULATORS ---
+    # Core F1 Sums
+    sum_f1_given = 0.0
+    sum_f1_family = 0.0
+    sum_f1_title = 0.0
+    sum_f1_gender = 0.0
     
+    # Bonus Counters
+    count_exact_match = 0
+    sum_coverage_score = 0.0
+    sum_unknown_handling = 0.0
+    
+    # Penalty Counters
+    sum_hallucination_rate = 0.0
+    
+    n = len(data)
+    if n == 0: return 0.0,
+
     valid_gender_count = 0
     
     for entry in data:
@@ -86,53 +98,174 @@ def evaluate_individual(individual, pset, data: List[Dict]) -> Tuple[float]:
         solution = entry["solution"]
         
         try:
-            # Execute the generated function
-            # Note: The primitive set expects 'raw' string as input
-            # But wait, our primitives need to start somewhere.
-            # The tree input is defined in pset.
-            # We need to pass the raw string to the function.
             pred_obj: NameObj = func(raw)
         except Exception:
-            # If execution fails (e.g. index out of bounds), return penalty
-            return 0.0,
+            return 0.0, # Runtime error is still death
 
-        # Hard Constraint: Family name must not be empty (unless truth is empty, which is rare)
-        if not pred_obj.family and solution["family"]:
-             return 0.0,
-
-        # Calculate Metrics
-        f1_given_sum += calculate_f1(pred_obj.given, solution["given"])
-        f1_family_sum += calculate_f1(pred_obj.family, solution["family"])
-        f1_title_sum += calculate_f1(pred_obj.title, solution["title"])
+        # --- 1. CORE SCORE CALCULATION ---
+        f1_given = calculate_f1(pred_obj.given, solution["given"])
+        f1_family = calculate_f1(pred_obj.family, solution["family"])
+        f1_title = calculate_f1(pred_obj.title, solution["title"])
         
-        # Gender Metric (only if truth has gender)
+        # Gender
         truth_gender = solution.get("gender")
+        f1_gender = 0.0
         if truth_gender and truth_gender != "null":
             valid_gender_count += 1
-            # Simple match for now
             pred_gender_val = pred_obj.gender.value if pred_obj.gender else "null"
             if pred_gender_val == truth_gender:
-                f1_gender_sum += 1.0
+                f1_gender = 1.0
+        else:
+            # If truth is null, predicting null is good (handled in uncertainty)
+            # For Core, we ignore null-truth cases usually, or give 1.0 if match?
+            # Let's stick to: Core Gender is only about predicting KNOWN genders correctly.
+            pass
+
+        sum_f1_given += f1_given
+        sum_f1_family += f1_family
+        sum_f1_title += f1_title
+        sum_f1_gender += f1_gender
+
+        # --- 2. BONUS SCORE CALCULATION ---
+        
+        # 2.1 Exact Match Bonus
+        # Check ALL fields
+        is_exact = True
+        # Simple string/list comparisons (using calculate_f1 logic for sets)
+        if f1_given < 1.0 or f1_family < 1.0 or f1_title < 1.0: is_exact = False
+        if calculate_f1(pred_obj.middle, solution["middle"]) < 1.0: is_exact = False
+        if calculate_f1(pred_obj.suffix, solution["suffix"]) < 1.0: is_exact = False
+        if calculate_f1(pred_obj.particles, solution["particles"]) < 1.0: is_exact = False
+        if calculate_f1(pred_obj.salutation, solution["salutation"]) < 1.0: is_exact = False
+        
+        # Gender exact check
+        p_gen = pred_obj.gender.value if pred_obj.gender else "null"
+        t_gen = solution.get("gender", "null")
+        if p_gen != t_gen: is_exact = False
+        
+        if is_exact:
+            count_exact_match += 1
+            
+        # 2.2 Coverage Bonus (Optional Fields: Middle, Suffix, Particles)
+        # Reward if Truth is NON-EMPTY and Prediction MATCHES
+        # We calculate share of correctly identified optional fields
+        opt_fields = ["middle", "suffix", "particles"]
+        opt_correct = 0
+        opt_total_present = 0
+        
+        for field in opt_fields:
+            truth_val = solution.get(field)
+            # Check if truth is non-empty
+            has_content = False
+            if isinstance(truth_val, list) and truth_val: has_content = True
+            elif isinstance(truth_val, str) and truth_val.strip(): has_content = True
+            
+            if has_content:
+                opt_total_present += 1
+                if calculate_f1(getattr(pred_obj, field), truth_val) == 1.0:
+                    opt_correct += 1
+        
+        if opt_total_present > 0:
+            sum_coverage_score += (opt_correct / opt_total_present)
+        else:
+            # If no optional fields present, coverage is technically 100% or N/A?
+            # Let's say 1.0 to not punish simple names
+            sum_coverage_score += 1.0
+
+        # 2.3 Uncertainty Bonus
+        # Reward if Truth is EMPTY and Prediction is EMPTY
+        unc_fields = ["salutation", "title", "middle", "suffix", "particles"]
+        unc_correct = 0
+        unc_total_empty = 0
+        
+        for field in unc_fields:
+            truth_val = solution.get(field)
+            is_empty = False
+            if not truth_val: is_empty = True
+            elif isinstance(truth_val, list) and not truth_val: is_empty = True
+            elif isinstance(truth_val, str) and not truth_val.strip(): is_empty = True
+            
+            if is_empty:
+                unc_total_empty += 1
+                pred_val = getattr(pred_obj, field)
+                pred_empty = False
+                if not pred_val: pred_empty = True
+                elif isinstance(pred_val, list) and not pred_val: pred_empty = True
+                elif isinstance(pred_val, str) and not pred_val.strip(): pred_empty = True
+                
+                if pred_empty:
+                    unc_correct += 1
+        
+        if unc_total_empty > 0:
+            sum_unknown_handling += (unc_correct / unc_total_empty)
+        else:
+            sum_unknown_handling += 1.0
+
+        # --- 3. PENALTY CALCULATION ---
+        
+        # 3.1 Hallucination Penalty
+        # Truth is EMPTY, Prediction is NON-EMPTY
+        # We already calculated this implicitly in Uncertainty, but let's be explicit
+        hallucinations = 0
+        total_fields = 0
+        all_fields = ["given", "family", "salutation", "title", "middle", "suffix", "particles"]
+        
+        for field in all_fields:
+            truth_val = solution.get(field)
+            is_truth_empty = not truth_val or (isinstance(truth_val, list) and not truth_val)
+            
+            if is_truth_empty:
+                total_fields += 1
+                pred_val = getattr(pred_obj, field)
+                is_pred_empty = not pred_val or (isinstance(pred_val, list) and not pred_val)
+                
+                if not is_pred_empty:
+                    hallucinations += 1
+        
+        if total_fields > 0:
+            sum_hallucination_rate += (hallucinations / total_fields)
+
+        # Hard Constraint (Softened)
+        # If family or given is empty but truth is not -> Penalty
+        # We handle this by F1 score being 0, which hurts Core.
+        # But user suggested explicit penalty.
+        # Let's rely on Core F1 for this, as 0.4 weight is heavy.
+
+    # --- AGGREGATION ---
     
-    n = len(data)
-    if n == 0: return 0.0,
+    # Averages
+    avg_given = sum_f1_given / n
+    avg_family = sum_f1_family / n
+    avg_title = sum_f1_title / n
+    avg_gender = sum_f1_gender / valid_gender_count if valid_gender_count > 0 else 1.0
     
-    avg_given = f1_given_sum / n
-    avg_family = f1_family_sum / n
-    avg_title = f1_title_sum / n
-    avg_gender = f1_gender_sum / valid_gender_count if valid_gender_count > 0 else 1.0
+    exact_rate = count_exact_match / n
+    avg_coverage = sum_coverage_score / n
+    avg_uncertainty = sum_unknown_handling / n
+    avg_hallucination = sum_hallucination_rate / n
     
-    # Weighted Score
-    # Weights: Given 0.4, Family 0.4, Title 0.1, Gender 0.1
-    score = (0.4 * avg_given) + (0.4 * avg_family) + (0.1 * avg_title) + (0.1 * avg_gender)
+    # Formula Implementation
+    # core = 0.4 * F1_family + 0.4 * F1_given + 0.1 * F1_title + 0.1 * F1_gender
+    core_score = (0.4 * avg_family) + (0.4 * avg_given) + (0.1 * avg_title) + (0.1 * avg_gender)
     
-    # Parsimony Pressure (Penalty for tree size)
-    # Small penalty to encourage smaller trees
-    penalty = 0.001 * len(individual)
+    # bonus_exact = 0.05 * ExactRate
+    bonus_exact = 0.05 * exact_rate
     
-    final_fitness = max(0.0, score - penalty)
+    # bonus_coverage = 0.05 * CoverageScore
+    bonus_coverage = 0.05 * avg_coverage
     
-    return final_fitness,
+    # bonus_uncertainty = 0.02 * UnknownHandlingScore
+    bonus_uncertainty = 0.02 * avg_uncertainty
+    
+    # penalty_bloat = 0.0005 * tree_size
+    penalty_bloat = 0.0005 * len(individual)
+    
+    # penalty_hallucination = 0.1 * HallucinationRate
+    penalty_hallucination = 0.1 * avg_hallucination
+    
+    fitness = core_score + bonus_exact + bonus_coverage + bonus_uncertainty - penalty_bloat - penalty_hallucination
+    
+    return max(0.0, fitness),
 
 def setup_gp():
     # Define Types

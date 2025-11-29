@@ -300,6 +300,16 @@ def extract_family_str(tokens: TokenList) -> str:
             last_word = t.value
     return last_word
 
+def extract_middle_str(tokens: TokenList) -> StringList:
+    # Heuristic: Everything between first and last word
+    # Returns a StringList of middle names
+    words = [t.value for t in tokens if t.type == RegexToken.WORD]
+    if len(words) <= 2:
+        return StringList([])
+    
+    # Return everything between first and last
+    return StringList(words[1:-1])
+
 # 3.5 Object Builder
 def make_name_obj(raw: str, given: str, family: str, middle: StringList, title: StringList, salutation: str, gender: Gender, suffix: StringList, particles: StringList) -> NameObj:
     return NameObj(

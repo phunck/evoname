@@ -8,4 +8,5 @@
 - [x] Create Self-Contained NPM Package (Bundler) <!-- id: 11 -->
 - [x] Implement Analysis Script (Detailed Performance Breakdown) <!-- id: 12 -->
 - [x] Create Evolution Dashboard (Web UI for Training & Testing) <!-- id: 13 -->
+- [x] Refine Fitness Function (Weighted Rewards & Penalties) <!-- id: 14 -->
 
