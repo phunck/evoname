@@ -317,3 +317,15 @@ def make_name_obj(raw: str, given: str, family: str, middle: StringList, title: 
 def set_confidence(obj: NameObj, c: float) -> NameObj:
     obj.confidence = c
     return obj
+
+# --- Ephemeral Generators ---
+import random
+def gen_rand_int():
+    return random.randint(0, 5)
+
+def gen_rand_float():
+    return round(random.random(), 2)
+
+# Aliases for potential pickle compatibility
+rand_int = gen_rand_int
+rand_float = gen_rand_float

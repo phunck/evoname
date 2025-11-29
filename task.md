@@ -4,4 +4,4 @@
 - [x] Create `generate_data.py` (Minimal version for Validation/Split) <!-- id: 7 -->
 - [x] Implement `trainer.py` with Checkpointing & CLI <!-- id: 8 -->
 - [x] Implement `library.js` (JS equivalents of Primitives) <!-- id: 9 -->
-- [ ] Implement Transpiler (Python AST -> JS Code) <!-- id: 10 -->
+- [x] Implement Transpiler (Python AST -> JS Code) <!-- id: 10 -->
