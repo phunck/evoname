@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evoname Demo</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        textarea { width: 100%; height: 100px; margin-bottom: 1rem; }
+        pre { background: #f4f4f4; padding: 1rem; border-radius: 4px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Evoname Parser Demo</h1>
+    <p>1. Download <code>evoname-dist</code> from GitHub Actions.</p>
+    <p>2. Extract <code>evoname.js</code> and <code>library.js</code> into the same folder as this file.</p>
+    
+    <textarea id="input" placeholder="Enter a name (e.g. Dr. Hans Müller)"></textarea>
+    <button onclick="runParser()">Parse Name</button>
+    
+    <h3>Result:</h3>
+    <pre id="output">Waiting for input...</pre>
+
+    <script>
+        // Simple CommonJS require shim for the browser
+        const modules = {};
+        window.require = (path) => {
+            if (path === './library' || path === '../library') return window.lib;
+            throw new Error(`Module ${path} not found`);
+        };
+        window.module = { exports: {} };
+
+        async function loadScripts() {
+            try {
+                // Load library.js
+                const libResp = await fetch('library.js');
+                if (!libResp.ok) throw new Error("library.js not found");
+                const libText = await libResp.text();
+                // Wrap in function to simulate module scope
+                new Function('module', 'exports', 'require', libText)(module, module.exports, require);
+                window.lib = module.exports;
+                console.log("Library loaded");
+
+                // Load evoname.js
+                const parserResp = await fetch('dist/evoname.js');
+                if (!parserResp.ok) throw new Error("dist/evoname.js not found");
+                const parserText = await parserResp.text();
+                const parserModule = { exports: {} };
+                new Function('module', 'exports', 'require', parserText)(parserModule, parserModule.exports, require);
+                window.parse = parserModule.exports;
+                console.log("Parser loaded");
+                
+                document.getElementById('output').innerText = "Ready! Library and Parser loaded.";
+                document.getElementById('output').classList.add('success');
+            } catch (e) {
+                document.getElementById('output').innerText = "Error loading scripts: " + e.message + "\nMake sure library.js and dist/evoname.js are in the correct folders.";
+                document.getElementById('output').classList.add('error');
+            }
+        }
+
+        function runParser() {
+            if (!window.parse) {
+                alert("Parser not loaded yet!");
+                return;
+            }
+            const input = document.getElementById('input').value;
+            try {
+                const result = window.parse(input);
+                document.getElementById('output').innerText = JSON.stringify(result, null, 2);
+            } catch (e) {
+                document.getElementById('output').innerText = "Error parsing: " + e.message;
+            }
+        }
+
+        loadScripts();
+    </script>
+</body>
+</html>
