@@ -154,9 +154,6 @@ def to_lower(s: str) -> str:
 def split_on_comma(s: str) -> StringList:
     return StringList([p.strip() for p in s.split(",") if p.strip()])
 
-def split_on_space(s: str) -> StringList:
-    return StringList([p.strip() for p in s.split(" ") if p.strip()])
-
 def get_first_string(l: StringList) -> str:
     return l[0] if l else ""
 
@@ -274,6 +271,34 @@ def is_salutation(t: Optional[Token]) -> bool:
 
 def identity_token_type(t: RegexToken) -> RegexToken:
     return t
+
+# 3.6 Macro-Primitives (Boosters)
+def extract_salutation_str(tokens: TokenList) -> str:
+    # Finds the first salutation token and returns its value
+    for t in tokens:
+        if t.type == RegexToken.SALUTATION:
+            return t.value
+    return ""
+
+def extract_title_list(tokens: TokenList) -> StringList:
+    # Returns all title values as StringList
+    return StringList([t.value for t in tokens if t.type == RegexToken.TITLE])
+
+def extract_given_str(tokens: TokenList) -> str:
+    # Heuristic: First WORD that is not a Salutation/Title
+    # This is a simple heuristic to help the EA start
+    for t in tokens:
+        if t.type == RegexToken.WORD:
+            return t.value
+    return ""
+
+def extract_family_str(tokens: TokenList) -> str:
+    # Heuristic: Last WORD
+    last_word = ""
+    for t in tokens:
+        if t.type == RegexToken.WORD:
+            last_word = t.value
+    return last_word
 
 # 3.5 Object Builder
 def make_name_obj(raw: str, given: str, family: str, middle: StringList, title: StringList, salutation: str, gender: Gender, suffix: StringList, particles: StringList) -> NameObj:

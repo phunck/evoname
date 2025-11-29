@@ -3,4 +3,4 @@
 - [x] Create Dummy Data for Smoke Tests (`data_dummy.json`) <!-- id: 6 -->
 - [x] Create `generate_data.py` (Minimal version for Validation/Split) <!-- id: 7 -->
 - [x] Implement `trainer.py` with Checkpointing & CLI <!-- id: 8 -->
-- [ ] Implement `library.js` (JS equivalents of Primitives) <!-- id: 9 -->
+- [x] Implement `library.js` (JS equivalents of Primitives) <!-- id: 9 -->

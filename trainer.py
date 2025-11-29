@@ -16,13 +16,14 @@ from primitive_set import (
     tokenize, make_name_obj,
     # Primitives
     if_bool_string, if_bool_tokenlist,
-    trim, to_lower, split_on_comma, split_on_space,
+    trim, to_lower, split_on_comma,
     get_first_string, get_last_string,
     get_first_token, get_last_token,
     slice_tokens, len_tokens, drop_first, drop_last,
     remove_type, index_of_type, get_remainder_tokens,
     filter_by_type, count_type, get_gender_from_salutation,
     has_comma, is_title, is_salutation, identity_token_type,
+    extract_salutation_str, extract_title_list, extract_given_str, extract_family_str,
     set_confidence
 )
 
@@ -154,7 +155,6 @@ def setup_gp():
     pset.addPrimitive(trim, [str], str)
     pset.addPrimitive(to_lower, [str], str)
     pset.addPrimitive(split_on_comma, [str], StringList)
-    pset.addPrimitive(split_on_space, [str], StringList)
     pset.addPrimitive(get_first_string, [StringList], str)
     pset.addPrimitive(get_last_string, [StringList], str)
     
@@ -183,6 +183,12 @@ def setup_gp():
     pset.addPrimitive(is_title, [Token], bool)
     pset.addPrimitive(is_salutation, [Token], bool)
     pset.addPrimitive(identity_token_type, [RegexToken], RegexToken)
+
+    # -- Macro-Primitives (Boosters) --
+    pset.addPrimitive(extract_salutation_str, [TokenList], str)
+    pset.addPrimitive(extract_title_list, [TokenList], StringList)
+    pset.addPrimitive(extract_given_str, [TokenList], str)
+    pset.addPrimitive(extract_family_str, [TokenList], str)
     
     # -- Object Builder --
     pset.addPrimitive(make_name_obj, 

@@ -1,0 +1,367 @@
+/**
+ * evoname - library.js
+ * JavaScript Runtime for Evolutionary Name Parser
+ * 
+ * Mirrors primitive_set.py for 1:1 execution of evolved trees.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+// --- 1. Types & Enums ---
+
+const Gender = {
+    MALE: "m",
+    FEMALE: "f",
+    DIVERSE: "d",
+    UNKNOWN: "null"
+};
+
+const RegexToken = {
+    SALUTATION: "TOKEN_SALUTATION",
+    TITLE: "TOKEN_TITLE",
+    DEGREE: "TOKEN_DEGREE",
+    INITIAL: "TOKEN_INITIAL",
+    PARTICLE: "TOKEN_PARTICLE",
+    SUFFIX: "TOKEN_SUFFIX",
+    WORD: "TOKEN_WORD",
+    PUNCT: "TOKEN_PUNCT"
+};
+
+class Token {
+    constructor(value, type, span, index = -1) {
+        this.value = value;
+        this.type = type;
+        this.span = span; // [start, end]
+        this.index = index;
+    }
+}
+
+class NameObj {
+    constructor(raw, given = "", family = "", middle = [], title = [], salutation = "", gender = Gender.UNKNOWN, suffix = [], particles = [], confidence = 1.0) {
+        this.raw = raw;
+        this.given = given;
+        this.family = family;
+        this.middle = middle; // Array of strings
+        this.title = title;   // Array of strings
+        this.salutation = salutation;
+        this.gender = gender;
+        this.suffix = suffix; // Array of strings
+        this.particles = particles; // Array of strings
+        this.confidence = confidence;
+    }
+}
+
+// --- 2. Regex Loader ---
+
+let REGEX_CACHE = {};
+
+function loadRegexDefinitions(locale = "de") {
+    const cacheKey = locale;
+    if (REGEX_CACHE[cacheKey]) {
+        return REGEX_CACHE[cacheKey];
+    }
+
+    // In a real browser build, this JSON should be bundled or fetched.
+    // For Node.js, we read it from disk.
+    const defsPath = path.join(__dirname, 'regex_definitions.json');
+    const defs = JSON.parse(fs.readFileSync(defsPath, 'utf8'));
+
+    const patterns = {};
+
+    const keyMap = {
+        "TOKEN_SALUTATION": RegexToken.SALUTATION,
+        "TOKEN_TITLE": RegexToken.TITLE,
+        "TOKEN_DEGREE": RegexToken.DEGREE,
+        "TOKEN_INITIAL": RegexToken.INITIAL,
+        "TOKEN_PARTICLE": RegexToken.PARTICLE,
+        "TOKEN_SUFFIX": RegexToken.SUFFIX,
+        "TOKEN_WORD": RegexToken.WORD,
+        "TOKEN_PUNCT": RegexToken.PUNCT
+    };
+
+    for (const [jsonKey, tokenEnum] of Object.entries(keyMap)) {
+        if (!defs[jsonKey]) continue;
+
+        const entry = defs[jsonKey];
+        let target = entry[locale];
+
+        if (!target) {
+            if (entry["en"]) target = entry["en"];
+            else if (entry["default"]) target = entry["default"];
+            else target = Object.values(entry)[0];
+        }
+
+        let patternStr = "";
+        let flagsStr = "";
+
+        if (typeof target === 'object') {
+            patternStr = target.pattern;
+            flagsStr = target.flags || "";
+        } else {
+            patternStr = target;
+        }
+
+        // Python (?i) -> JS /.../i
+        // We assume flagsStr contains 'i' if needed.
+        // Python re.IGNORECASE is 'i' in JS.
+        let flags = "g"; // Global by default for tokenization loop? No, we use sticky or match loop.
+        // Actually, Python's match() checks from start. JS exec() or match() behavior differs.
+        // We will use 'y' (sticky) if available or just 'g' and check index.
+        // Let's use 'g' and manage lastIndex manually or use match at substring.
+
+        if (flagsStr.includes("i")) flags += "i";
+
+        // Python named groups (?P<name>...) are not fully supported in all JS versions,
+        // but our regexes shouldn't use them heavily for the core tokens.
+        // If they do, we might need to strip them.
+        // For now, assume compatibility.
+
+        patterns[tokenEnum] = new RegExp(patternStr, flags);
+    }
+
+    REGEX_CACHE[cacheKey] = patterns;
+    return patterns;
+}
+
+// --- 3. Primitives ---
+
+// 3.1 Control Flow
+function if_bool_string(cond, a, b) {
+    return cond ? a : b;
+}
+
+function if_bool_tokenlist(cond, a, b) {
+    return cond ? a : b;
+}
+
+// 3.2 String & List Ops
+function trim(s) {
+    return s.trim();
+}
+
+function to_lower(s) {
+    return s.toLowerCase();
+}
+
+function split_on_comma(s) {
+    return s.split(",").map(p => p.trim()).filter(p => p.length > 0);
+}
+
+function get_first_string(l) {
+    return l.length > 0 ? l[0] : "";
+}
+
+function get_last_string(l) {
+    return l.length > 0 ? l[l.length - 1] : "";
+}
+
+function get_first_token(l) {
+    return l.length > 0 ? l[0] : null; // Return null for Optional
+}
+
+function get_last_token(l) {
+    return l.length > 0 ? l[l.length - 1] : null;
+}
+
+function slice_tokens(l, start, end) {
+    if (start < 0) start = 0;
+    if (end > l.length) end = l.length;
+    if (start > end) return [];
+    return l.slice(start, end);
+}
+
+function len_tokens(l) {
+    return l.length;
+}
+
+function drop_first(l) {
+    return l.length > 0 ? l.slice(1) : [];
+}
+
+function drop_last(l) {
+    return l.length > 0 ? l.slice(0, -1) : [];
+}
+
+function remove_type(tokens, type_) {
+    return tokens.filter(t => t.type !== type_);
+}
+
+function index_of_type(tokens, type_) {
+    return tokens.findIndex(t => t.type === type_);
+}
+
+function get_remainder_tokens(original, used) {
+    // JS Set doesn't work on objects by value/content, only reference.
+    // We use span as unique ID: "start-end"
+    const usedSpans = new Set(used.map(t => `${t.span[0]}-${t.span[1]}`));
+    return original.filter(t => !usedSpans.has(`${t.span[0]}-${t.span[1]}`));
+}
+
+// 3.3 Token Muscles
+function tokenize(s, locale = "de") {
+    const patterns = loadRegexDefinitions(locale);
+
+    const priority = [
+        RegexToken.SALUTATION,
+        RegexToken.TITLE,
+        RegexToken.DEGREE,
+        RegexToken.SUFFIX,
+        RegexToken.PARTICLE,
+        RegexToken.INITIAL,
+        RegexToken.WORD,
+        RegexToken.PUNCT
+    ];
+
+    const tokens = [];
+    let pos = 0;
+
+    while (pos < s.length) {
+        let matchFound = false;
+
+        // Skip whitespace
+        if (/\s/.test(s[pos])) {
+            pos++;
+            continue;
+        }
+
+        const remaining = s.substring(pos);
+
+        for (const tokenType of priority) {
+            if (!patterns[tokenType]) continue;
+
+            const regex = patterns[tokenType];
+            // Reset state for global regex
+            regex.lastIndex = 0;
+
+            // We need to match at the BEGINNING of 'remaining'
+            // JS RegExp doesn't have a direct 'matchAt' equivalent to Python's match()
+            // We can use ^ anchor if not present, or just check index.
+            // But we can't modify the regex source easily to add ^.
+            // Alternative: regex.exec(remaining) and check if index === 0.
+
+            const match = regex.exec(remaining);
+
+            if (match && match.index === 0) {
+                const value = match[0];
+                tokens.push(new Token(value, tokenType, [pos, pos + value.length], tokens.length));
+                pos += value.length;
+                matchFound = true;
+                break;
+            }
+        }
+
+        if (!matchFound) {
+            pos++;
+        }
+    }
+    return tokens;
+}
+
+function filter_by_type(tokens, type_) {
+    return tokens.filter(t => t.type === type_);
+}
+
+function count_type(tokens, type_) {
+    return tokens.filter(t => t.type === type_).length;
+}
+
+function get_gender_from_salutation(token) {
+    if (!token || token.type !== RegexToken.SALUTATION) {
+        return Gender.UNKNOWN;
+    }
+
+    const val = token.value.toLowerCase().replace(".", "");
+    const maleTerms = new Set(["herr", "herrn", "hr", "mr", "mister", "monsieur", "m", "sir", "lord"]);
+    const femaleTerms = new Set(["frau", "fr", "mrs", "ms", "miss", "madame", "mme", "mlle", "dame", "lady"]);
+
+    if (maleTerms.has(val)) return Gender.MALE;
+    if (femaleTerms.has(val)) return Gender.FEMALE;
+    return Gender.UNKNOWN;
+}
+
+// 3.4 Feature Detectors
+function has_comma(s) {
+    return s.includes(",");
+}
+
+function is_title(t) {
+    return t ? t.type === RegexToken.TITLE : false;
+}
+
+function is_salutation(t) {
+    return t ? t.type === RegexToken.SALUTATION : false;
+}
+
+function identity_token_type(t) {
+    return t;
+}
+
+// 3.6 Macro-Primitives (Boosters)
+function extract_salutation_str(tokens) {
+    for (const t of tokens) {
+        if (t.type === RegexToken.SALUTATION) {
+            return t.value;
+        }
+    }
+    return "";
+}
+
+function extract_title_list(tokens) {
+    return tokens.filter(t => t.type === RegexToken.TITLE).map(t => t.value);
+}
+
+function extract_given_str(tokens) {
+    for (const t of tokens) {
+        if (t.type === RegexToken.WORD) {
+            return t.value;
+        }
+    }
+    return "";
+}
+
+function extract_family_str(tokens) {
+    let lastWord = "";
+    for (const t of tokens) {
+        if (t.type === RegexToken.WORD) {
+            lastWord = t.value;
+        }
+    }
+    return lastWord;
+}
+
+// 3.5 Object Builder
+function make_name_obj(raw, given, family, middle, title, salutation, gender, suffix, particles) {
+    return new NameObj(raw, given, family, middle, title, salutation, gender, suffix, particles);
+}
+
+function set_confidence(obj, c) {
+    obj.confidence = c;
+    return obj;
+}
+
+// --- Terminals ---
+const EMPTY_STR = "";
+const EMPTY_STR_LIST = [];
+const EMPTY_TOK_LIST = [];
+const EMPTY_NAME_OBJ = new NameObj("");
+const EMPTY_TOKEN = new Token("", RegexToken.PUNCT, [0, 0], -1);
+const TRUE = true;
+const FALSE = false;
+
+// --- Exports ---
+module.exports = {
+    Gender, RegexToken, Token, NameObj,
+    loadRegexDefinitions,
+    if_bool_string, if_bool_tokenlist,
+    trim, to_lower, split_on_comma,
+    get_first_string, get_last_string,
+    get_first_token, get_last_token,
+    slice_tokens, len_tokens, drop_first, drop_last,
+    remove_type, index_of_type, get_remainder_tokens,
+    tokenize, filter_by_type, count_type, get_gender_from_salutation,
+    has_comma, is_title, is_salutation, identity_token_type,
+    extract_salutation_str, extract_title_list, extract_given_str, extract_family_str,
+    make_name_obj, set_confidence,
+    EMPTY_STR, EMPTY_STR_LIST, EMPTY_TOK_LIST, EMPTY_NAME_OBJ, EMPTY_TOKEN, TRUE, FALSE
+};
