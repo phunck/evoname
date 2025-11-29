@@ -1,0 +1,72 @@
+[
+  {
+    "id": "smoke_en_001",
+    "raw": "Mr. John Doe Jr.",
+    "solution": {
+      "title": [],
+      "given": "John",
+      "middle": [],
+      "family": "Doe",
+      "suffix": [
+        "Jr."
+      ],
+      "particles": [],
+      "salutation": "Mr.",
+      "gender": "m",
+      "gender_source": "explicit",
+      "gender_confidence": 1.0
+    },
+    "meta": {
+      "locale": "en-US",
+      "source": "manual_smoke"
+    }
+  },
+  {
+    "id": "smoke_de_002",
+    "raw": "Frau Prof. Dr. Maria von der Leyen",
+    "solution": {
+      "title": [
+        "Prof.",
+        "Dr."
+      ],
+      "given": "Maria",
+      "middle": [],
+      "family": "Leyen",
+      "suffix": [],
+      "particles": [
+        "von",
+        "der"
+      ],
+      "salutation": "Frau",
+      "gender": "f",
+      "gender_source": "explicit",
+      "gender_confidence": 1.0
+    },
+    "meta": {
+      "locale": "de-DE",
+      "source": "manual_smoke"
+    }
+  },
+  {
+    "id": "smoke_de_003",
+    "raw": "Hans Peter Müller",
+    "solution": {
+      "title": [],
+      "given": "Hans",
+      "middle": [
+        "Peter"
+      ],
+      "family": "Müller",
+      "suffix": [],
+      "particles": [],
+      "salutation": "",
+      "gender": "null",
+      "gender_source": "manual",
+      "gender_confidence": 0.0
+    },
+    "meta": {
+      "locale": "de-DE",
+      "source": "manual_smoke"
+    }
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "smoke_de_001",
+    "raw": "Herr Dr. Hans Müller",
+    "solution": {
+      "title": [
+        "Dr."
+      ],
+      "given": "Hans",
+      "middle": [],
+      "family": "Müller",
+      "suffix": [],
+      "particles": [],
+      "salutation": "Herr",
+      "gender": "m",
+      "gender_source": "explicit",
+      "gender_confidence": 1.0
+    },
+    "meta": {
+      "locale": "de-DE",
+      "source": "manual_smoke"
+    }
+  }
+]
