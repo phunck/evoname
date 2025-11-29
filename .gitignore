@@ -19,3 +19,9 @@ env/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Build artifacts
+dist/
+
+# Training runs
+runs/
