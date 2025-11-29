@@ -49,12 +49,16 @@ Generate synthetic training data:
 python generate_data.py
 ```
 
-### Training
-Start the evolutionary training loop:
-```bash
-python trainer.py --generations 50 --pop-size 300
-```
-Checkpoints are saved in `runs/`.
+### Training (Local)
+1. Run the trainer locally:
+   ```bash
+   python trainer.py --generations 300 --pop-size 1000
+   ```
+2. If you are happy with the result, copy the champion to the `model/` folder:
+   ```bash
+   cp runs/LATEST/artifacts/champion.pkl model/champion.pkl
+   ```
+3. Commit and push. GitHub Actions will automatically generate the JavaScript library.
 
 ### JavaScript Runtime
 To use the parser in your project:

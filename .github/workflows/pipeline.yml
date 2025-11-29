@@ -32,17 +32,14 @@ jobs:
     - name: Generate Data
       run: python generate_data.py
 
-    - name: Run Trainer (Production Mode)
-      run: python -u trainer.py --generations 300 --pop-size 1000
+    # Training is now done locally and the model is committed.
+    # - name: Run Trainer (Production Mode)
+    #   run: python -u trainer.py --generations 300 --pop-size 1000
 
     - name: Transpile Champion
       run: |
-        # Find the latest run directory
-        LATEST_RUN=$(python -c "import os; runs = [d for d in os.listdir('runs') if os.path.isdir(os.path.join('runs', d))]; print(sorted(runs)[-1])")
-        echo "Latest run: $LATEST_RUN"
-        
-        # Run transpiler
-        python transpiler.py --input "runs/$LATEST_RUN/artifacts/champion.pkl" --output "dist/evoname.js"
+        # Use the committed model
+        python transpiler.py --input "model/champion.pkl" --output "dist/evoname.js"
 
     - name: Verify JavaScript Runtime
       run: node test_transpiled.js
