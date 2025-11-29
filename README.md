@@ -43,12 +43,32 @@ pip install deap pytest
 python -m pytest tests/
 ```
 
+### Data Generation
+Generate synthetic training data:
+```bash
+python generate_data.py
+```
+
+### Training
+Start the evolutionary training loop:
+```bash
+python trainer.py --generations 50 --pop-size 300
+```
+Checkpoints are saved in `runs/`.
+
+### JavaScript Runtime
+Verify the JS library implementation:
+```bash
+node test_library.js
+```
+
 ## 📅 Roadmap
 - [x] Concept & Specs
 - [x] Primitive Set & Regex Loader
-- [x] Data Generation (Smoke Test)
-- [ ] **Trainer Implementation** (Next Step)
-- [ ] Transpiler (Python -> JS)
+- [x] Data Generation (Synthetic)
+- [x] Trainer Implementation
+- [x] JavaScript Runtime (`library.js`)
+- [ ] **Transpiler (Python -> JS)** (Next Step)
 - [ ] Automated CI/CD Pipeline
 
 ## 📄 License
