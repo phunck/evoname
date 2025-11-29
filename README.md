@@ -46,27 +46,25 @@ python -m pytest tests/
 ### Data Generation
 Generate synthetic training data:
 ```bash
-python generate_data.py
-```
+### Training & Building
+1. **Generate Data** (Optional, creates fresh synthetic names):
+   ```bash
+   python generate_data.py
+   ```
 
-### Training (Local)
-1. Run the trainer locally:
+2. **Train Model**:
    ```bash
    python trainer.py --generations 300 --pop-size 1000
    ```
-2. If you are happy with the result, copy the champion to the `model/` folder:
+   The best model is saved to `runs/LATEST/artifacts/champion.pkl`.
+
+3. **Transpile to JavaScript**:
    ```bash
-   cp runs/LATEST/artifacts/champion.pkl model/champion.pkl
+   python transpiler.py --input runs/LATEST/artifacts/champion.pkl --output dist/evoname.js
    ```
-3. Commit and push. GitHub Actions will automatically generate the JavaScript library.
 
 ### JavaScript Runtime
-To use the parser in your project:
-
-1.  Go to the **Actions** tab on GitHub.
-2.  Click on the latest successful run.
-3.  Scroll down to **Artifacts** and download `evoname-dist`.
-4.  Extract `evoname.js` and use it with `library.js`.
+To use the parser in your project, take the generated `dist/evoname.js` and `library.js`.
 
 Verify the JS library implementation locally:
 ```bash
@@ -80,7 +78,6 @@ node test_library.js
 - [x] Trainer Implementation
 - [x] JavaScript Runtime (`library.js`)
 - [x] Transpiler (Python -> JS)
-- [x] Automated CI/CD Pipeline
 
 ## 👥 Credits
 Created by **Paul Hunck**.
