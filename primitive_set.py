@@ -33,20 +33,24 @@ class Token:
     def __repr__(self):
         return f"Token({self.value}, {self.type.name}, {self.span}, {self.index})"
 
-# Define TokenList as a simple list for DEAP compatibility (or custom class if needed)
-TokenList = list
+# Define Strong Types for DEAP
+class TokenList(list):
+    pass
+
+class StringList(list):
+    pass
 
 @dataclass
 class NameObj:
     raw: str
     given: str = ""
     family: str = ""
-    middle: List[str] = field(default_factory=list)
-    title: List[str] = field(default_factory=list)
+    middle: StringList = field(default_factory=StringList)
+    title: StringList = field(default_factory=StringList)
     salutation: str = ""
     gender: Gender = Gender.UNKNOWN
-    suffix: List[str] = field(default_factory=list)
-    particles: List[str] = field(default_factory=list)
+    suffix: StringList = field(default_factory=StringList)
+    particles: StringList = field(default_factory=StringList)
     confidence: float = 1.0
     
     def to_json(self):
@@ -138,7 +142,7 @@ def if_bool_string(cond: bool, a: str, b: str) -> str:
     return a if cond else b
 
 def if_bool_tokenlist(cond: bool, a: TokenList, b: TokenList) -> TokenList:
-    return a if cond else b
+    return TokenList(a if cond else b)
 
 # 3.2 String & List Ops
 def trim(s: str) -> str:
@@ -147,16 +151,16 @@ def trim(s: str) -> str:
 def to_lower(s: str) -> str:
     return s.lower()
 
-def split_on_comma(s: str) -> List[str]:
-    return [p.strip() for p in s.split(",") if p.strip()]
+def split_on_comma(s: str) -> StringList:
+    return StringList([p.strip() for p in s.split(",") if p.strip()])
 
-def split_on_space(s: str) -> List[str]:
-    return [p.strip() for p in s.split(" ") if p.strip()]
+def split_on_space(s: str) -> StringList:
+    return StringList([p.strip() for p in s.split(" ") if p.strip()])
 
-def get_first_string(l: List[str]) -> str:
+def get_first_string(l: StringList) -> str:
     return l[0] if l else ""
 
-def get_last_string(l: List[str]) -> str:
+def get_last_string(l: StringList) -> str:
     return l[-1] if l else ""
 
 def get_first_token(l: TokenList) -> Optional[Token]:
@@ -169,20 +173,20 @@ def slice_tokens(l: TokenList, start: int, end: int) -> TokenList:
     # Safe slicing
     if start < 0: start = 0
     if end > len(l): end = len(l)
-    if start > end: return []
-    return l[start:end]
+    if start > end: return TokenList([])
+    return TokenList(l[start:end])
 
 def len_tokens(l: TokenList) -> int:
     return len(l)
 
 def drop_first(l: TokenList) -> TokenList:
-    return l[1:] if l else []
+    return TokenList(l[1:]) if l else TokenList([])
 
 def drop_last(l: TokenList) -> TokenList:
-    return l[:-1] if l else []
+    return TokenList(l[:-1]) if l else TokenList([])
 
 def remove_type(tokens: TokenList, type_: RegexToken) -> TokenList:
-    return [t for t in tokens if t.type != type_]
+    return TokenList([t for t in tokens if t.type != type_])
 
 def index_of_type(tokens: TokenList, type_: RegexToken) -> int:
     for i, t in enumerate(tokens):
@@ -193,7 +197,7 @@ def index_of_type(tokens: TokenList, type_: RegexToken) -> int:
 def get_remainder_tokens(original: TokenList, used: TokenList) -> TokenList:
     # Set subtraction based on object identity or span
     used_spans = {t.span for t in used}
-    return [t for t in original if t.span not in used_spans]
+    return TokenList([t for t in original if t.span not in used_spans])
 
 # 3.3 Token Muscles
 def tokenize(s: str, locale: str = "de") -> TokenList:
@@ -235,10 +239,10 @@ def tokenize(s: str, locale: str = "de") -> TokenList:
             # Safety: skip one char if nothing matches (should rarely happen with WORD/PUNCT)
             pos += 1
             
-    return tokens
+    return TokenList(tokens)
 
 def filter_by_type(tokens: TokenList, type_: RegexToken) -> TokenList:
-    return [t for t in tokens if t.type == type_]
+    return TokenList([t for t in tokens if t.type == type_])
 
 def count_type(tokens: TokenList, type_: RegexToken) -> int:
     return sum(1 for t in tokens if t.type == type_)
@@ -268,8 +272,11 @@ def is_title(t: Optional[Token]) -> bool:
 def is_salutation(t: Optional[Token]) -> bool:
     return t.type == RegexToken.SALUTATION if t else False
 
+def identity_token_type(t: RegexToken) -> RegexToken:
+    return t
+
 # 3.5 Object Builder
-def make_name_obj(raw: str, given: str, family: str, middle: List[str], title: List[str], salutation: str, gender: Gender, suffix: List[str], particles: List[str]) -> NameObj:
+def make_name_obj(raw: str, given: str, family: str, middle: StringList, title: StringList, salutation: str, gender: Gender, suffix: StringList, particles: StringList) -> NameObj:
     return NameObj(
         raw=raw,
         given=given,
