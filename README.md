@@ -57,7 +57,14 @@ python trainer.py --generations 50 --pop-size 300
 Checkpoints are saved in `runs/`.
 
 ### JavaScript Runtime
-Verify the JS library implementation:
+To use the parser in your project:
+
+1.  Go to the **Actions** tab on GitHub.
+2.  Click on the latest successful run.
+3.  Scroll down to **Artifacts** and download `evoname-dist`.
+4.  Extract `evoname.js` and use it with `library.js`.
+
+Verify the JS library implementation locally:
 ```bash
 node test_library.js
 ```
