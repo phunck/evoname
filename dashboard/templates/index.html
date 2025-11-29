@@ -369,29 +369,6 @@
             const tbody = document.querySelector('#monitor-table tbody');
             tbody.innerHTML = '';
 
-            samples.forEach(s => {
-                const tr = document.createElement('tr');
-                const pred = s.pred;
-                const truth = s.truth;
-
-                // Simple diff check for color
-                const givenMatch = pred.given === truth.given;
-                const familyMatch = pred.family === truth.family;
-                const cls = (givenMatch && familyMatch) ? 'diff-good' : 'diff-bad';
-
-                tr.innerHTML = `
-                <td>${s.raw}</td>
-                <td class="${cls}">${pred.given || '-'} / ${pred.family || '-'}</td>
-                <td>${truth.given} / ${truth.family}</td>
-            `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Playground Logic
-        async function runTest() {
-            // Reload the JS file
-            // We need to remove the old script tag and add a new one to force reload
             const oldScript = document.getElementById('champion-script');
             if (oldScript) oldScript.remove();
 
