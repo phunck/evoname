@@ -1,98 +1,123 @@
 {
-  "generation": 49,
-  "best_fitness": 0.5055833333333334,
-  "avg_fitness": 0.4766179166666667,
+  "generation": 24,
+  "best_fitness": 0.6145895833333334,
+  "avg_fitness": 0.49712549999999994,
   "samples": [
     {
-      "raw": "Mr. John David Schulz",
+      "raw": "Frau Monika Maria Schmidt",
       "truth": {
-        "given": "John",
-        "family": "Schulz",
+        "given": "Monika",
+        "family": "Schmidt",
         "middle": [
-          "David"
+          "Maria"
         ],
         "title": [],
-        "salutation": "Mr.",
-        "gender": "m",
-        "suffix": [],
-        "particles": []
-      },
-      "pred": {
-        "raw": "Mr. John David Schulz",
-        "solution": {
-          "title": [],
-          "given": "Mr. John David Schulz",
-          "middle": [],
-          "family": "Schulz",
-          "suffix": [],
-          "particles": [],
-          "salutation": "Mr. John David Schulz",
-          "gender": "f"
-        },
-        "confidence": 1.0
-      }
-    },
-    {
-      "raw": "Mr. William Thomas Wagner",
-      "truth": {
-        "given": "William",
-        "family": "Wagner",
-        "middle": [
-          "Thomas"
-        ],
-        "title": [],
-        "salutation": "Mr.",
-        "gender": "m",
-        "suffix": [],
-        "particles": []
-      },
-      "pred": {
-        "raw": "Mr. William Thomas Wagner",
-        "solution": {
-          "title": [],
-          "given": "Mr. William Thomas Wagner",
-          "middle": [],
-          "family": "Wagner",
-          "suffix": [],
-          "particles": [],
-          "salutation": "Mr. William Thomas Wagner",
-          "gender": "f"
-        },
-        "confidence": 1.0
-      }
-    },
-    {
-      "raw": "Ms Jennifer Williams",
-      "truth": {
-        "given": "Jennifer",
-        "family": "Williams",
-        "middle": [],
-        "title": [],
-        "salutation": "Ms",
+        "salutation": "Frau",
         "gender": "f",
         "suffix": [],
         "particles": []
       },
       "pred": {
-        "raw": "Ms Jennifer Williams",
+        "raw": "",
         "solution": {
           "title": [],
-          "given": "Ms Jennifer Williams",
+          "given": "Monika",
           "middle": [],
-          "family": "Williams",
+          "family": "Frau Monika Maria Schmidt",
           "suffix": [],
           "particles": [],
-          "salutation": "Ms Jennifer Williams",
+          "salutation": "",
           "gender": "f"
         },
         "confidence": 1.0
       }
     },
     {
-      "raw": "Mrs Ursula M\u00fcller",
+      "raw": "Mr. Hans Schulz",
       "truth": {
-        "given": "Ursula",
-        "family": "M\u00fcller",
+        "given": "Hans",
+        "family": "Schulz",
+        "middle": [],
+        "title": [],
+        "salutation": "Mr.",
+        "gender": "m",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "",
+        "solution": {
+          "title": [],
+          "given": "Hans",
+          "middle": [],
+          "family": "Mr. Hans Schulz",
+          "suffix": [],
+          "particles": [],
+          "salutation": "",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    },
+    {
+      "raw": "Ms. Maria Weber",
+      "truth": {
+        "given": "Maria",
+        "family": "Weber",
+        "middle": [],
+        "title": [],
+        "salutation": "Ms.",
+        "gender": "f",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "",
+        "solution": {
+          "title": [],
+          "given": "Maria",
+          "middle": [],
+          "family": "Ms. Maria Weber",
+          "suffix": [],
+          "particles": [],
+          "salutation": "",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    },
+    {
+      "raw": "Stefan Weber",
+      "truth": {
+        "given": "Stefan",
+        "family": "Weber",
+        "middle": [],
+        "title": [],
+        "salutation": "",
+        "gender": "m",
+        "suffix": [],
+        "particles": []
+      },
+      "pred": {
+        "raw": "",
+        "solution": {
+          "title": [],
+          "given": "Stefan",
+          "middle": [],
+          "family": "Stefan Weber",
+          "suffix": [],
+          "particles": [],
+          "salutation": "",
+          "gender": "f"
+        },
+        "confidence": 1.0
+      }
+    },
+    {
+      "raw": "Mrs Elizabeth Smith",
+      "truth": {
+        "given": "Elizabeth",
+        "family": "Smith",
         "middle": [],
         "title": [],
         "salutation": "Mrs",
@@ -101,46 +126,15 @@
         "particles": []
       },
       "pred": {
-        "raw": "Mrs Ursula M\u00fcller",
+        "raw": "",
         "solution": {
           "title": [],
-          "given": "Mrs Ursula M\u00fcller",
+          "given": "s",
           "middle": [],
-          "family": "M\u00fcller",
+          "family": "Mrs Elizabeth Smith",
           "suffix": [],
           "particles": [],
-          "salutation": "Mrs Ursula M\u00fcller",
-          "gender": "f"
-        },
-        "confidence": 1.0
-      }
-    },
-    {
-      "raw": "Dr. med. Ursula Schmidt",
-      "truth": {
-        "given": "Ursula",
-        "family": "Schmidt",
-        "middle": [],
-        "title": [
-          "Dr. med."
-        ],
-        "salutation": "",
-        "gender": "f",
-        "suffix": [],
-        "particles": []
-      },
-      "pred": {
-        "raw": "Dr. med. Ursula Schmidt",
-        "solution": {
-          "title": [
-            "Dr."
-          ],
-          "given": "Dr. med. Ursula Schmidt",
-          "middle": [],
-          "family": "Schmidt",
-          "suffix": [],
-          "particles": [],
-          "salutation": "Dr. med. Ursula Schmidt",
+          "salutation": "",
           "gender": "f"
         },
         "confidence": 1.0

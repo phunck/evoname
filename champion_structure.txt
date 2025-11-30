@@ -1,0 +1,1 @@
+make_name_obj(EMPTY_STR, extract_given_str(drop_first(tokenize(raw_input))), extract_family_str(tokenize(raw_input)), EMPTY_STR_LIST, extract_title_list(tokenize(raw_input)), extract_salutation_str(tokenize(raw_input)), FEMALE, EMPTY_STR_LIST, EMPTY_STR_LIST)

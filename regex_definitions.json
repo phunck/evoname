@@ -1,27 +1,24 @@
 {
     "TOKEN_SALUTATION": {
         "de": {
-            "pattern": "(Herrn?|Frau|Fr\\.)",
+            "pattern": "(Herrn?|Frau|Fr\\.|Mrs\\.?|Mr\\.?|Ms\\.?|Miss|Mx\\.?)",
             "flags": "i",
-            "description": "Deutsche Anreden (geschlechtsbezogene Anredeformen)",
+            "description": "Deutsche und Englische Anreden (Mixed Data Support)",
             "examples": [
                 "Herr",
-                "Herrn",
                 "Frau",
-                "Fr."
+                "Mrs.",
+                "Mr."
             ],
             "category": "salutation"
         },
         "en": {
-            "pattern": "(Mr\\.?|Mrs\\.?|Ms\\.?|Miss|Mx\\.?)",
+            "pattern": "(Mrs\\.?|Mr\\.?|Ms\\.?|Miss|Mx\\.?)",
             "flags": "i",
-            "description": "Englische Anreden (geschlechtsbezogene oder neutrale Anredeformen)",
+            "description": "Englische Anreden",
             "examples": [
-                "Mr.",
-                "Mrs",
-                "Ms.",
-                "Miss",
-                "Mx."
+                "Mrs.",
+                "Mr."
             ],
             "category": "salutation"
         },
@@ -30,9 +27,6 @@
             "flags": "i",
             "description": "Französische Anreden",
             "examples": [
-                "Monsieur",
-                "Madame",
-                "Mlle",
                 "M.",
                 "Mme"
             ],
@@ -41,39 +35,32 @@
     },
     "TOKEN_TITLE": {
         "de": {
-            "pattern": "(Dr\\.?|Prof\\.?|Prof\\.? Dr\\.?( med\\.)?|Dipl\\.-?Ing\\.?|Dipl\\.-?Kfm\\.?|Mag\\.)",
+            "pattern": "(Dr\\.?|Prof\\.?|Dipl\\.-?Ing\\.?|Dipl\\.-?Kfm\\.?|Mag\\.|med\\.?)",
             "flags": "i",
-            "description": "Deutsche akademische und berufliche Titel",
+            "description": "Deutsche Titel",
             "examples": [
                 "Dr.",
                 "Prof.",
-                "Prof. Dr.",
-                "Dipl.-Ing.",
-                "Mag."
+                "med."
             ],
             "category": "title"
         },
         "en": {
             "pattern": "(Dr\\.?|Prof\\.?|Sir|Dame|Lord|Lady)",
             "flags": "i",
-            "description": "Englische akademische und Ehren-Titel",
+            "description": "Englische Titel",
             "examples": [
                 "Dr.",
-                "Prof.",
-                "Sir",
-                "Dame",
-                "Lord",
-                "Lady"
+                "Sir"
             ],
             "category": "title"
         },
         "fr": {
             "pattern": "(Dr\\.?|Pr\\.?|Me)",
             "flags": "i",
-            "description": "Französische akademische und berufliche Titel (Docteur, Professeur, Maître)",
+            "description": "Französische Titel",
             "examples": [
                 "Dr.",
-                "Pr.",
                 "Me"
             ],
             "category": "title"
@@ -81,41 +68,31 @@
     },
     "TOKEN_DEGREE": {
         "de": {
-            "pattern": "(B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|Dr\\. h\\.c\\.|PhD)",
+            "pattern": "\\b(B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|Dr\\. h\\.c\\.|PhD)\\b",
             "flags": "i",
-            "description": "Akademische Grade im DACH-Raum (teils nachgestellt)",
+            "description": "Akademische Grade (mit Word Boundary)",
             "examples": [
                 "B.A.",
-                "M.A.",
-                "B.Sc.",
-                "M.Sc.",
-                "Dr. h.c.",
-                "PhD"
+                "M.A."
             ],
             "category": "degree"
         },
         "en": {
-            "pattern": "(Ph\\.?D\\.?|M\\.?D\\.?|B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|M\\.?B\\.?A\\.?|MBA|Esq\\.?)",
+            "pattern": "\\b(Ph\\.?D\\.?|M\\.?D\\.?|B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|M\\.?B\\.?A\\.?|MBA|Esq\\.?)\\b",
             "flags": "i",
-            "description": "Englische / angelsächsische akademische Grade",
+            "description": "Englische Grade",
             "examples": [
                 "PhD",
-                "M.D.",
-                "B.A.",
-                "M.Sc.",
-                "MBA",
-                "Esq."
+                "MBA"
             ],
             "category": "degree"
         },
         "fr": {
-            "pattern": "(Ph\\.?D\\.?|M\\.?D\\.?|Doc\\.)",
+            "pattern": "\\b(Ph\\.?D\\.?|M\\.?D\\.?|Doc\\.)\\b",
             "flags": "i",
-            "description": "Französische akademische Grade",
+            "description": "Französische Grade",
             "examples": [
-                "PhD",
-                "M.D.",
-                "Doc."
+                "PhD"
             ],
             "category": "degree"
         }
@@ -124,33 +101,27 @@
         "de": {
             "pattern": "[A-ZÄÖÜ]\\.",
             "flags": "",
-            "description": "Initiale mit Punkt (Deutsch)",
+            "description": "Initiale",
             "examples": [
-                "H.",
-                "J.",
-                "Ö."
+                "H."
             ],
             "category": "initial"
         },
         "en": {
             "pattern": "[A-Z]\\.",
             "flags": "",
-            "description": "Initiale mit Punkt (Englisch)",
+            "description": "Initiale",
             "examples": [
-                "J.",
-                "K.",
-                "L."
+                "J."
             ],
             "category": "initial"
         },
         "fr": {
             "pattern": "[A-ZÀ-ÖØ-Þ]\\.",
             "flags": "",
-            "description": "Initiale mit Punkt (Französisch)",
+            "description": "Initiale",
             "examples": [
-                "É.",
-                "J.",
-                "C."
+                "É."
             ],
             "category": "initial"
         }
@@ -159,73 +130,56 @@
         "de": {
             "pattern": "(von(?: der| dem| den)?|zu(?:r|m)?|auf|aus|am|an|im|in)",
             "flags": "i",
-            "description": "Deutsche Adelsprädikate und Namenspartikel",
+            "description": "Deutsche Partikel",
             "examples": [
-                "von",
-                "von der",
-                "zu",
-                "von dem"
+                "von"
             ],
             "category": "particle"
         },
         "en": {
             "pattern": "(van(?: der)?|von|de(?: la)?|du|da|del|della|di|dos|st\\.|st)",
             "flags": "i",
-            "description": "Häufige Namenspartikel in englischsprachigen Kontexten (oft aus anderen Sprachen übernommen)",
+            "description": "Englische Partikel",
             "examples": [
-                "van",
-                "van der",
-                "de",
-                "del",
-                "da",
-                "St.",
-                "st"
+                "van"
             ],
             "category": "particle"
         },
         "fr": {
             "pattern": "(de(?: la)?|du|des|d['’]|l['’]|le|la)",
             "flags": "i",
-            "description": "Französische Partikel und Artikel in Namen",
+            "description": "Französische Partikel",
             "examples": [
-                "de",
-                "de la",
-                "du",
-                "d'",
-                "l'"
+                "de"
             ],
             "category": "particle"
         }
     },
     "TOKEN_SUFFIX": {
         "de": {
-            "pattern": "(jun\\.|sen\\.)",
+            "pattern": "\\b(jun|sen)(\\.?|\\b)",
             "flags": "i",
-            "description": "Seltene deutsche Namenszusätze",
+            "description": "Suffixe (mit Boundary)",
             "examples": [
-                "jun.",
-                "sen."
+                "jun."
             ],
             "category": "suffix"
         },
         "en": {
-            "pattern": "(Jr\\.?|Sr\\.?|II|III|IV|V|2nd|3rd)",
+            "pattern": "\\b(Jr|Sr|II|III|IV|V|2nd|3rd)(\\.?|\\b)",
             "flags": "i",
-            "description": "Englische Generationensuffixe",
+            "description": "Suffixe (mit Boundary)",
             "examples": [
-                "Jr.",
-                "Sr.",
-                "III"
+                "Jr."
             ],
             "category": "suffix"
         },
         "fr": {
-            "pattern": "(fils|père)",
+            "pattern": "\\b(fils|père)\\b",
             "flags": "i",
-            "description": "Sehr seltene französische Zusätze (fils/père)",
+            "description": "Suffixe (mit Boundary)",
             "examples": [
-                "fils",
-                "père"
+                "fils"
             ],
             "category": "suffix"
         }
@@ -234,35 +188,27 @@
         "de": {
             "pattern": "[A-Za-zÄÖÜäöüß]+(?:-[A-Za-zÄÖÜäöüß]+)*",
             "flags": "",
-            "description": "Wort (Name) inkl. deutscher Umlaute und Bindestriche",
+            "description": "Wort",
             "examples": [
-                "Müller",
-                "Hans-Peter",
-                "Groß"
+                "Müller"
             ],
             "category": "word"
         },
         "en": {
             "pattern": "[A-Za-z]+(?:['’][A-Za-z]+)*(?:-[A-Za-z]+)*",
             "flags": "",
-            "description": "Wort (Name) inkl. Apostroph- und Bindestrich-Varianten",
+            "description": "Wort",
             "examples": [
-                "Smith",
-                "Mary-Jane",
-                "O'Connor",
-                "D'Angelo"
+                "Smith"
             ],
             "category": "word"
         },
         "fr": {
             "pattern": "[A-Za-zÀ-ÖØ-öø-ÿ]+(?:['’][A-Za-zÀ-ÖØ-öø-ÿ]+)*(?:-[A-Za-zÀ-ÖØ-öø-ÿ]+)*",
             "flags": "",
-            "description": "Wort (Name) inkl. französischer Akzente, Apostroph- und Bindestrich-Varianten",
+            "description": "Wort",
             "examples": [
-                "François",
-                "Jean-Pierre",
-                "D'Almeida",
-                "Hélène"
+                "François"
             ],
             "category": "word"
         }
@@ -273,31 +219,25 @@
             "flags": "",
             "description": "Satzzeichen",
             "examples": [
-                ",",
-                ".",
-                "-"
+                "."
             ],
             "category": "punctuation"
         },
         "en": {
             "pattern": "[,.-]",
             "flags": "",
-            "description": "Punctuation",
+            "description": "Satzzeichen",
             "examples": [
-                ",",
-                ".",
-                "-"
+                "."
             ],
             "category": "punctuation"
         },
         "fr": {
             "pattern": "[,.-]",
             "flags": "",
-            "description": "Ponctuation",
+            "description": "Satzzeichen",
             "examples": [
-                ",",
-                ".",
-                "-"
+                "."
             ],
             "category": "punctuation"
         }

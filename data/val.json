@@ -269,7 +269,8 @@
         "Petra"
       ],
       "title": [
-        "Dr. med."
+        "Dr.",
+        "med."
       ],
       "salutation": "Ms.",
       "gender": "f",
@@ -381,7 +382,8 @@
       "family": "Schulz",
       "middle": [],
       "title": [
-        "Prof. Dr."
+        "Prof.",
+        "Dr."
       ],
       "salutation": "Ms",
       "gender": "f",
@@ -627,7 +629,8 @@
       "family": "Becker",
       "middle": [],
       "title": [
-        "Prof. Dr."
+        "Prof.",
+        "Dr."
       ],
       "salutation": "Herr",
       "gender": "m",
@@ -737,7 +740,8 @@
       "family": "Schmidt",
       "middle": [],
       "title": [
-        "Dr. med."
+        "Dr.",
+        "med."
       ],
       "salutation": "Ms.",
       "gender": "f",
@@ -849,7 +853,8 @@
       "family": "Fischer",
       "middle": [],
       "title": [
-        "Dr. med."
+        "Dr.",
+        "med."
       ],
       "salutation": "Ms.",
       "gender": "f",
@@ -1202,7 +1207,8 @@
       "family": "Johnson",
       "middle": [],
       "title": [
-        "Dr. med."
+        "Dr.",
+        "med."
       ],
       "salutation": "Herr",
       "gender": "m",
@@ -1249,7 +1255,8 @@
       "family": "Williams",
       "middle": [],
       "title": [
-        "Dr. med."
+        "Dr.",
+        "med."
       ],
       "salutation": "Ms.",
       "gender": "f",
@@ -1374,7 +1381,8 @@
       "family": "Meyer",
       "middle": [],
       "title": [
-        "Prof. Dr."
+        "Prof.",
+        "Dr."
       ],
       "salutation": "Ms",
       "gender": "f",
@@ -1389,7 +1397,8 @@
       "family": "Brown",
       "middle": [],
       "title": [
-        "Dr. med."
+        "Dr.",
+        "med."
       ],
       "salutation": "",
       "gender": "f",
@@ -1404,7 +1413,8 @@
       "family": "Brown",
       "middle": [],
       "title": [
-        "Prof. Dr."
+        "Prof.",
+        "Dr."
       ],
       "salutation": "Mr",
       "gender": "m",

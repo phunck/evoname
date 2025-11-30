@@ -65,6 +65,17 @@
             border-radius: 4px;
         }
 
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
         .btn-group {
             display: flex;
             gap: 10px;
@@ -179,27 +190,32 @@
                 </div>
                 <div class="form-group">
                     <label>Population Size</label>
-                    <input type="number" id="pop_size" value="300">
+                    <input type="number" id="pop_size" value="100">
                 </div>
                 <div class="form-group">
-                    <label>Seed</label>
-                    <input type="number" id="seed" value="42">
+                    <label>Random Seed (Optional)</label>
+                    <input type="number" id="seed" placeholder="None">
                 </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="use_seed">
+                    <label for="use_seed" style="margin:0">Load Champion as Seed</label>
+                </div>
+
                 <div class="btn-group">
                     <button class="btn-start" onclick="startTraining()">START</button>
                     <button class="btn-stop" onclick="stopTraining()">STOP</button>
                 </div>
-                <div id="status-msg" style="margin-top: 10px; font-size: 0.8rem; text-align: center;">Ready</div>
-            </div>
+                <div id="status-msg" style="margin-top: 10px; color: #aaa; font-size: 0.8rem;">Ready</div>
 
-            <div class="panel" style="margin-top: 20px;">
-                <h2>Playground</h2>
-                <div class="form-group">
-                    <label>Test Name</label>
-                    <input type="text" id="test-input" placeholder="Dr. Hans Müller">
+                <div class="panel" style="margin-top: 20px;">
+                    <h2>Playground</h2>
+                    <div class="form-group">
+                        <label>Test Name</label>
+                        <input type="text" id="test-input" placeholder="Dr. Hans Müller">
+                    </div>
+                    <button class="btn-test" onclick="runTest()">Test Champion</button>
+                    <div id="playground-result">Result will appear here...</div>
                 </div>
-                <button class="btn-test" onclick="runTest()">Test Champion</button>
-                <div id="playground-result">Result will appear here...</div>
             </div>
         </div>
 
@@ -281,11 +297,12 @@
             const gens = document.getElementById('generations').value;
             const pop = document.getElementById('pop_size').value;
             const seed = document.getElementById('seed').value;
+            const use_seed = document.getElementById('use_seed').checked;
 
             const res = await fetch('/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ generations: gens, pop_size: pop, seed: seed })
+                body: JSON.stringify({ generations: gens, pop_size: pop, seed: seed, use_seed: use_seed })
             });
             const data = await res.json();
             document.getElementById('status-msg').innerText = data.message;
@@ -369,6 +386,46 @@
             const tbody = document.querySelector('#monitor-table tbody');
             tbody.innerHTML = '';
 
+            samples.forEach(s => {
+                const tr = document.createElement('tr');
+                const pred = s.pred;
+                const truth = s.truth;
+
+                // Helper to format name object
+                function fmt(o) {
+                    // Handle nested solution object from NameObj.to_json()
+                    const data = o.solution ? o.solution : o;
+
+                    let parts = [];
+                    if (data.salutation) parts.push(`[${data.salutation}]`);
+                    if (data.title && data.title.length) parts.push(`(${data.title})`);
+                    if (data.given) parts.push(data.given);
+                    if (data.middle && data.middle.length) parts.push(data.middle);
+                    if (data.particles && data.particles.length) parts.push(data.particles);
+                    if (data.family) parts.push(`<b>${data.family}</b>`);
+                    if (data.suffix && data.suffix.length) parts.push(data.suffix);
+                    return parts.join(' ') || '-';
+                }
+
+                const predStr = fmt(pred);
+                const truthStr = fmt(truth);
+
+                // Simple color logic: exact string match of formatted output
+                const cls = (predStr === truthStr) ? 'diff-good' : 'diff-bad';
+
+                tr.innerHTML = `
+                <td>${s.raw}</td>
+                <td class="${cls}">${predStr}</td>
+                <td>${truthStr}</td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Playground Logic
+        async function runTest() {
+            // Reload the JS file
+            // We need to remove the old script tag and add a new one to force reload
             const oldScript = document.getElementById('champion-script');
             if (oldScript) oldScript.remove();
 

@@ -54,6 +54,7 @@ def setup_gp():
     pset.addPrimitive(filter_by_type, [TokenList, RegexToken], TokenList)
     pset.addPrimitive(count_type, [TokenList, RegexToken], int)
     pset.addPrimitive(get_gender_from_salutation, [Token], Gender)
+    pset.addPrimitive(get_gender_from_name, [str], Gender)
     
     # -- Feature Detectors --
     pset.addPrimitive(has_comma, [str], bool)
@@ -66,6 +67,9 @@ def setup_gp():
     pset.addPrimitive(extract_title_list, [TokenList], StringList)
     pset.addPrimitive(extract_given_str, [TokenList], str)
     pset.addPrimitive(extract_family_str, [TokenList], str)
+    pset.addPrimitive(extract_middle_str, [TokenList], StringList)
+    pset.addPrimitive(extract_suffix_list, [TokenList], StringList)
+    pset.addPrimitive(extract_particles_list, [TokenList], StringList)
     
     # -- Object Builder --
     pset.addPrimitive(make_name_obj, 
@@ -203,12 +207,14 @@ def main():
                 # Fallback if tree returns something else (shouldn't happen with typed GP but possible)
                 pred = NameObj(raw) 
             
-            score = calculate_entry_f1(pred, entry)
+            # Fix: Pass entry["solution"] as truth, not entry itself
+            truth = entry["solution"]
+            score = calculate_entry_f1(pred, truth)
             
             item = {
                 "raw": raw,
                 "score": score,
-                "truth": entry,
+                "truth": truth,
                 "pred": pred
             }
             
@@ -235,25 +241,72 @@ def main():
             print("  (No examples)")
             continue
             
-        # Show up to 5 examples
-        print("  Examples:")
-        for i, item in enumerate(items[:5]):
-            print(f"  {i+1}. Input: '{item['raw']}'")
-            print(f"     Score: {item['score']:.2f}")
-            # Show discrepancies
+        # Table Header
+        # Columns: Score | Raw | Salutation | Title | Given | Middle | Family | Suffix | Particles
+        header = (
+            f"{'Score':<6} | {'Raw Input':<25} | {'Salutation':<12} | {'Title':<15} | "
+            f"{'Given':<20} | {'Middle':<15} | {'Family':<20} | {'Suffix':<10} | {'Particles':<10}"
+        )
+        print("-" * len(header))
+        print(header)
+        print("-" * len(header))
+        
+        # ANSI Colors
+        GREEN = "\033[92m"
+        RED = "\033[91m"
+        RESET = "\033[0m"
+        
+        # Show up to 10 examples for better visibility
+        for item in items[:10]:
             p = item['pred']
             t = item['truth']
             
-            diffs = []
-            if p.given != t.get('given', ''): diffs.append(f"Given: '{p.given}' vs '{t.get('given','')}'")
-            if p.family != t.get('family', ''): diffs.append(f"Family: '{p.family}' vs '{t.get('family','')}'")
-            if p.salutation != t.get('salutation', ''): diffs.append(f"Salutation: '{p.salutation}' vs '{t.get('salutation','')}'")
-            # ... add more if needed
+            def get_styled_cell(pred_val, truth_val, width):
+                # Handle lists
+                if isinstance(pred_val, list): pred_val = ", ".join(pred_val)
+                if isinstance(truth_val, list): truth_val = ", ".join(truth_val)
+                if not pred_val: pred_val = ""
+                if not truth_val: truth_val = ""
+                
+                is_match = str(pred_val).lower().strip() == str(truth_val).lower().strip()
+                
+                if is_match:
+                    text = f"{pred_val}"
+                else:
+                    text = f"{pred_val} / {truth_val}"
+                
+                # Truncate
+                if len(text) > width:
+                    text = text[:width-2] + ".."
+                
+                # Pad manually to ensure alignment before coloring
+                padded = f"{text:<{width}}"
+                
+                # Apply Color
+                if is_match:
+                    return f"{GREEN}{padded}{RESET}"
+                else:
+                    return f"{RED}{padded}{RESET}"
+
+            # Raw Input (No color, just truncate/pad)
+            raw_val = item['raw']
+            if len(raw_val) > 25: raw_val = raw_val[:23] + ".."
+            raw_cell = f"{raw_val:<25}"
+
+            salut_cell = get_styled_cell(p.salutation, t.get('salutation'), 12)
+            title_cell = get_styled_cell(p.title, t.get('title'), 15)
+            given_cell = get_styled_cell(p.given, t.get('given'), 20)
+            middle_cell = get_styled_cell(p.middle, t.get('middle'), 15)
+            family_cell = get_styled_cell(p.family, t.get('family'), 20)
+            suffix_cell = get_styled_cell(p.suffix, t.get('suffix'), 10)
+            part_cell = get_styled_cell(p.particles, t.get('particles'), 10)
             
-            if diffs:
-                print(f"     Diffs: {', '.join(diffs)}")
-            else:
-                print(f"     (Perfect Match)")
+            row = (
+                f"{item['score']:<6.2f} | {raw_cell} | {salut_cell} | {title_cell} | "
+                f"{given_cell} | {middle_cell} | {family_cell} | {suffix_cell} | {part_cell}"
+            )
+            print(row)
+        print("-" * len(header))
 
 if __name__ == "__main__":
     main()

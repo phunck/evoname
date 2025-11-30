@@ -23,7 +23,10 @@ def start_training():
     data = request.json
     generations = data.get("generations", 50)
     pop_size = data.get("pop_size", 300)
-    seed = data.get("seed", 42)
+    seed = data.get("seed")
+    if seed is None or seed == "":
+        seed = 42
+    use_seed = data.get("use_seed", False)
     
     cmd = [
         "python", "-u", "trainer.py",
@@ -33,12 +36,26 @@ def start_training():
         "--monitor"
     ]
     
+    if use_seed:
+        # Find latest champion
+        runs_dir = "runs"
+        if os.path.exists(runs_dir):
+            runs = sorted([d for d in os.listdir(runs_dir) if os.path.isdir(os.path.join(runs_dir, d))])
+            if runs:
+                latest_run = runs[-1]
+                champion_path = os.path.join(runs_dir, latest_run, "artifacts", "champion.pkl")
+                if os.path.exists(champion_path):
+                    cmd.extend(["--seed-model", champion_path])
+    
     try:
+        # Open log file
+        log_file = open("training.log", "w")
+        
         # Start process
         TRAINER_PROCESS = subprocess.Popen(
             cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
             text=True
         )
         return jsonify({"status": "success", "message": "Training started", "pid": TRAINER_PROCESS.pid})

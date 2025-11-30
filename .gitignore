@@ -25,3 +25,6 @@ dist/
 
 # Training runs
 runs/
+model/
+*.pkl
+monitor.json

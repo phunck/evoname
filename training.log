@@ -1,0 +1,37 @@
+Loaded 800 training samples.
+Initializing new population...
+Monitoring enabled. Tracking 5 samples.
+Starting evolution for 25 generations...
+gen	nevals	avg      	std	min	max     
+0  	125   	0.0246576	0  	0  	0.288625
+1  	80    	0.0647709	0  	0  	0.288625
+2  	85    	0.148314 	0  	0  	0.290625
+3  	75    	0.227582 	0  	0  	0.548625
+4  	87    	0.252858 	0  	0  	0.548625
+5  	83    	0.261518 	0  	0  	0.599625
+6  	69    	0.27971  	0  	0  	0.599625
+7  	78    	0.29769  	0  	0  	0.599625
+8  	75    	0.322163 	0  	0  	0.599625
+9  	78    	0.370889 	0  	0  	0.599625
+10 	76    	0.430473 	0  	0  	0.599625
+11 	78    	0.486713 	0  	0  	0.599625
+12 	69    	0.517698 	0  	0  	0.599625
+13 	71    	0.535082 	0  	0  	0.599625
+14 	81    	0.51129  	0  	0  	0.599625
+15 	63    	0.527776 	0  	0  	0.599625
+16 	72    	0.515912 	0  	0  	0.599625
+17 	65    	0.548955 	0  	0  	0.599625
+18 	80    	0.519387 	0  	0  	0.599625
+19 	62    	0.546563 	0  	0  	0.599625
+20 	77    	0.515295 	0  	0  	0.599625
+21 	61    	0.548776 	0  	0  	0.599625
+22 	82    	0.527895 	0  	0  	0.599625
+23 	76    	0.494418 	0  	0  	0.61459 
+24 	71    	0.497125 	0  	0  	0.61459 
+
+Best Individual found:
+make_name_obj(EMPTY_STR, extract_given_str(drop_last(tokenize(raw_input))), raw_input, EMPTY_STR_LIST, extract_title_list(tokenize(raw_input)), get_last_string(extract_title_list(EMPTY_TOK_LIST)), FEMALE, EMPTY_STR_LIST, EMPTY_STR_LIST)
+Fitness: 0.6145895833333334
+
+Running Validation...
+Validation Score: 0.6149166666666667
