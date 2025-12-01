@@ -11,7 +11,7 @@ Instead of manually writing thousands of rules, we "breed" the parser logic usin
 *   **Hybrid Approach**: GP handles the control flow (logic tree), while Regex handles the pattern matching (tokens).
 *   **Strictly Typed DSL**: Prevents invalid trees and ensures robustness.
 *   **Island Model**: We evolve three separate populations ("Islands") in parallel to maintain diversity and specialize in different aspects of the problem.
-*   **GitOps Factory**: The training pipeline automatically commits and publishes high-scoring models to npm.
+*   **Active Learning**: An automated loop (`active_trainer.py`) continuously regenerates data to target the model's weaknesses.
 
 ## 🏝️ The Island Model
 
