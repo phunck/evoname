@@ -46,12 +46,13 @@
             "category": "title"
         },
         "en": {
-            "pattern": "(Dr\\.?|Prof\\.?|Sir|Dame|Lord|Lady)",
+            "pattern": "(Dr\\.?|Prof\\.?|Sir|Dame|Lord|Lady|Dipl\\.-?Ing\\.?)",
             "flags": "i",
-            "description": "Englische Titel",
+            "description": "Englische Titel (inkl. Dipl.-Ing. für Mixed Data)",
             "examples": [
                 "Dr.",
-                "Sir"
+                "Sir",
+                "Dipl.-Ing."
             ],
             "category": "title"
         },
@@ -68,7 +69,7 @@
     },
     "TOKEN_DEGREE": {
         "de": {
-            "pattern": "\\b(B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|Dr\\. h\\.c\\.|PhD)\\b",
+            "pattern": "\\b(B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|Dr\\. h\\.c\\.|PhD|MBA)\\b",
             "flags": "i",
             "description": "Akademische Grade (mit Word Boundary)",
             "examples": [
@@ -128,11 +129,12 @@
     },
     "TOKEN_PARTICLE": {
         "de": {
-            "pattern": "(von(?: der| dem| den)?|zu(?:r|m)?|auf|aus|am|an|im|in)",
+            "pattern": "(von(?: der| dem| den)?|zu(?:r|m)?|auf|aus|am|an|im|in|van(?: der)?|de(?: la)?)",
             "flags": "i",
-            "description": "Deutsche Partikel",
+            "description": "Deutsche Partikel (inkl. van/de für Mixed Data)",
             "examples": [
-                "von"
+                "von",
+                "van"
             ],
             "category": "particle"
         },
@@ -157,11 +159,12 @@
     },
     "TOKEN_SUFFIX": {
         "de": {
-            "pattern": "\\b(jun|sen)(\\.?|\\b)",
+            "pattern": "\\b(jun|sen|Jr|Sr|II|III|IV|V)(\\.?|\\b)",
             "flags": "i",
-            "description": "Suffixe (mit Boundary)",
+            "description": "Suffixe (inkl. Jr/Sr für Mixed Data)",
             "examples": [
-                "jun."
+                "jun.",
+                "Jr."
             ],
             "category": "suffix"
         },

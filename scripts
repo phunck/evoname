@@ -1,0 +1,51 @@
+import primitive_set as ps
+from primitive_set import TokenList, StringList, RegexToken
+
+def test_primitives():
+    print("--- Testing Primitives ---")
+    
+    raw = "Mr. Peter Schneider"
+    print(f"Raw: '{raw}'")
+    
+    # 1. Tokenize
+    tokens = ps.tokenize(raw)
+    print(f"Tokens: {tokens}")
+    
+    # 2. Extractors
+    given = ps.extract_given_str(tokens)
+    print(f"Given: '{given}' (Expected: Peter)")
+    
+    family = ps.extract_family_str(tokens)
+    print(f"Family: '{family}' (Expected: Schneider)")
+    
+    title_list = ps.extract_title_list(tokens)
+    print(f"Title List: {title_list}")
+    
+    salutation = ps.extract_salutation_str(tokens)
+    print(f"Salutation: '{salutation}'")
+    
+    # 3. Builder
+    # Simulate what the GP might do
+    obj = ps.make_name_obj(
+        raw=raw,
+        salutation=salutation,
+        title_list=title_list,
+        given=given,
+        family=family,
+        middle_list=StringList([]),
+        gender=ps.Gender.MALE,
+        suffix_list=StringList([]),
+        particles_list=StringList([])
+    )
+    
+    print("\n--- Resulting Object ---")
+    print(obj.to_json())
+    
+    # 4. Check Types
+    print("\n--- Type Checks ---")
+    print(f"Given Type: {type(given)}")
+    print(f"Family Type: {type(family)}")
+    print(f"Title List Type: {type(title_list)}")
+
+if __name__ == "__main__":
+    test_primitives()

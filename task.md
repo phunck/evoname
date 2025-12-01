@@ -30,4 +30,79 @@
 - [x] Implement Seeding Strategy for Resume
     - [x] Add `--seed-model` arg to `trainer.py`
     - [x] Update `dashboard.py` to handle seeding request
-    - [x] Add UI checkbox to `index.html`on) <!-- id: 16 -->
+    - [x] Add UI checkbox to `index.html`
+- [x] Adjust Island Weights (Prevent "Lazy" Specialists) <!-- id: 21 -->
+    - [x] Implement "Hard Gates" (Min F1 Thresholds)
+    - [x] Implement "Soft Gates" (Proportional Penalty)
+    - [x] Relax Penalties for Specialist Islands
+- [x] Fix Slash Regression in `clean_str_val` <!-- id: 22 -->
+- [x] Implement Semi-Elitist Migration (Replace Bottom 50%) <!-- id: 23 -->
+- [x] Implement Curriculum Learning for Main Island <!-- id: 24 -->
+    - [x] Define Easy/Strict configurations
+    - [x] Implement Ramp/Lerp logic
+- [x] Create `regex_definitions.json` (Single Source of Truth) <!-- id: 4 -->
+- [x] Implement `primitive_set.py` (DEAP Definitions) <!-- id: 5 -->
+- [x] Create Dummy Data for Smoke Tests (`data_dummy.json`) <!-- id: 6 -->
+- [x] Create `generate_data.py` (Minimal version for Validation/Split) <!-- id: 7 -->
+- [x] Implement `trainer.py` with Checkpointing & CLI <!-- id: 8 -->
+- [x] Implement `library.js` (JS equivalents of Primitives) <!-- id: 9 -->
+- [x] Create `regex_definitions.json` (Single Source of Truth) <!-- id: 4 -->
+- [x] Implement `primitive_set.py` (DEAP Definitions) <!-- id: 5 -->
+- [x] Create Dummy Data for Smoke Tests (`data_dummy.json`) <!-- id: 6 -->
+- [x] Create `generate_data.py` (Minimal version for Validation/Split) <!-- id: 7 -->
+- [x] Implement `trainer.py` with Checkpointing & CLI <!-- id: 8 -->
+- [x] Implement `library.js` (JS equivalents of Primitives) <!-- id: 9 -->
+- [x] Implement Transpiler (Python AST -> JS Code) <!-- id: 10 -->
+- [x] Create Self-Contained NPM Package (Bundler) <!-- id: 11 -->
+- [x] Implement Analysis Script (Detailed Performance Breakdown) <!-- id: 12 -->
+- [x] Create Evolution Dashboard (Web UI for Training & Testing) <!-- id: 13 -->
+- [x] Refine Fitness Function (Weighted Rewards & Penalties) <!-- id: 14 -->
+- [x] Debug Fitness Function (Verify F1 Logic & Scoring) <!-- id: 15 -->
+- [x] Fix Tokenizer Bugs (Regex Boundaries & Locale Support) <!-- id: 16 -->
+- [x] Implement "Lazy Penalty" to force learning <!-- id: 17 -->
+- [x] Verify High Performance (Reached >93% Fitness!) <!-- id: 18 -->
+- [x] Refine Regex & Primitives (Fix Edge Cases) <!-- id: 19 -->
+    - [x] Fix "Mrs" splitting (Reorder Regex)
+    - [x] Fix "Dr. med." tokenization (Cleaned Data & Regex)
+    - [x] Fix Suffix vs Family Name (Ensure Suffixes are tokenized correctly)
+    - [x] Add Primitives for Middle, Suffix, Particles
+- [x] Implement Gender Guesser <!-- id: 20 -->
+    - [x] Add Name Database (primitive_set.py)
+    - [x] Register `get_gender_from_name` primitive
+- [x] Implement Seeding Strategy for Resume
+    - [x] Add `--seed-model` arg to `trainer.py`
+    - [x] Update `dashboard.py` to handle seeding request
+    - [x] Add UI checkbox to `index.html`
+- [x] Adjust Island Weights (Prevent "Lazy" Specialists) <!-- id: 21 -->
+    - [x] Implement "Hard Gates" (Min F1 Thresholds)
+    - [x] Implement "Soft Gates" (Proportional Penalty)
+    - [x] Relax Penalties for Specialist Islands
+- [x] Fix Slash Regression in `clean_str_val` <!-- id: 22 -->
+- [x] Implement Semi-Elitist Migration (Replace Bottom 50%) <!-- id: 23 -->
+- [x] Implement Curriculum Learning for Main Island <!-- id: 24 -->
+    - [x] Define Easy/Strict configurations
+    - [x] Implement Ramp/Lerp logic
+    - [x] Update UI (Std Dev, Phase info)
+    - [x] Allow negative fitness
+
+## Future Improvements
+
+### 🔥 MUST-HAVE (1–3)
+- [x] **Difficulty Tracking pro Beispiel** <!-- id: 25 -->
+- [ ] **baseline_vs_champion Score** <!-- id: 33 -->
+    - Vergleich gegen handgeschriebenen "Oracle"-Parser.
+
+### 🧹 Refactoring & Cleanup
+- [x] **Phase 0: Project Hygiene**
+    - [x] Create `docs/`, `scripts/`, `tests/`
+    - [x] Move files to appropriate folders
+- [x] **Phase 1: Single Source of Truth (`primitive_set.py`)**
+    - [x] Move `pset` creation to `primitive_set.py`
+    - [x] Update `trainer.py` to use `create_pset()`
+    - [x] Verify training runs without errors
+- [x] **Phase 2: Modularization (`trainer.py`)**
+    - [x] Split `trainer.py` into `evolution.py`, `evaluator.py`, `config.py`, `ui.py`
+- [x] **Phase 3: Parallelization**
+    - [x] Implement multiprocessing for island evaluation (Sequential Islands, Parallel Eval)
+- [x] **Phase 4: Configuration**
+    - [x] Move hardcoded params to `config.yaml`

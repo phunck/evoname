@@ -396,38 +396,36 @@ def clean_str_val(s: str) -> str:
     if not s: return ""
     # Remove leading/trailing non-alphanumeric chars (except some)
     # Specifically target the issue: "/ Jones" -> "Jones"
-    return s.strip(" /,.-")
+    s = s.replace("/", "")
+    return s.strip(" ,.-")
 
 # 3.5 Object Builder
 def make_name_obj(
     raw: str,
     salutation: str,
-    title: str, 
-    given_list: StringList,
-    family_list: StringList, 
-    middle_str: str, 
+    title_list: StringList, 
+    given: str,
+    family: str, 
+    middle_list: StringList, 
     gender: Gender,
     suffix_list: StringList,
     particles_list: StringList
 ) -> NameObj:
     
-    # Convert Lists to Strings
-    given = " ".join(given_list) if isinstance(given_list, list) else str(given_list)
-    family = " ".join(family_list) if isinstance(family_list, list) else str(family_list)
-    middle = " ".join(middle_str) if isinstance(middle_str, list) else str(middle_str)
-    suffix = " ".join(suffix_list) if isinstance(suffix_list, list) else str(suffix_list)
-    particles = " ".join(particles_list) if isinstance(particles_list, list) else str(particles_list)
-    
-    # CLEANUP
+    # Helper to clean list items
+    def clean_list(l):
+        if not l: return StringList([])
+        return StringList([clean_str_val(x) for x in l if clean_str_val(x)])
+
     return NameObj(
         raw=raw,
         salutation=clean_str_val(salutation),
-        title=clean_str_val(title),
+        title=clean_list(title_list),
         given=clean_str_val(given),
         family=clean_str_val(family),
-        middle=clean_str_val(middle),
-        suffix=clean_str_val(suffix),
-        particles=clean_str_val(particles),
+        middle=clean_list(middle_list),
+        suffix=clean_list(suffix_list),
+        particles=clean_list(particles_list),
         gender=gender
     )
 
@@ -446,3 +444,93 @@ def gen_rand_float():
 # Aliases for potential pickle compatibility
 rand_int = gen_rand_int
 rand_float = gen_rand_float
+
+# --- 4. Primitive Set Creation ---
+from deap import gp
+
+def create_pset() -> gp.PrimitiveSetTyped:
+    pset = gp.PrimitiveSetTyped("MAIN", [str], NameObj)
+    
+    # Register Primitives
+    # -- Control Flow --
+    pset.addPrimitive(if_bool_string, [bool, str, str], str)
+    pset.addPrimitive(if_bool_tokenlist, [bool, TokenList, TokenList], TokenList)
+    
+    # -- String/List Ops --
+    pset.addPrimitive(trim, [str], str)
+    pset.addPrimitive(to_lower, [str], str)
+    pset.addPrimitive(split_on_comma, [str], StringList)
+    pset.addPrimitive(get_first_string, [StringList], str)
+    pset.addPrimitive(get_last_string, [StringList], str)
+    
+    pset.addPrimitive(get_first_token, [TokenList], Token) 
+    pset.addPrimitive(get_last_token, [TokenList], Token)
+    pset.addPrimitive(slice_tokens, [TokenList, int, int], TokenList)
+    pset.addPrimitive(len_tokens, [TokenList], int)
+    pset.addPrimitive(drop_first, [TokenList], TokenList)
+    pset.addPrimitive(drop_last, [TokenList], TokenList)
+    pset.addPrimitive(remove_type, [TokenList, RegexToken], TokenList)
+    pset.addPrimitive(index_of_type, [TokenList, RegexToken], int)
+    pset.addPrimitive(get_remainder_tokens, [TokenList, TokenList], TokenList)
+    
+    # -- Token Muscles --
+    pset.addPrimitive(tokenize, [str], TokenList)
+    pset.addPrimitive(filter_by_type, [TokenList, RegexToken], TokenList)
+    pset.addPrimitive(count_type, [TokenList, RegexToken], int)
+    pset.addPrimitive(get_gender_from_salutation, [Token], Gender)
+    pset.addPrimitive(get_gender_from_name, [str], Gender)
+    
+    # -- Feature Detectors --
+    pset.addPrimitive(has_comma, [str], bool)
+    pset.addPrimitive(is_title, [Token], bool)
+    pset.addPrimitive(is_salutation, [Token], bool)
+    pset.addPrimitive(identity_token_type, [RegexToken], RegexToken)
+
+    # -- Macro-Primitives (Boosters) --
+    pset.addPrimitive(extract_salutation_str, [TokenList], str)
+    pset.addPrimitive(extract_title_list, [TokenList], StringList)
+    pset.addPrimitive(extract_given_str, [TokenList], str)
+    pset.addPrimitive(extract_family_str, [TokenList], str)
+    pset.addPrimitive(extract_middle_str, [TokenList], StringList)
+    pset.addPrimitive(extract_suffix_list, [TokenList], StringList)
+    pset.addPrimitive(extract_particles_list, [TokenList], StringList)
+    
+    # -- Object Builder --
+    pset.addPrimitive(make_name_obj, 
+                      [str, str, StringList, str, str, StringList, Gender, StringList, StringList], 
+                      NameObj)
+    pset.addPrimitive(set_confidence, [NameObj, float], NameObj)
+    
+    # -- Float Math --
+    pset.addPrimitive(operator.add, [float, float], float)
+    pset.addPrimitive(operator.sub, [float, float], float)
+    pset.addPrimitive(operator.mul, [float, float], float)
+    
+    # -- Ephemeral Constants --
+    pset.addEphemeralConstant("rand_int", gen_rand_int, int)
+    pset.addEphemeralConstant("rand_float", gen_rand_float, float)
+    
+    # -- Enums as Terminals --
+    for token_type in RegexToken:
+        pset.addTerminal(token_type, RegexToken, name=token_type.name)
+        
+    for g in Gender:
+        pset.addTerminal(g, Gender, name=g.name)
+
+    # Empty Lists/Strings for fallbacks
+    pset.addTerminal("", str, name="EMPTY_STR")
+    pset.addTerminal(StringList([]), StringList, name="EMPTY_STR_LIST")
+    pset.addTerminal(TokenList([]), TokenList, name="EMPTY_TOK_LIST")
+    
+    # Fallback Objects
+    pset.addTerminal(NameObj(""), NameObj, name="EMPTY_NAME_OBJ")
+    pset.addTerminal(Token("", RegexToken.PUNCT, (0,0), -1), Token, name="EMPTY_TOKEN")
+    
+    # Booleans
+    pset.addTerminal(True, bool, name="TRUE")
+    pset.addTerminal(False, bool, name="FALSE")
+
+    # Rename arguments for clarity
+    pset.renameArguments(ARG0="raw_input")
+    
+    return pset
