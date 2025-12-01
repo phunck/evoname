@@ -43,10 +43,8 @@ pip install deap pytest
 python -m pytest tests/
 ```
 
-### Data Generation
-Generate synthetic training data:
-```bash
 ### Training & Building
+
 1. **Generate Data** (Optional, creates fresh synthetic names):
    ```bash
    python generate_data.py
