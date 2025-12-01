@@ -91,6 +91,19 @@
 - [x] **Difficulty Tracking pro Beispiel** <!-- id: 25 -->
 - [x] **baseline_vs_champion Score** <!-- id: 33 -->
     - [x] Vergleich gegen handgeschriebenen "Oracle"-Parser.
+    - [x] Vergleich gegen handgeschriebenen "Oracle"-Parser.
+
+### 🧠 Phase 5: Advanced Primitives & Hybrid Features
+- [x] **Context & Positional Primitives** <!-- id: 34 -->
+    - [x] `get_tokens_before_comma` / `get_tokens_after_comma`
+    - [x] `is_all_caps` / `is_capitalized` / `is_short`
+- [x] **Lexicon/Hybrid Primitives** <!-- id: 35 -->
+    - [x] `is_common_given_name` (Top 1000 list)
+    - [x] `is_common_family_name` (Top 1000 list)
+- [x] **Post-Processing Layer** <!-- id: 36 -->
+    - [x] Deterministic Repair (e.g. "If 2 words & no title -> Given Family")
+- [ ] **Targeted Data Generation** <!-- id: 37 -->
+    - [ ] Use `Hall of Shame` to generate specific synthetic data
 
 ### 🧹 Refactoring & Cleanup
 - [x] **Phase 0: Project Hygiene**

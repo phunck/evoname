@@ -335,7 +335,6 @@ def get_gender_from_name(name: str) -> Gender:
 # 3.4 Feature Detectors
 def has_comma(s: str) -> bool:
     return "," in s
-
 def is_title(t: Optional[Token]) -> bool:
     return t.type == RegexToken.TITLE if t else False
 
@@ -344,6 +343,51 @@ def is_salutation(t: Optional[Token]) -> bool:
 
 def identity_token_type(t: RegexToken) -> RegexToken:
     return t
+
+# 3.4.1 New Context Primitives
+def get_tokens_before_comma(tokens: TokenList) -> TokenList:
+    for i, t in enumerate(tokens):
+        if t.type == RegexToken.PUNCT and "," in t.value:
+            return TokenList(tokens[:i])
+    return TokenList(tokens)
+
+def get_tokens_after_comma(tokens: TokenList) -> TokenList:
+    for i, t in enumerate(tokens):
+        if t.type == RegexToken.PUNCT and "," in t.value:
+            return TokenList(tokens[i+1:])
+    return TokenList([])
+
+def is_all_caps(t: Optional[Token]) -> bool:
+    if not t: return False
+    return t.value.isupper() and len(t.value) > 1
+
+def is_capitalized(t: Optional[Token]) -> bool:
+    if not t: return False
+    return t.value[0].isupper()
+
+def is_short(t: Optional[Token]) -> bool:
+    if not t: return False
+    return len(t.value) <= 3
+
+# Common Name Lists (Top ~50-100 for DE/EN)
+COMMON_FAMILY_NAMES = {
+    "müller", "schmidt", "schneider", "fischer", "weber", "meyer", "wagner", "becker", "schulz", "hoffmann",
+    "schäfer", "koch", "bauer", "richter", "klein", "wolf", "schröder", "neumann", "schwarz", "zimmermann",
+    "smith", "johnson", "williams", "brown", "jones", "garcia", "miller", "davis", "rodriguez", "martinez",
+    "hernandez", "lopez", "gonzalez", "wilson", "anderson", "thomas", "taylor", "moore", "jackson", "martin",
+    "lee", "perez", "thompson", "white", "harris", "sanchez", "clark", "ramirez", "lewis", "robinson",
+    "walker", "young", "allen", "king", "wright", "scott", "torres", "nguyen", "hill", "flores",
+    "green", "adams", "nelson", "baker", "hall", "rivera", "campbell", "mitchell", "carter", "roberts"
+}
+
+def is_common_family_name(t: Optional[Token]) -> bool:
+    if not t: return False
+    return t.value.lower() in COMMON_FAMILY_NAMES
+
+def is_common_given_name(t: Optional[Token]) -> bool:
+    if not t: return False
+    # Reuse GENDER_DB keys as they are common given names
+    return t.value.lower() in GENDER_DB
 
 # 3.6 Macro-Primitives (Boosters)
 def extract_salutation_str(tokens: TokenList) -> str:
@@ -485,6 +529,15 @@ def create_pset() -> gp.PrimitiveSetTyped:
     pset.addPrimitive(is_title, [Token], bool)
     pset.addPrimitive(is_salutation, [Token], bool)
     pset.addPrimitive(identity_token_type, [RegexToken], RegexToken)
+    
+    # -- New Context Primitives --
+    pset.addPrimitive(get_tokens_before_comma, [TokenList], TokenList)
+    pset.addPrimitive(get_tokens_after_comma, [TokenList], TokenList)
+    pset.addPrimitive(is_all_caps, [Token], bool)
+    pset.addPrimitive(is_capitalized, [Token], bool)
+    pset.addPrimitive(is_short, [Token], bool)
+    pset.addPrimitive(is_common_given_name, [Token], bool)
+    pset.addPrimitive(is_common_family_name, [Token], bool)
 
     # -- Macro-Primitives (Boosters) --
     pset.addPrimitive(extract_salutation_str, [TokenList], str)

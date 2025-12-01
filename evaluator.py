@@ -2,6 +2,7 @@ import json
 from typing import List, Dict, Tuple
 from deap import gp
 from primitive_set import NameObj
+from post_processor import repair_name_object
 
 def calculate_f1(pred: List[str] | str, truth: List[str] | str) -> float:
     """
@@ -71,6 +72,8 @@ def evaluate_individual(individual, pset, data: List[Dict], weights: Dict[str, f
         
         try:
             pred_obj: NameObj = func(raw)
+            # --- POST-PROCESSING ---
+            pred_obj = repair_name_object(pred_obj)
         except Exception:
             return 0.0, # Runtime error is still death
 
@@ -285,6 +288,8 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
         solution = entry["solution"]
         try:
             pred_obj: NameObj = func(raw)
+            # --- POST-PROCESSING ---
+            pred_obj = repair_name_object(pred_obj)
         except Exception:
             continue
 

@@ -100,6 +100,8 @@ node test_bundle.js
 - [x] Trainer Implementation
 - [x] JavaScript Runtime (`library.js`)
 - [x] Transpiler (Python -> JS)
+- [x] Advanced Primitives (Contextual, Positional, Lexicon)
+- [x] Post-Processing Layer (Deterministic Repair)
 
 ## 👥 Credits
 Created by **Paul Hunck**.

@@ -44,8 +44,8 @@ weights_main_strict:
   penalty_lazy: 0.30
 
 gates_main_strict:
-  min_family: 0.6
-  min_given: 0.6
+  min_family: 0.3
+  min_given: 0.3
   max_penalty: 2.0
 
 # 2. Detail Island
