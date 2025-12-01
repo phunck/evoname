@@ -7,7 +7,7 @@ import multiprocessing
 from typing import List, Dict, Any, Tuple
 
 from rich.console import Console
-from tqdm import tqdm
+
 
 from deap import base, creator, tools, gp
 
@@ -207,7 +207,7 @@ class Trainer:
                 else: eval_func = self.toolbox.evaluate_structure
                 
                 if len(invalid_ind) > 0:
-                    iterator = tqdm(invalid_ind, desc=f"Eval {self.island_names[i]}", leave=False) if len(invalid_ind) > 10 else invalid_ind
+                    iterator = invalid_ind
                     
                     # Parallel Evaluation
                     if self.pool:
