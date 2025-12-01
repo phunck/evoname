@@ -88,7 +88,18 @@ python -m pytest tests/
     ```
     The best model is saved to `runs/LATEST/artifacts/champion.pkl`.
 
-3.  **Save Champion (Best Practice)**:
+3.  **Active Learning Loop (Recommended)**:
+    To prevent stagnation, use the active trainer. It automatically regenerates data based on the model's weaknesses ("Hall of Shame") and retrains in cycles.
+    ```bash
+    python active_trainer.py --cycles 10 --gens-per-cycle 30 --jobs 8
+    ```
+    **Arguments:**
+    *   `--cycles`: Number of generate-train loops (default: 10).
+    *   `--gens-per-cycle`: Generations per loop (default: 30).
+    *   `--pop-size`: Population size (default: 300).
+    *   `--jobs`: Parallel jobs (default: 8).
+
+4.  **Save Champion (Best Practice)**:
     To share your best model or use it on other machines, copy it to the `model/` directory and commit it:
     ```bash
     cp runs/LATEST/artifacts/champion.pkl model/champion.pkl
