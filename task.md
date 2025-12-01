@@ -89,8 +89,8 @@
 
 ### 🔥 MUST-HAVE (1–3)
 - [x] **Difficulty Tracking pro Beispiel** <!-- id: 25 -->
-- [ ] **baseline_vs_champion Score** <!-- id: 33 -->
-    - Vergleich gegen handgeschriebenen "Oracle"-Parser.
+- [x] **baseline_vs_champion Score** <!-- id: 33 -->
+    - [x] Vergleich gegen handgeschriebenen "Oracle"-Parser.
 
 ### 🧹 Refactoring & Cleanup
 - [x] **Phase 0: Project Hygiene**
