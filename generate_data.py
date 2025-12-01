@@ -29,7 +29,7 @@ SALUTATIONS_FEMALE = ["Frau", "Mrs.", "Ms.", "Mrs", "Ms"]
 PARTICLES = ["von", "van", "de", "vom", "zu"]
 SUFFIXES = ["Jr.", "Sr.", "III", "PhD"]
 
-def generate_random_name() -> Dict[str, Any]:
+def generate_random_name(difficulty: str = "normal") -> Dict[str, Any]:
     gender_key = random.choice(["m", "f"])
     
     # Components
@@ -41,36 +41,49 @@ def generate_random_name() -> Dict[str, Any]:
     family = ""
     suffix = ""
     
-    # 1. Salutation (80% chance)
-    if random.random() < 0.8:
+    # Probabilities based on difficulty
+    p_salutation = 0.8
+    p_title = 0.3
+    p_middle = 0.2
+    p_particle = 0.1
+    p_suffix = 0.05
+    
+    if difficulty == "hard":
+        p_title = 0.8      # High chance of title
+        p_suffix = 0.5     # High chance of suffix
+        p_middle = 0.4     # More middle names
+        p_particle = 0.3   # More particles
+    
+    # 1. Salutation
+    if random.random() < p_salutation:
         if gender_key == "m":
             salutation = random.choice(SALUTATIONS_MALE)
         else:
             salutation = random.choice(SALUTATIONS_FEMALE)
             
-    # 2. Title (30% chance)
-    if random.random() < 0.3:
+    # 2. Title
+    if random.random() < p_title:
         title = random.choice(TITLES)
         
     # 3. Given Name
     names_list = MALE_NAMES if gender_key == "m" else FEMALE_NAMES
     given = random.choice(names_list)
     
-    # 4. Middle Name (20% chance)
-    if random.random() < 0.2:
+    # 4. Middle Name
+    if random.random() < p_middle:
         middle_name = random.choice(names_list)
         if middle_name != given:
             middle = [middle_name]
             
-    # 5. Particle (10% chance)
-    if random.random() < 0.1:
+    # 5. Particle
+    if random.random() < p_particle:
         particle = random.choice(PARTICLES)
         
     # 6. Family Name
     family = random.choice(LAST_NAMES)
     
-    # 7. Suffix (5% chance)
-    if random.random() < 0.05:
+    # 7. Suffix
+    if random.random() < p_suffix:
         suffix = random.choice(SUFFIXES)
         
     # Construct Raw String
@@ -106,7 +119,42 @@ def main():
     random.seed(SEED)
     
     print(f"Generating {NUM_SAMPLES} synthetic names...")
-    data = [generate_random_name() for _ in range(NUM_SAMPLES)]
+    
+    # 70% Normal, 30% Hard (including Hall of Shame)
+    n_hard = int(NUM_SAMPLES * 0.3)
+    n_normal = NUM_SAMPLES - n_hard
+    
+    data = []
+    
+    # 1. Inject Hall of Shame (if available)
+    try:
+        with open("difficulty.json", "r", encoding="utf-8") as f:
+            shame_export = json.load(f)
+            
+            # Handle both legacy (list/dict of counts) and new (dict with 'data') formats
+            shame_data = {}
+            if "data" in shame_export:
+                shame_data = shame_export["data"]
+            
+            if shame_data:
+                # Get the keys (raw strings) sorted by failure count if possible, 
+                # but here we just take all available data entries.
+                # If we have counts, we could prioritize.
+                
+                shame_entries = list(shame_data.values())
+                # Oversample them? Let's add them 3 times each to force learning
+                print(f"Injecting {len(shame_entries)} Hall of Shame examples (3x oversampling)...")
+                for _ in range(3):
+                    data.extend(shame_entries)
+            else:
+                print("Hall of Shame found but no data entries (legacy format). Skipping injection.")
+                
+    except FileNotFoundError:
+        print("No Hall of Shame found (difficulty.json).")
+
+    # 2. Generate Data
+    data.extend([generate_random_name(difficulty="normal") for _ in range(n_normal)])
+    data.extend([generate_random_name(difficulty="hard") for _ in range(n_hard)])
     
     # Shuffle
     random.shuffle(data)

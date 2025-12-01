@@ -143,7 +143,8 @@ class Trainer:
             
         start_gen = 0
         
-        for gen in range(start_gen, self.args.generations):
+        try:
+            for gen in range(start_gen, self.args.generations):
             
             # --- CURRICULUM UPDATE (Main Island) ---
             cur_weights_main = get_main_weights(gen)
@@ -236,6 +237,7 @@ class Trainer:
                     
                     if gen % 5 == 0:
                         self.tracker.update(island, self.train_data, self.pset)
+                        self.tracker.save() # Persist Hall of Shame
                     if gen % 10 == 0:
                         self.usage_tracker.update(island)
                     
@@ -272,43 +274,56 @@ class Trainer:
             if self.args.info:
                 explain_fitness(self.hof[0], self.pset, self.train_data, weights=cur_weights_main, gates=cur_gates_main)
 
-        self.console.print("\n[bold green]Training Completed![/bold green]")
-        best_ind = self.hof[0]
-        self.console.print(f"Final Best Fitness: {best_ind.fitness.values[0]}")
+        except KeyboardInterrupt:
+            self.console.print("\n[bold red]🛑 Training Interrupted by User![/bold red]")
+            self.console.print("[yellow]Saving current progress before exiting...[/yellow]")
         
-        # Save Artifacts
-        with open(os.path.join(self.art_dir, "champion.pkl"), "wb") as f: pickle.dump(best_ind, f)
-        with open(os.path.join(self.art_dir, "champion.txt"), "w") as f: f.write(str(best_ind))
-        
-        with open(os.path.join(self.model_dir, "champion.pkl"), "wb") as f: pickle.dump(best_ind, f)
-        with open(os.path.join(self.model_dir, "champion.txt"), "w") as f: f.write(str(best_ind))
+        finally:
+            # Cleanup Pool
+            if self.pool:
+                self.pool.terminate()
+                self.pool.join()
 
-        print("Saving Island Populations...")
-        with open(os.path.join(self.model_dir, "island_main.pkl"), "wb") as f: pickle.dump(self.islands[0], f)
-        with open(os.path.join(self.model_dir, "island_detail.pkl"), "wb") as f: pickle.dump(self.islands[1], f)
-        with open(os.path.join(self.model_dir, "island_structure.pkl"), "wb") as f: pickle.dump(self.islands[2], f)
+            self.console.print("\n[bold green]Training Completed/Stopped![/bold green]")
+            if len(self.hof) > 0:
+                best_ind = self.hof[0]
+                self.console.print(f"Final Best Fitness: {best_ind.fitness.values[0]}")
+                
+                # Save Artifacts
+                with open(os.path.join(self.art_dir, "champion.pkl"), "wb") as f: pickle.dump(best_ind, f)
+                with open(os.path.join(self.art_dir, "champion.txt"), "w") as f: f.write(str(best_ind))
+                
+                with open(os.path.join(self.model_dir, "champion.pkl"), "wb") as f: pickle.dump(best_ind, f)
+                with open(os.path.join(self.model_dir, "champion.txt"), "w") as f: f.write(str(best_ind))
 
-        # Validation
-        if self.val_data:
-            print("\nRunning Validation...")
-            val_score, = evaluate_individual(best_ind, self.pset, self.val_data, weights=weights_main_strict)
-            print(f"Validation Score: {val_score}")
-            
-        # Hall of Shame
-        print("\n" + "="*60)
-        print(" 🏆 HALL OF SHAME (Top 20 Hardest Examples) 🏆")
-        print("="*60)
-        shame_list = self.tracker.get_hall_of_shame(20)
-        if not shame_list:
-            print("No failures recorded.")
-        else:
-            print(f"{'Count':<6} | {'Example'}")
-            print("-" * 60)
-            for raw_name, count in shame_list:
-                print(f"{count:<6} | {raw_name}")
-        print("="*60 + "\n")
-        
-        # Usage Stats
-        print("\n" + "="*60)
-        print(self.usage_tracker.get_stats())
-        print("="*60 + "\n")
+                print("Saving Island Populations...")
+                with open(os.path.join(self.model_dir, "island_main.pkl"), "wb") as f: pickle.dump(self.islands[0], f)
+                with open(os.path.join(self.model_dir, "island_detail.pkl"), "wb") as f: pickle.dump(self.islands[1], f)
+                with open(os.path.join(self.model_dir, "island_structure.pkl"), "wb") as f: pickle.dump(self.islands[2], f)
+
+                # Validation
+                if self.val_data:
+                    print("\nRunning Validation...")
+                    val_score, = evaluate_individual(best_ind, self.pset, self.val_data, weights=weights_main_strict)
+                    print(f"Validation Score: {val_score}")
+                    
+                # Hall of Shame
+                print("\n" + "="*60)
+                print(" 🏆 HALL OF SHAME (Top 20 Hardest Examples) 🏆")
+                print("="*60)
+                shame_list = self.tracker.get_hall_of_shame(20)
+                if not shame_list:
+                    print("No failures recorded.")
+                else:
+                    print(f"{'Count':<6} | {'Example'}")
+                    print("-" * 60)
+                    for raw_name, count in shame_list:
+                        print(f"{count:<6} | {raw_name}")
+                print("="*60 + "\n")
+                
+                # Usage Stats
+                print("\n" + "="*60)
+                print(self.usage_tracker.get_stats())
+                print("="*60 + "\n")
+            else:
+                print("No individuals in Hall of Fame.")

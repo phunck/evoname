@@ -102,8 +102,16 @@
     - [x] `is_common_family_name` (Top 1000 list)
 - [x] **Post-Processing Layer** <!-- id: 36 -->
     - [x] Deterministic Repair (e.g. "If 2 words & no title -> Given Family")
-- [ ] **Targeted Data Generation** <!-- id: 37 -->
-    - [ ] Use `Hall of Shame` to generate specific synthetic data
+- [x] **Targeted Data Generation** <!-- id: 37 -->
+    - [x] Use `Hall of Shame` to generate specific synthetic data
+- [x] **Statistical & Feature Primitives** <!-- id: 38 -->
+    - [x] `token_length(token) -> int`
+    - [x] `is_initial(token) -> bool`
+    - [x] `has_hyphen(token) -> bool`
+    - [x] `has_period(token) -> bool`
+    - [x] `is_roman_numeral(token) -> bool`
+    - [x] `is_particle(token) -> bool`
+    - [x] `is_suffix(token) -> bool`
 
 ### 🧹 Refactoring & Cleanup
 - [x] **Phase 0: Project Hygiene**

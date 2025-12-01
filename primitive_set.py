@@ -389,6 +389,38 @@ def is_common_given_name(t: Optional[Token]) -> bool:
     # Reuse GENDER_DB keys as they are common given names
     return t.value.lower() in GENDER_DB
 
+# 3.4.2 Statistical & Feature Primitives
+def token_length(t: Optional[Token]) -> int:
+    if not t: return 0
+    return len(t.value)
+
+def is_initial(t: Optional[Token]) -> bool:
+    if not t: return False
+    # Check regex type OR pattern (single letter + dot)
+    return t.type == RegexToken.INITIAL or (len(t.value) == 2 and t.value[1] == '.' and t.value[0].isalpha())
+
+def has_hyphen(t: Optional[Token]) -> bool:
+    if not t: return False
+    return "-" in t.value
+
+def has_period(t: Optional[Token]) -> bool:
+    if not t: return False
+    return "." in t.value
+
+def is_roman_numeral(t: Optional[Token]) -> bool:
+    if not t: return False
+    # Simple check for common roman numerals used in names
+    val = t.value.upper().strip(".,")
+    return val in {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}
+
+def is_particle(t: Optional[Token]) -> bool:
+    if not t: return False
+    return t.type == RegexToken.PARTICLE
+
+def is_suffix(t: Optional[Token]) -> bool:
+    if not t: return False
+    return t.type == RegexToken.SUFFIX
+
 # 3.6 Macro-Primitives (Boosters)
 def extract_salutation_str(tokens: TokenList) -> str:
     # Finds the first salutation token and returns its value
@@ -537,7 +569,17 @@ def create_pset() -> gp.PrimitiveSetTyped:
     pset.addPrimitive(is_capitalized, [Token], bool)
     pset.addPrimitive(is_short, [Token], bool)
     pset.addPrimitive(is_common_given_name, [Token], bool)
+    pset.addPrimitive(is_common_given_name, [Token], bool)
     pset.addPrimitive(is_common_family_name, [Token], bool)
+
+    # -- Statistical & Feature Primitives --
+    pset.addPrimitive(token_length, [Token], int)
+    pset.addPrimitive(is_initial, [Token], bool)
+    pset.addPrimitive(has_hyphen, [Token], bool)
+    pset.addPrimitive(has_period, [Token], bool)
+    pset.addPrimitive(is_roman_numeral, [Token], bool)
+    pset.addPrimitive(is_particle, [Token], bool)
+    pset.addPrimitive(is_suffix, [Token], bool)
 
     # -- Macro-Primitives (Boosters) --
     pset.addPrimitive(extract_salutation_str, [TokenList], str)

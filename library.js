@@ -359,6 +359,44 @@ function is_common_given_name(t) {
     return COMMON_GIVEN_NAMES.has(t.value.toLowerCase());
 }
 
+// 3.4.2 Statistical & Feature Primitives
+function token_length(t) {
+    if (!t) return 0;
+    return t.value.length;
+}
+
+function is_initial(t) {
+    if (!t) return false;
+    return t.type === RegexToken.INITIAL || (t.value.length === 2 && t.value[1] === '.' && /^[a-zA-Z]$/.test(t.value[0]));
+}
+
+function has_hyphen(t) {
+    if (!t) return false;
+    return t.value.includes("-");
+}
+
+function has_period(t) {
+    if (!t) return false;
+    return t.value.includes(".");
+}
+
+function is_roman_numeral(t) {
+    if (!t) return false;
+    const val = t.value.toUpperCase().replace(/[.,]/g, "");
+    const romans = new Set(["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]);
+    return romans.has(val);
+}
+
+function is_particle(t) {
+    if (!t) return false;
+    return t.type === RegexToken.PARTICLE;
+}
+
+function is_suffix(t) {
+    if (!t) return false;
+    return t.type === RegexToken.SUFFIX;
+}
+
 // 3.6 Macro-Primitives (Boosters)
 function extract_salutation_str(tokens) {
     for (const t of tokens) {
@@ -450,6 +488,7 @@ module.exports = {
     tokenize, filter_by_type, count_type, get_gender_from_salutation, get_gender_from_name,
     has_comma, is_title, is_salutation, identity_token_type,
     get_tokens_before_comma, get_tokens_after_comma, is_all_caps, is_capitalized, is_short, is_common_given_name, is_common_family_name,
+    token_length, is_initial, has_hyphen, has_period, is_roman_numeral, is_particle, is_suffix,
     extract_salutation_str, extract_title_list, extract_given_str, extract_family_str, extract_middle_str, extract_suffix_list, extract_particles_list,
     make_name_obj, set_confidence,
     EMPTY_STR, EMPTY_STR_LIST, EMPTY_TOK_LIST, EMPTY_NAME_OBJ, EMPTY_TOKEN, TRUE, FALSE
