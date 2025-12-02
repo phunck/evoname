@@ -1,3 +1,4 @@
+import json
 import random
 import pickle
 import os
@@ -142,9 +143,19 @@ class Trainer:
             swap_rates.extend([swap_rates[-1]] * (3 - len(swap_rates)))
             
         start_gen = 0
+        if self.args.resume and os.path.exists("model/state.json"):
+            try:
+                with open("model/state.json", "r") as f:
+                    state = json.load(f)
+                    start_gen = state.get("gen", 0)
+                self.console.print(f"[bold blue]Resuming from Generation {start_gen}[/bold blue]")
+            except Exception as e:
+                self.console.print(f"[bold red]Warning: Could not load state.json: {e}[/bold red]")
         
         try:
-            for gen in range(start_gen, self.args.generations):
+            # Run for specified number of generations *from current point*
+            end_gen = start_gen + self.args.generations
+            for gen in range(start_gen, end_gen):
             
                 # --- CURRICULUM UPDATE (Main Island) ---
                 cur_weights_main = get_main_weights(gen)
@@ -238,6 +249,10 @@ class Trainer:
                         if gen % 5 == 0:
                             self.tracker.update(island, self.train_data, self.pset)
                             self.tracker.save() # Persist Hall of Shame
+                            
+                            # Save State
+                            with open("model/state.json", "w") as f:
+                                json.dump({"gen": gen + 1}, f)
                         if gen % 10 == 0:
                             self.usage_tracker.update(island)
                         
@@ -273,6 +288,10 @@ class Trainer:
     
                 if self.args.info:
                     explain_fitness(self.hof[0], self.pset, self.train_data, weights=cur_weights_main, gates=cur_gates_main)
+
+            # Save Final State
+            with open("model/state.json", "w") as f:
+                json.dump({"gen": end_gen}, f)
 
         except KeyboardInterrupt:
             self.console.print("\n[bold red]🛑 Training Interrupted by User![/bold red]")
