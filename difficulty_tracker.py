@@ -9,39 +9,6 @@ class DifficultyTracker:
         self.total_attempts = 0
 
     def update(self, population, data: List[Dict], pset):
-        # ... (rest of update method is fine, we patched the loop above)
-        pass 
-
-    # We need to patch the update method properly in the previous step or here. 
-    # The previous step patched the loop inside update. 
-    # Here we just fix __init__ and save/load.
-
-    def get_hall_of_shame(self, n=20):
-        """Returns the top N most frequent failures."""
-        return self.failures.most_common(n)
-
-    def save(self, path="difficulty.json"):
-        import json
-        # Save both counts and the data
-        export = {
-            "counts": dict(self.failures),
-            "data": self.failure_data
-        }
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(export, f, indent=2)
-
-    def load(self, path="difficulty.json"):
-        import json
-        import os
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                export = json.load(f)
-                if "counts" in export:
-                    self.failures.update(export["counts"])
-                    self.failure_data.update(export.get("data", {}))
-                else:
-                    # Legacy format support (just counts)
-                    self.failures.update(export)
         """
         Updates failure counts based on the best individual's performance.
         We only track failures of the BEST individual to see what is 'hard' for the current state of the art.
@@ -84,13 +51,23 @@ class DifficultyTracker:
 
     def save(self, path="difficulty.json"):
         import json
+        # Save both counts and the data
+        export = {
+            "counts": dict(self.failures),
+            "data": self.failure_data
+        }
         with open(path, "w", encoding="utf-8") as f:
-            json.dump(dict(self.failures), f, indent=2)
+            json.dump(export, f, indent=2)
 
     def load(self, path="difficulty.json"):
         import json
         import os
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self.failures.update(data)
+                export = json.load(f)
+                if "counts" in export:
+                    self.failures.update(export["counts"])
+                    self.failure_data.update(export.get("data", {}))
+                else:
+                    # Legacy format support (just counts)
+                    self.failures.update(export)
