@@ -30,12 +30,29 @@ class DifficultyTracker:
                 # We don't have the fitness function here easily available without re-calculating.
                 # So let's just check exact match of family name as a proxy for "hard"
                 
-                res_fam = result.family.lower().strip()
-                exp_fam = expected['family'].lower().strip()
+                # Check multiple fields for mismatches
+                failures = []
                 
-                if res_fam != exp_fam:
-                    # Store full entry as JSON string to be hashable, or use a tuple key
-                    # We use raw string as key, but store the full entry in a separate dict
+                # Family Name
+                if result.family.lower().strip() != expected['family'].lower().strip():
+                    failures.append("family")
+                
+                # Given Name
+                if result.given.lower().strip() != expected['given'].lower().strip():
+                    failures.append("given")
+                    
+                # Salutation
+                if result.salutation.lower().strip() != expected['salutation'].lower().strip():
+                    failures.append("salutation")
+
+                # Title (First title only for simplicity if list)
+                res_title = result.title[0] if result.title else ""
+                exp_title = expected['title'][0] if expected['title'] else ""
+                if res_title.lower().strip() != exp_title.lower().strip():
+                    failures.append("title")
+                
+                if failures:
+                    # Store full entry
                     self.failures[raw] += 1
                     self.failure_data[raw] = entry
                     

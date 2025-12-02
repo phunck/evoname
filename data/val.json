@@ -1,16 +1,855 @@
 [
   {
-    "raw": "Mrs Dr. med. Patricia Elizabeth Meyer",
+    "raw": "Frau Dr. med. Mary zu Wagner III",
+    "solution": {
+      "given": "Mary",
+      "family": "Wagner",
+      "middle": [],
+      "title": [
+        "Dr. med."
+      ],
+      "salutation": "Frau",
+      "gender": "f",
+      "suffix": [
+        "III"
+      ],
+      "particles": [
+        "zu"
+      ]
+    }
+  },
+  {
+    "raw": "James Schulz Jr.",
+    "solution": {
+      "given": "James",
+      "family": "Schulz",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [
+        "Jr."
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms. Maria Brown",
+    "solution": {
+      "given": "Maria",
+      "family": "Brown",
+      "middle": [],
+      "title": [],
+      "salutation": "Ms.",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Maria Schulz",
+    "solution": {
+      "given": "Maria",
+      "family": "Schulz",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs. Prof. Dr. Patricia Renate de Hoffmann",
+    "solution": {
+      "given": "Patricia",
+      "family": "Hoffmann",
+      "middle": [
+        "Renate"
+      ],
+      "title": [
+        "Prof. Dr."
+      ],
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": [
+        "de"
+      ]
+    }
+  },
+  {
+    "raw": "Mr Prof. Dr. Jürgen de Schulz",
+    "solution": {
+      "given": "Jürgen",
+      "family": "Schulz",
+      "middle": [],
+      "title": [
+        "Prof. Dr."
+      ],
+      "salutation": "Mr",
+      "gender": "m",
+      "suffix": [],
+      "particles": [
+        "de"
+      ]
+    }
+  },
+  {
+    "raw": "Michael Meyer",
+    "solution": {
+      "given": "Michael",
+      "family": "Meyer",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Dr. Renate Schneider Jr.",
+    "solution": {
+      "given": "Renate",
+      "family": "Schneider",
+      "middle": [],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [
+        "Jr."
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Michael James Jones",
+    "solution": {
+      "given": "Michael",
+      "family": "Jones",
+      "middle": [
+        "James"
+      ],
+      "title": [],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Robert Johnson",
+    "solution": {
+      "given": "Robert",
+      "family": "Johnson",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Andreas Michael Hoffmann",
+    "solution": {
+      "given": "Andreas",
+      "family": "Hoffmann",
+      "middle": [
+        "Michael"
+      ],
+      "title": [],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs Prof. Dr. Monika van Schulz",
+    "solution": {
+      "given": "Monika",
+      "family": "Schulz",
+      "middle": [],
+      "title": [
+        "Prof. Dr."
+      ],
+      "salutation": "Mrs",
+      "gender": "f",
+      "suffix": [],
+      "particles": [
+        "van"
+      ]
+    }
+  },
+  {
+    "raw": "Herr Dr. Christian Stefan Schmidt PhD",
+    "solution": {
+      "given": "Christian",
+      "family": "Schmidt",
+      "middle": [
+        "Stefan"
+      ],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [
+        "PhD"
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr. Dipl.-Ing. Klaus Andreas van Wagner III",
+    "solution": {
+      "given": "Klaus",
+      "family": "Wagner",
+      "middle": [
+        "Andreas"
+      ],
+      "title": [
+        "Dipl.-Ing."
+      ],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [
+        "III"
+      ],
+      "particles": [
+        "van"
+      ]
+    }
+  },
+  {
+    "raw": "Mrs Dr. Patricia vom Meyer",
     "solution": {
       "given": "Patricia",
       "family": "Meyer",
+      "middle": [],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "Mrs",
+      "gender": "f",
+      "suffix": [],
+      "particles": [
+        "vom"
+      ]
+    }
+  },
+  {
+    "raw": "Dr. Stefan Becker",
+    "solution": {
+      "given": "Stefan",
+      "family": "Becker",
+      "middle": [],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Dr. Jennifer Schmidt",
+    "solution": {
+      "given": "Jennifer",
+      "family": "Schmidt",
+      "middle": [],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs. Mary Müller",
+    "solution": {
+      "given": "Mary",
+      "family": "Müller",
+      "middle": [],
+      "title": [],
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Dr. med. Christian vom Jones",
+    "solution": {
+      "given": "Christian",
+      "family": "Jones",
+      "middle": [],
+      "title": [
+        "Dr. med."
+      ],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": [
+        "vom"
+      ]
+    }
+  },
+  {
+    "raw": "Mr. Thomas Weber",
+    "solution": {
+      "given": "Thomas",
+      "family": "Weber",
+      "middle": [],
+      "title": [],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs Petra Weber",
+    "solution": {
+      "given": "Petra",
+      "family": "Weber",
+      "middle": [],
+      "title": [],
+      "salutation": "Mrs",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms Elisabeth Meyer",
+    "solution": {
+      "given": "Elisabeth",
+      "family": "Meyer",
+      "middle": [],
+      "title": [],
+      "salutation": "Ms",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Stefan Fischer",
+    "solution": {
+      "given": "Stefan",
+      "family": "Fischer",
+      "middle": [],
+      "title": [],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms Prof. Elizabeth Schneider",
+    "solution": {
+      "given": "Elizabeth",
+      "family": "Schneider",
+      "middle": [],
+      "title": [
+        "Prof."
+      ],
+      "salutation": "Ms",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr. Prof. William Meyer",
+    "solution": {
+      "given": "William",
+      "family": "Meyer",
+      "middle": [],
+      "title": [
+        "Prof."
+      ],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Wolfgang Schneider",
+    "solution": {
+      "given": "Wolfgang",
+      "family": "Schneider",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Dr. med. Andreas Klaus von Fischer",
+    "solution": {
+      "given": "Andreas",
+      "family": "Fischer",
       "middle": [
-        "Elizabeth"
+        "Klaus"
       ],
       "title": [
         "Dr. med."
       ],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": [
+        "von"
+      ]
+    }
+  },
+  {
+    "raw": "Mr Jürgen von Weber",
+    "solution": {
+      "given": "Jürgen",
+      "family": "Weber",
+      "middle": [],
+      "title": [],
+      "salutation": "Mr",
+      "gender": "m",
+      "suffix": [],
+      "particles": [
+        "von"
+      ]
+    }
+  },
+  {
+    "raw": "Mrs. Dr. med. Helga Williams",
+    "solution": {
+      "given": "Helga",
+      "family": "Williams",
+      "middle": [],
+      "title": [
+        "Dr. med."
+      ],
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr William Smith",
+    "solution": {
+      "given": "William",
+      "family": "Smith",
+      "middle": [],
+      "title": [],
+      "salutation": "Mr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs Prof. Karin Elizabeth vom Williams PhD",
+    "solution": {
+      "given": "Karin",
+      "family": "Williams",
+      "middle": [
+        "Elizabeth"
+      ],
+      "title": [
+        "Prof."
+      ],
       "salutation": "Mrs",
+      "gender": "f",
+      "suffix": [
+        "PhD"
+      ],
+      "particles": [
+        "vom"
+      ]
+    }
+  },
+  {
+    "raw": "Frau Patricia Müller",
+    "solution": {
+      "given": "Patricia",
+      "family": "Müller",
+      "middle": [],
+      "title": [],
+      "salutation": "Frau",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Dipl.-Ing. Renate Schmidt",
+    "solution": {
+      "given": "Renate",
+      "family": "Schmidt",
+      "middle": [],
+      "title": [
+        "Dipl.-Ing."
+      ],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs. Dr. Sabine Brown",
+    "solution": {
+      "given": "Sabine",
+      "family": "Brown",
+      "middle": [],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Prof. Dr. John David Schneider Sr.",
+    "solution": {
+      "given": "John",
+      "family": "Schneider",
+      "middle": [
+        "David"
+      ],
+      "title": [
+        "Prof. Dr."
+      ],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [
+        "Sr."
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs. Helga Meyer",
+    "solution": {
+      "given": "Helga",
+      "family": "Meyer",
+      "middle": [],
+      "title": [],
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr. James zu Weber",
+    "solution": {
+      "given": "James",
+      "family": "Weber",
+      "middle": [],
+      "title": [],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
+      "particles": [
+        "zu"
+      ]
+    }
+  },
+  {
+    "raw": "Mr Prof. Hans Johnson",
+    "solution": {
+      "given": "Hans",
+      "family": "Johnson",
+      "middle": [],
+      "title": [
+        "Prof."
+      ],
+      "salutation": "Mr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Dipl.-Ing. William Peter Schneider",
+    "solution": {
+      "given": "William",
+      "family": "Schneider",
+      "middle": [
+        "Peter"
+      ],
+      "title": [
+        "Dipl.-Ing."
+      ],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Prof. Ursula van Johnson Sr.",
+    "solution": {
+      "given": "Ursula",
+      "family": "Johnson",
+      "middle": [],
+      "title": [
+        "Prof."
+      ],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [
+        "Sr."
+      ],
+      "particles": [
+        "van"
+      ]
+    }
+  },
+  {
+    "raw": "Mrs Linda Hoffmann",
+    "solution": {
+      "given": "Linda",
+      "family": "Hoffmann",
+      "middle": [],
+      "title": [],
+      "salutation": "Mrs",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr. Christian Michael Meyer",
+    "solution": {
+      "given": "Christian",
+      "family": "Meyer",
+      "middle": [
+        "Michael"
+      ],
+      "title": [],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Dr. Helga Hoffmann",
+    "solution": {
+      "given": "Helga",
+      "family": "Hoffmann",
+      "middle": [],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms Elizabeth Linda Hoffmann",
+    "solution": {
+      "given": "Elizabeth",
+      "family": "Hoffmann",
+      "middle": [
+        "Linda"
+      ],
+      "title": [],
+      "salutation": "Ms",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Frau Renate Schneider",
+    "solution": {
+      "given": "Renate",
+      "family": "Schneider",
+      "middle": [],
+      "title": [],
+      "salutation": "Frau",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Frau Dr. Elisabeth Patricia Meyer",
+    "solution": {
+      "given": "Elisabeth",
+      "family": "Meyer",
+      "middle": [
+        "Patricia"
+      ],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "Frau",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs Maria Johnson",
+    "solution": {
+      "given": "Maria",
+      "family": "Johnson",
+      "middle": [],
+      "title": [],
+      "salutation": "Mrs",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "James Brown PhD",
+    "solution": {
+      "given": "James",
+      "family": "Brown",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [
+        "PhD"
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Robert Schneider Jr.",
+    "solution": {
+      "given": "Robert",
+      "family": "Schneider",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [
+        "Jr."
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Prof. William Wolfgang Meyer PhD",
+    "solution": {
+      "given": "William",
+      "family": "Meyer",
+      "middle": [
+        "Wolfgang"
+      ],
+      "title": [
+        "Prof."
+      ],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [
+        "PhD"
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Christian Meyer",
+    "solution": {
+      "given": "Christian",
+      "family": "Meyer",
+      "middle": [],
+      "title": [],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Klaus Becker",
+    "solution": {
+      "given": "Klaus",
+      "family": "Becker",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs. Helga Patricia Schmidt",
+    "solution": {
+      "given": "Helga",
+      "family": "Schmidt",
+      "middle": [
+        "Patricia"
+      ],
+      "title": [],
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Dr. med. Stefan Müller",
+    "solution": {
+      "given": "Stefan",
+      "family": "Müller",
+      "middle": [],
+      "title": [
+        "Dr. med."
+      ],
+      "salutation": "Herr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms Renate Ursula Weber",
+    "solution": {
+      "given": "Renate",
+      "family": "Weber",
+      "middle": [
+        "Ursula"
+      ],
+      "title": [],
+      "salutation": "Ms",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms Helga Jones",
+    "solution": {
+      "given": "Helga",
+      "family": "Jones",
+      "middle": [],
+      "title": [],
+      "salutation": "Ms",
       "gender": "f",
       "suffix": [],
       "particles": []
@@ -34,30 +873,26 @@
     }
   },
   {
-    "raw": "Ms. Dr. med. Petra vom Fischer",
+    "raw": "Dr. Patricia Weber",
     "solution": {
-      "given": "Petra",
-      "family": "Fischer",
+      "given": "Patricia",
+      "family": "Weber",
       "middle": [],
       "title": [
-        "Dr. med."
+        "Dr."
       ],
-      "salutation": "Ms.",
+      "salutation": "",
       "gender": "f",
       "suffix": [],
-      "particles": [
-        "vom"
-      ]
+      "particles": []
     }
   },
   {
-    "raw": "Mr Jürgen William Becker",
+    "raw": "Mr Jürgen Schneider",
     "solution": {
       "given": "Jürgen",
-      "family": "Becker",
-      "middle": [
-        "William"
-      ],
+      "family": "Schneider",
+      "middle": [],
       "title": [],
       "salutation": "Mr",
       "gender": "m",
@@ -66,11 +901,64 @@
     }
   },
   {
-    "raw": "Wolfgang Schneider",
+    "raw": "Mrs Prof. Karin Elizabeth vom Williams PhD",
     "solution": {
-      "given": "Wolfgang",
-      "family": "Schneider",
+      "given": "Karin",
+      "family": "Williams",
+      "middle": [
+        "Elizabeth"
+      ],
+      "title": [
+        "Prof."
+      ],
+      "salutation": "Mrs",
+      "gender": "f",
+      "suffix": [
+        "PhD"
+      ],
+      "particles": [
+        "vom"
+      ]
+    }
+  },
+  {
+    "raw": "Mr. Dipl.-Ing. Hans Wagner III",
+    "solution": {
+      "given": "Hans",
+      "family": "Wagner",
       "middle": [],
+      "title": [
+        "Dipl.-Ing."
+      ],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [
+        "III"
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms Elisabeth Müller",
+    "solution": {
+      "given": "Elisabeth",
+      "family": "Müller",
+      "middle": [],
+      "title": [],
+      "salutation": "Ms",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Andreas Hans Schulz",
+    "solution": {
+      "given": "Andreas",
+      "family": "Schulz",
+      "middle": [
+        "Hans"
+      ],
       "title": [],
       "salutation": "",
       "gender": "m",
@@ -79,62 +967,23 @@
     }
   },
   {
-    "raw": "Mr Christian Schulz",
+    "raw": "Mr. Christian Hoffmann",
     "solution": {
       "given": "Christian",
-      "family": "Schulz",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr Stefan Becker",
-    "solution": {
-      "given": "Stefan",
-      "family": "Becker",
-      "middle": [],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr John Hoffmann",
-    "solution": {
-      "given": "John",
       "family": "Hoffmann",
       "middle": [],
       "title": [],
-      "salutation": "Mr",
+      "salutation": "Mr.",
       "gender": "m",
       "suffix": [],
       "particles": []
     }
   },
   {
-    "raw": "Mr Peter Schulz",
-    "solution": {
-      "given": "Peter",
-      "family": "Schulz",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms Sabine Becker Sr.",
+    "raw": "Ms Sabine Williams Sr.",
     "solution": {
       "given": "Sabine",
-      "family": "Becker",
+      "family": "Williams",
       "middle": [],
       "title": [],
       "salutation": "Ms",
@@ -146,55 +995,16 @@
     }
   },
   {
-    "raw": "Mrs Ursula Elizabeth Wagner",
+    "raw": "Dipl.-Ing. Peter von Schulz",
     "solution": {
-      "given": "Ursula",
-      "family": "Wagner",
-      "middle": [
-        "Elizabeth"
+      "given": "Peter",
+      "family": "Schulz",
+      "middle": [],
+      "title": [
+        "Dipl.-Ing."
       ],
-      "title": [],
-      "salutation": "Mrs",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr David Williams",
-    "solution": {
-      "given": "David",
-      "family": "Williams",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr",
+      "salutation": "",
       "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Frau Mary Weber",
-    "solution": {
-      "given": "Mary",
-      "family": "Weber",
-      "middle": [],
-      "title": [],
-      "salutation": "Frau",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Frau Monika von Smith",
-    "solution": {
-      "given": "Monika",
-      "family": "Smith",
-      "middle": [],
-      "title": [],
-      "salutation": "Frau",
-      "gender": "f",
       "suffix": [],
       "particles": [
         "von"
@@ -202,12 +1012,14 @@
     }
   },
   {
-    "raw": "Hans Becker",
+    "raw": "Dipl.-Ing. Wolfgang Müller",
     "solution": {
-      "given": "Hans",
-      "family": "Becker",
+      "given": "Wolfgang",
+      "family": "Müller",
       "middle": [],
-      "title": [],
+      "title": [
+        "Dipl.-Ing."
+      ],
       "salutation": "",
       "gender": "m",
       "suffix": [],
@@ -215,61 +1027,38 @@
     }
   },
   {
-    "raw": "Ms Maria Elisabeth Weber PhD",
+    "raw": "Mr. Robert Smith",
     "solution": {
-      "given": "Maria",
-      "family": "Weber",
-      "middle": [
-        "Elisabeth"
-      ],
-      "title": [],
-      "salutation": "Ms",
-      "gender": "f",
-      "suffix": [
-        "PhD"
-      ],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Prof. Renate Elizabeth Wagner Sr.",
-    "solution": {
-      "given": "Renate",
-      "family": "Wagner",
-      "middle": [
-        "Elizabeth"
-      ],
-      "title": [
-        "Prof."
-      ],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [
-        "Sr."
-      ],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Maria Williams",
-    "solution": {
-      "given": "Maria",
-      "family": "Williams",
+      "given": "Robert",
+      "family": "Smith",
       "middle": [],
       "title": [],
-      "salutation": "Ms.",
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Ms Patricia Müller",
+    "solution": {
+      "given": "Patricia",
+      "family": "Müller",
+      "middle": [],
+      "title": [],
+      "salutation": "Ms",
       "gender": "f",
       "suffix": [],
       "particles": []
     }
   },
   {
-    "raw": "Mr. Dipl.-Ing. James Klaus Fischer Sr.",
+    "raw": "Mr. Dipl.-Ing. Klaus Andreas van Wagner III",
     "solution": {
-      "given": "James",
-      "family": "Fischer",
+      "given": "Klaus",
+      "family": "Wagner",
       "middle": [
-        "Klaus"
+        "Andreas"
       ],
       "title": [
         "Dipl.-Ing."
@@ -277,37 +1066,155 @@
       "salutation": "Mr.",
       "gender": "m",
       "suffix": [
-        "Sr."
+        "III"
       ],
+      "particles": [
+        "van"
+      ]
+    }
+  },
+  {
+    "raw": "Mr. David Jones",
+    "solution": {
+      "given": "David",
+      "family": "Jones",
+      "middle": [],
+      "title": [],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
       "particles": []
     }
   },
   {
-    "raw": "Herr Prof. Wolfgang Becker Sr.",
+    "raw": "Dr. Renate Williams",
     "solution": {
-      "given": "Wolfgang",
-      "family": "Becker",
+      "given": "Renate",
+      "family": "Williams",
+      "middle": [],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr. Dipl.-Ing. Stefan Weber",
+    "solution": {
+      "given": "Stefan",
+      "family": "Weber",
+      "middle": [],
+      "title": [
+        "Dipl.-Ing."
+      ],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr. Andreas Wagner",
+    "solution": {
+      "given": "Andreas",
+      "family": "Wagner",
+      "middle": [],
+      "title": [],
+      "salutation": "Mr.",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs. Prof. Monika zu Johnson",
+    "solution": {
+      "given": "Monika",
+      "family": "Johnson",
       "middle": [],
       "title": [
         "Prof."
       ],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [
-        "Sr."
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": [
+        "zu"
+      ]
+    }
+  },
+  {
+    "raw": "Mr Dipl.-Ing. Robert Johnson",
+    "solution": {
+      "given": "Robert",
+      "family": "Johnson",
+      "middle": [],
+      "title": [
+        "Dipl.-Ing."
       ],
+      "salutation": "Mr",
+      "gender": "m",
+      "suffix": [],
       "particles": []
     }
   },
   {
-    "raw": "Herr Michael Christian Williams",
+    "raw": "Mr Dr. Christian James Smith",
     "solution": {
-      "given": "Michael",
-      "family": "Williams",
+      "given": "Christian",
+      "family": "Smith",
       "middle": [
-        "Christian"
+        "James"
       ],
+      "title": [
+        "Dr."
+      ],
+      "salutation": "Mr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr William Smith",
+    "solution": {
+      "given": "William",
+      "family": "Smith",
+      "middle": [],
       "title": [],
+      "salutation": "Mr",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mrs. Prof. Maria Weber",
+    "solution": {
+      "given": "Maria",
+      "family": "Weber",
+      "middle": [],
+      "title": [
+        "Prof."
+      ],
+      "salutation": "Mrs.",
+      "gender": "f",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Herr Prof. Jürgen Smith",
+    "solution": {
+      "given": "Jürgen",
+      "family": "Smith",
+      "middle": [],
+      "title": [
+        "Prof."
+      ],
       "salutation": "Herr",
       "gender": "m",
       "suffix": [],
@@ -330,98 +1237,12 @@
     }
   },
   {
-    "raw": "Dipl.-Ing. Renate Schmidt",
+    "raw": "Mrs Jennifer Williams",
     "solution": {
-      "given": "Renate",
-      "family": "Schmidt",
-      "middle": [],
-      "title": [
-        "Dipl.-Ing."
-      ],
-      "salutation": "",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Renate Fischer",
-    "solution": {
-      "given": "Renate",
-      "family": "Fischer",
-      "middle": [],
-      "title": [],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. Prof. William Brown",
-    "solution": {
-      "given": "William",
-      "family": "Brown",
-      "middle": [],
-      "title": [
-        "Prof."
-      ],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Klaus Williams",
-    "solution": {
-      "given": "Klaus",
+      "given": "Jennifer",
       "family": "Williams",
       "middle": [],
       "title": [],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr Stefan Fischer",
-    "solution": {
-      "given": "Stefan",
-      "family": "Fischer",
-      "middle": [],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Dipl.-Ing. Robert Johnson",
-    "solution": {
-      "given": "Robert",
-      "family": "Johnson",
-      "middle": [],
-      "title": [
-        "Dipl.-Ing."
-      ],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mrs Dr. med. Monika Brown",
-    "solution": {
-      "given": "Monika",
-      "family": "Brown",
-      "middle": [],
-      "title": [
-        "Dr. med."
-      ],
       "salutation": "Mrs",
       "gender": "f",
       "suffix": [],
@@ -429,120 +1250,49 @@
     }
   },
   {
-    "raw": "Mrs. Dipl.-Ing. Brigitte Jones",
+    "raw": "Dr. med. William Meyer",
     "solution": {
-      "given": "Brigitte",
-      "family": "Jones",
-      "middle": [],
-      "title": [
-        "Dipl.-Ing."
-      ],
-      "salutation": "Mrs.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr David Weber",
-    "solution": {
-      "given": "David",
-      "family": "Weber",
-      "middle": [],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Frau Petra Wagner",
-    "solution": {
-      "given": "Petra",
-      "family": "Wagner",
-      "middle": [],
-      "title": [],
-      "salutation": "Frau",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Michael Brown",
-    "solution": {
-      "given": "Michael",
-      "family": "Brown",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Dr. Sabine Becker Sr.",
-    "solution": {
-      "given": "Sabine",
-      "family": "Becker",
-      "middle": [],
-      "title": [
-        "Dr."
-      ],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [
-        "Sr."
-      ],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Prof. Dr. Andreas Robert Wagner Jr.",
-    "solution": {
-      "given": "Andreas",
-      "family": "Wagner",
-      "middle": [
-        "Robert"
-      ],
-      "title": [
-        "Prof. Dr."
-      ],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [
-        "Jr."
-      ],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Frau Karin Meyer Jr.",
-    "solution": {
-      "given": "Karin",
+      "given": "William",
       "family": "Meyer",
       "middle": [],
-      "title": [],
-      "salutation": "Frau",
-      "gender": "f",
-      "suffix": [
-        "Jr."
+      "title": [
+        "Dr. med."
       ],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [],
       "particles": []
     }
   },
   {
-    "raw": "Mr Prof. Dr. David von Hoffmann",
+    "raw": "Mary Brigitte de Brown Jr.",
     "solution": {
-      "given": "David",
-      "family": "Hoffmann",
+      "given": "Mary",
+      "family": "Brown",
+      "middle": [
+        "Brigitte"
+      ],
+      "title": [],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [
+        "Jr."
+      ],
+      "particles": [
+        "de"
+      ]
+    }
+  },
+  {
+    "raw": "Mr. Dr. med. Wolfgang von Meyer",
+    "solution": {
+      "given": "Wolfgang",
+      "family": "Meyer",
       "middle": [],
       "title": [
-        "Prof. Dr."
+        "Dr. med."
       ],
-      "salutation": "Mr",
+      "salutation": "Mr.",
       "gender": "m",
       "suffix": [],
       "particles": [
@@ -551,49 +1301,32 @@
     }
   },
   {
-    "raw": "Prof. Dr. Stefan James de Müller",
+    "raw": "Mrs Jennifer Weber",
     "solution": {
-      "given": "Stefan",
-      "family": "Müller",
-      "middle": [
-        "James"
-      ],
-      "title": [
-        "Prof. Dr."
-      ],
-      "salutation": "",
-      "gender": "m",
-      "suffix": [],
-      "particles": [
-        "de"
-      ]
-    }
-  },
-  {
-    "raw": "Stefan Weber",
-    "solution": {
-      "given": "Stefan",
+      "given": "Jennifer",
       "family": "Weber",
       "middle": [],
       "title": [],
-      "salutation": "",
-      "gender": "m",
+      "salutation": "Mrs",
+      "gender": "f",
       "suffix": [],
       "particles": []
     }
   },
   {
-    "raw": "Ms. Prof. Monika Schneider",
+    "raw": "Mrs Dr. med. Monika Schneider PhD",
     "solution": {
       "given": "Monika",
       "family": "Schneider",
       "middle": [],
       "title": [
-        "Prof."
+        "Dr. med."
       ],
-      "salutation": "Ms.",
+      "salutation": "Mrs",
       "gender": "f",
-      "suffix": [],
+      "suffix": [
+        "PhD"
+      ],
       "particles": []
     }
   },
@@ -613,133 +1346,62 @@
     }
   },
   {
-    "raw": "Mr Prof. Dr. Klaus zu Müller",
+    "raw": "Herr Peter Weber",
     "solution": {
-      "given": "Klaus",
-      "family": "Müller",
+      "given": "Peter",
+      "family": "Weber",
       "middle": [],
-      "title": [
-        "Prof. Dr."
-      ],
-      "salutation": "Mr",
+      "title": [],
+      "salutation": "Herr",
       "gender": "m",
       "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Dr. med. Renate Brigitte de Schmidt",
+    "solution": {
+      "given": "Renate",
+      "family": "Schmidt",
+      "middle": [
+        "Brigitte"
+      ],
+      "title": [
+        "Dr. med."
+      ],
+      "salutation": "",
+      "gender": "f",
+      "suffix": [],
       "particles": [
-        "zu"
+        "de"
       ]
     }
   },
   {
-    "raw": "Frau Petra Jones PhD",
+    "raw": "Mr Michael van Becker PhD",
     "solution": {
-      "given": "Petra",
-      "family": "Jones",
-      "middle": [],
-      "title": [],
-      "salutation": "Frau",
-      "gender": "f",
-      "suffix": [
-        "PhD"
-      ],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr Dr. John Schneider",
-    "solution": {
-      "given": "John",
-      "family": "Schneider",
-      "middle": [],
-      "title": [
-        "Dr."
-      ],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr Robert Jürgen Weber",
-    "solution": {
-      "given": "Robert",
-      "family": "Weber",
-      "middle": [
-        "Jürgen"
-      ],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mrs Petra Elisabeth Wagner",
-    "solution": {
-      "given": "Petra",
-      "family": "Wagner",
-      "middle": [
-        "Elisabeth"
-      ],
-      "title": [],
-      "salutation": "Mrs",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Petra Williams",
-    "solution": {
-      "given": "Petra",
-      "family": "Williams",
-      "middle": [],
-      "title": [],
-      "salutation": "",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. Prof. Dr. John William Johnson",
-    "solution": {
-      "given": "John",
-      "family": "Johnson",
-      "middle": [
-        "William"
-      ],
-      "title": [
-        "Prof. Dr."
-      ],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Stefan Fischer",
-    "solution": {
-      "given": "Stefan",
-      "family": "Fischer",
+      "given": "Michael",
+      "family": "Becker",
       "middle": [],
       "title": [],
       "salutation": "Mr",
       "gender": "m",
-      "suffix": [],
-      "particles": []
+      "suffix": [
+        "PhD"
+      ],
+      "particles": [
+        "van"
+      ]
     }
   },
   {
-    "raw": "Hans Schneider PhD",
+    "raw": "Mr Thomas Weber PhD",
     "solution": {
-      "given": "Hans",
-      "family": "Schneider",
+      "given": "Thomas",
+      "family": "Weber",
       "middle": [],
       "title": [],
-      "salutation": "",
+      "salutation": "Mr",
       "gender": "m",
       "suffix": [
         "PhD"
@@ -748,72 +1410,29 @@
     }
   },
   {
-    "raw": "Herr Prof. Jürgen Thomas Jones",
+    "raw": "Wolfgang Johnson",
     "solution": {
-      "given": "Jürgen",
-      "family": "Jones",
+      "given": "Wolfgang",
+      "family": "Johnson",
+      "middle": [],
+      "title": [],
+      "salutation": "",
+      "gender": "m",
+      "suffix": [],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Prof. James Robert Brown",
+    "solution": {
+      "given": "James",
+      "family": "Brown",
       "middle": [
-        "Thomas"
+        "Robert"
       ],
       "title": [
         "Prof."
       ],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Dr. Robert Schulz",
-    "solution": {
-      "given": "Robert",
-      "family": "Schulz",
-      "middle": [],
-      "title": [
-        "Dr."
-      ],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mrs Petra Smith",
-    "solution": {
-      "given": "Petra",
-      "family": "Smith",
-      "middle": [],
-      "title": [],
-      "salutation": "Mrs",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms Dr. Ursula Johnson",
-    "solution": {
-      "given": "Ursula",
-      "family": "Johnson",
-      "middle": [],
-      "title": [
-        "Dr."
-      ],
-      "salutation": "Ms",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Michael Meyer",
-    "solution": {
-      "given": "Michael",
-      "family": "Meyer",
-      "middle": [],
-      "title": [],
       "salutation": "",
       "gender": "m",
       "suffix": [],
@@ -821,10 +1440,10 @@
     }
   },
   {
-    "raw": "Ms. Linda Smith",
+    "raw": "Ms. Maria Williams",
     "solution": {
-      "given": "Linda",
-      "family": "Smith",
+      "given": "Maria",
+      "family": "Williams",
       "middle": [],
       "title": [],
       "salutation": "Ms.",
@@ -834,106 +1453,18 @@
     }
   },
   {
-    "raw": "Mr. Stefan Williams",
+    "raw": "Herr Prof. Andreas Jones",
     "solution": {
-      "given": "Stefan",
-      "family": "Williams",
+      "given": "Andreas",
+      "family": "Jones",
       "middle": [],
-      "title": [],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr John Schneider",
-    "solution": {
-      "given": "John",
-      "family": "Schneider",
-      "middle": [],
-      "title": [],
+      "title": [
+        "Prof."
+      ],
       "salutation": "Herr",
       "gender": "m",
       "suffix": [],
       "particles": []
-    }
-  },
-  {
-    "raw": "Mr Dipl.-Ing. Michael Andreas Schulz",
-    "solution": {
-      "given": "Michael",
-      "family": "Schulz",
-      "middle": [
-        "Andreas"
-      ],
-      "title": [
-        "Dipl.-Ing."
-      ],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. Christian Smith",
-    "solution": {
-      "given": "Christian",
-      "family": "Smith",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Monika Patricia Fischer",
-    "solution": {
-      "given": "Monika",
-      "family": "Fischer",
-      "middle": [
-        "Patricia"
-      ],
-      "title": [],
-      "salutation": "",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. William Müller",
-    "solution": {
-      "given": "William",
-      "family": "Müller",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Dipl.-Ing. David Jürgen vom Weber",
-    "solution": {
-      "given": "David",
-      "family": "Weber",
-      "middle": [
-        "Jürgen"
-      ],
-      "title": [
-        "Dipl.-Ing."
-      ],
-      "salutation": "",
-      "gender": "m",
-      "suffix": [],
-      "particles": [
-        "vom"
-      ]
     }
   },
   {
@@ -954,26 +1485,37 @@
     }
   },
   {
-    "raw": "Mr Dr. med. Klaus Wolfgang Jones",
+    "raw": "Mrs. Elisabeth Williams",
     "solution": {
-      "given": "Klaus",
-      "family": "Jones",
-      "middle": [
-        "Wolfgang"
-      ],
-      "title": [
-        "Dr. med."
-      ],
-      "salutation": "Mr",
-      "gender": "m",
+      "given": "Elisabeth",
+      "family": "Williams",
+      "middle": [],
+      "title": [],
+      "salutation": "Mrs.",
+      "gender": "f",
       "suffix": [],
       "particles": []
     }
   },
   {
-    "raw": "Mr. Prof. John Schmidt",
+    "raw": "Ms. Helga Meyer III",
     "solution": {
-      "given": "John",
+      "given": "Helga",
+      "family": "Meyer",
+      "middle": [],
+      "title": [],
+      "salutation": "Ms.",
+      "gender": "f",
+      "suffix": [
+        "III"
+      ],
+      "particles": []
+    }
+  },
+  {
+    "raw": "Mr. Prof. Jürgen vom Schmidt",
+    "solution": {
+      "given": "Jürgen",
       "family": "Schmidt",
       "middle": [],
       "title": [
@@ -982,495 +1524,9 @@
       "salutation": "Mr.",
       "gender": "m",
       "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Prof. Dr. Andreas Weber",
-    "solution": {
-      "given": "Andreas",
-      "family": "Weber",
-      "middle": [],
-      "title": [
-        "Prof. Dr."
-      ],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mrs. Helga Patricia Schmidt",
-    "solution": {
-      "given": "Helga",
-      "family": "Schmidt",
-      "middle": [
-        "Patricia"
-      ],
-      "title": [],
-      "salutation": "Mrs.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mrs. Jennifer Schneider",
-    "solution": {
-      "given": "Jennifer",
-      "family": "Schneider",
-      "middle": [],
-      "title": [],
-      "salutation": "Mrs.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Jürgen Schneider",
-    "solution": {
-      "given": "Jürgen",
-      "family": "Schneider",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Wolfgang Johnson",
-    "solution": {
-      "given": "Wolfgang",
-      "family": "Johnson",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mrs. Renate Becker",
-    "solution": {
-      "given": "Renate",
-      "family": "Becker",
-      "middle": [],
-      "title": [],
-      "salutation": "Mrs.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr Prof. Dr. Michael vom Jones",
-    "solution": {
-      "given": "Michael",
-      "family": "Jones",
-      "middle": [],
-      "title": [
-        "Prof. Dr."
-      ],
-      "salutation": "Mr",
-      "gender": "m",
-      "suffix": [],
       "particles": [
         "vom"
       ]
-    }
-  },
-  {
-    "raw": "Mrs Monika Jones",
-    "solution": {
-      "given": "Monika",
-      "family": "Jones",
-      "middle": [],
-      "title": [],
-      "salutation": "Mrs",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Dr. med. Elizabeth vom Müller",
-    "solution": {
-      "given": "Elizabeth",
-      "family": "Müller",
-      "middle": [],
-      "title": [
-        "Dr. med."
-      ],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [],
-      "particles": [
-        "vom"
-      ]
-    }
-  },
-  {
-    "raw": "Herr Klaus Weber",
-    "solution": {
-      "given": "Klaus",
-      "family": "Weber",
-      "middle": [],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Dr. med. Brigitte Weber",
-    "solution": {
-      "given": "Brigitte",
-      "family": "Weber",
-      "middle": [],
-      "title": [
-        "Dr. med."
-      ],
-      "salutation": "",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. Dr. med. Klaus Schneider",
-    "solution": {
-      "given": "Klaus",
-      "family": "Schneider",
-      "middle": [],
-      "title": [
-        "Dr. med."
-      ],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. Dipl.-Ing. Thomas Müller",
-    "solution": {
-      "given": "Thomas",
-      "family": "Müller",
-      "middle": [],
-      "title": [
-        "Dipl.-Ing."
-      ],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Prof. Dr. Petra Brown",
-    "solution": {
-      "given": "Petra",
-      "family": "Brown",
-      "middle": [],
-      "title": [
-        "Prof. Dr."
-      ],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms Maria Wagner",
-    "solution": {
-      "given": "Maria",
-      "family": "Wagner",
-      "middle": [],
-      "title": [],
-      "salutation": "Ms",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr Michael James Jones",
-    "solution": {
-      "given": "Michael",
-      "family": "Jones",
-      "middle": [
-        "James"
-      ],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms Linda de Fischer",
-    "solution": {
-      "given": "Linda",
-      "family": "Fischer",
-      "middle": [],
-      "title": [],
-      "salutation": "Ms",
-      "gender": "f",
-      "suffix": [],
-      "particles": [
-        "de"
-      ]
-    }
-  },
-  {
-    "raw": "Mr. Klaus Wagner",
-    "solution": {
-      "given": "Klaus",
-      "family": "Wagner",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mrs Dr. med. Monika Patricia Meyer",
-    "solution": {
-      "given": "Monika",
-      "family": "Meyer",
-      "middle": [
-        "Patricia"
-      ],
-      "title": [
-        "Dr. med."
-      ],
-      "salutation": "Mrs",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms Brigitte Fischer",
-    "solution": {
-      "given": "Brigitte",
-      "family": "Fischer",
-      "middle": [],
-      "title": [],
-      "salutation": "Ms",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. James zu Weber",
-    "solution": {
-      "given": "James",
-      "family": "Weber",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": [
-        "zu"
-      ]
-    }
-  },
-  {
-    "raw": "Frau Helga Schulz",
-    "solution": {
-      "given": "Helga",
-      "family": "Schulz",
-      "middle": [],
-      "title": [],
-      "salutation": "Frau",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Mr. Dipl.-Ing. Klaus Fischer",
-    "solution": {
-      "given": "Klaus",
-      "family": "Fischer",
-      "middle": [],
-      "title": [
-        "Dipl.-Ing."
-      ],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Frau Brigitte Helga Smith",
-    "solution": {
-      "given": "Brigitte",
-      "family": "Smith",
-      "middle": [
-        "Helga"
-      ],
-      "title": [],
-      "salutation": "Frau",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms Sabine de Williams",
-    "solution": {
-      "given": "Sabine",
-      "family": "Williams",
-      "middle": [],
-      "title": [],
-      "salutation": "Ms",
-      "gender": "f",
-      "suffix": [],
-      "particles": [
-        "de"
-      ]
-    }
-  },
-  {
-    "raw": "Mr. Michael Brown",
-    "solution": {
-      "given": "Michael",
-      "family": "Brown",
-      "middle": [],
-      "title": [],
-      "salutation": "Mr.",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Jennifer Ursula Schneider",
-    "solution": {
-      "given": "Jennifer",
-      "family": "Schneider",
-      "middle": [
-        "Ursula"
-      ],
-      "title": [],
-      "salutation": "",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr James Williams",
-    "solution": {
-      "given": "James",
-      "family": "Williams",
-      "middle": [],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Herr Christian Becker",
-    "solution": {
-      "given": "Christian",
-      "family": "Becker",
-      "middle": [],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Jürgen Thomas Schmidt",
-    "solution": {
-      "given": "Jürgen",
-      "family": "Schmidt",
-      "middle": [
-        "Thomas"
-      ],
-      "title": [],
-      "salutation": "",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Mary Karin Hoffmann",
-    "solution": {
-      "given": "Mary",
-      "family": "Hoffmann",
-      "middle": [
-        "Karin"
-      ],
-      "title": [],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Patricia zu Williams",
-    "solution": {
-      "given": "Patricia",
-      "family": "Williams",
-      "middle": [],
-      "title": [],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [],
-      "particles": [
-        "zu"
-      ]
-    }
-  },
-  {
-    "raw": "Herr Robert Meyer",
-    "solution": {
-      "given": "Robert",
-      "family": "Meyer",
-      "middle": [],
-      "title": [],
-      "salutation": "Herr",
-      "gender": "m",
-      "suffix": [],
-      "particles": []
-    }
-  },
-  {
-    "raw": "Ms. Maria Ursula Becker",
-    "solution": {
-      "given": "Maria",
-      "family": "Becker",
-      "middle": [
-        "Ursula"
-      ],
-      "title": [],
-      "salutation": "Ms.",
-      "gender": "f",
-      "suffix": [],
-      "particles": []
     }
   }
 ]

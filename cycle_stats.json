@@ -1,0 +1,13 @@
+{
+    "family": 0.895,
+    "given": 0.97625,
+    "title": 0.54625,
+    "suffix": 0.82625,
+    "gender": 0.5075,
+    "exact": 0.03,
+    "coverage": 0.5325,
+    "uncertainty": 1.0,
+    "hallucination": 0.0,
+    "vital_penalty": 0.0,
+    "final_score": 0.6210862500000001
+}

@@ -1,0 +1,77 @@
+============================================================
+CHAMPION DEBUG ANALYSIS
+============================================================
+
+[INPUT]: Frau Dipl.-Ing. Petra Schneider
+[TOKENS]: Frau(SALUTATION), Dipl.-Ing.(TITLE), Petra(WORD), Schneider(WORD)
+[PREDICTION]:
+  Salutation: 'Frau'
+  Title:      []
+  Given:      'Petra'
+  Family:     'schneider'
+  Suffix:     []
+  Particles:  []
+[ISSUES]: Missing Title: Dipl.-Ing.
+------------------------------------------------------------
+
+[INPUT]: Mrs. Karin de Jones
+[TOKENS]: Mrs.(SALUTATION), Karin(WORD), de(PARTICLE), Jones(WORD)
+[PREDICTION]:
+  Salutation: 'Mrs'
+  Title:      []
+  Given:      'Karin'
+  Family:     'jones'
+  Suffix:     []
+  Particles:  ['de']
+[ISSUES]: None detected by heuristic
+------------------------------------------------------------
+
+[INPUT]: Mr. Robert Schneider
+[TOKENS]: Mr.(SALUTATION), Robert(WORD), Schneider(WORD)
+[PREDICTION]:
+  Salutation: 'Mr'
+  Title:      []
+  Given:      'Robert'
+  Family:     'schneider'
+  Suffix:     []
+  Particles:  []
+[ISSUES]: None detected by heuristic
+------------------------------------------------------------
+
+[INPUT]: Prof. Dr. Petra Brown
+[TOKENS]: Prof.(TITLE), Dr.(TITLE), Petra(WORD), Brown(WORD)
+[PREDICTION]:
+  Salutation: ''
+  Title:      []
+  Given:      'Petra'
+  Family:     'brown'
+  Suffix:     []
+  Particles:  []
+[ISSUES]: None detected by heuristic
+------------------------------------------------------------
+
+[INPUT]: Dr. med. Robert Brown
+[TOKENS]: Dr.(TITLE), med.(TITLE), Robert(WORD), Brown(WORD)
+[PREDICTION]:
+  Salutation: ''
+  Title:      []
+  Given:      'Robert'
+  Family:     'brown'
+  Suffix:     []
+  Particles:  []
+[ISSUES]: None detected by heuristic
+------------------------------------------------------------
+
+[INPUT]: James Brown PhD
+[TOKENS]: James(WORD), Brown(WORD), PhD(DEGREE)
+[PREDICTION]:
+  Salutation: ''
+  Title:      []
+  Given:      'James'
+  Family:     'brown'
+  Suffix:     []
+  Particles:  []
+[ISSUES]: Missing PhD
+------------------------------------------------------------
+
+[TREE]: make_name_obj(if_bool_string(FALSE, EMPTY_STR, raw_input), trim(extract_salutation_str(get_tokens_before_comma(tokenize(raw_input)))), extract_suffix_list(get_remainder_tokens(tokenize(get_first_string(extract_suffix_list(get_remainder_tokens(drop_first(EMPTY_TOK_LIST), tokenize(if_bool_string(TRUE, raw_input, EMPTY_STR)))))), tokenize(if_bool_string(TRUE, raw_input, EMPTY_STR)))), trim(extract_given_str(tokenize(trim(raw_input)))), trim(to_lower(extract_family_str(tokenize(raw_input)))), extract_middle_str(tokenize(raw_input)), FEMALE, extract_suffix_list(get_remainder_tokens(remove_type(EMPTY_TOK_LIST, WORD), remove_type(slice_tokens(remove_type(tokenize(if_bool_string(TRUE, raw_input, to_lower(if_bool_string(FALSE, raw_input, EMPTY_STR)))), identity_token_type(DEGREE)), TRUE, is_suffix(EMPTY_TOKEN)), identity_token_type(PARTICLE)))), extract_particles_list(tokenize(if_bool_string(FALSE, get_first_string(extract_suffix_list(EMPTY_TOK_LIST)), if_bool_string(is_particle(get_first_token(remove_type(EMPTY_TOK_LIST, identity_token_type(DEGREE)))), extract_salutation_str(slice_tokens(remove_type(EMPTY_TOK_LIST, WORD), count_type(tokenize(to_lower(to_lower(EMPTY_STR))), identity_token_type(TITLE)), index_of_type(remove_type(EMPTY_TOK_LIST, identity_token_type(DEGREE)), identity_token_type(PARTICLE)))), to_lower(raw_input))))))

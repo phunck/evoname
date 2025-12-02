@@ -1,0 +1,65 @@
+             Champion Debug Analysis              
++------------------------------------------------+
+| Raw Input | Tokens    | Prediction | Issues    |
+|-----------+-----------+------------+-----------|
+| Frau      | Frau(SAL… | Sal: Frau  | Missing   |
+| Dipl.-In… | Dipl.-In… | Tit: []    | Title:    |
+| Petra     | Petra(WO… | Giv: petra | Dipl.-In… |
+| Schneider | Schneide… | Fam:       |           |
+|           |           | schneider  |           |
+|           |           | Suf: []    |           |
+|           |           | Par: []    |           |
+| Mrs.      | Mrs.(SAL… | Sal: Mrs   |           |
+| Karin de  | Karin(WO… | Tit: []    |           |
+| Jones     | de(PARTI… | Giv: karin |           |
+|           | Jones(WO… | Fam: jones |           |
+|           |           | Suf: []    |           |
+|           |           | Par:       |           |
+|           |           | ['de']     |           |
+| Mr.       | Mr.(SALU… | Sal: Mr    |           |
+| Robert    | Robert(W… | Tit: []    |           |
+| Schneider | Schneide… | Giv:       |           |
+|           |           | robert     |           |
+|           |           | Fam:       |           |
+|           |           | schneider  |           |
+|           |           | Suf: []    |           |
+|           |           | Par: []    |           |
+| Prof. Dr. | Prof.(TI… | Sal:       |           |
+| Petra     | Dr.(TITL… | Tit: []    |           |
+| Brown     | Petra(WO… | Giv: petra |           |
+|           | Brown(WO… | Fam: brown |           |
+|           |           | Suf: []    |           |
+|           |           | Par: []    |           |
+| Dr. med.  | Dr.(TITL… | Sal:       |           |
+| Robert    | med.(TIT… | Tit: []    |           |
+| Brown     | Robert(W… | Giv:       |           |
+|           | Brown(WO… | robert     |           |
+|           |           | Fam: brown |           |
+|           |           | Suf: []    |           |
+|           |           | Par: []    |           |
+| James     | James(WO… | Sal:       | Missing   |
+| Brown PhD | Brown(WO… | Tit: []    | PhD       |
+|           | PhD(DEGR… | Giv: james |           |
+|           |           | Fam: brown |           |
+|           |           | Suf: []    |           |
+|           |           | Par: []    |           |
++------------------------------------------------+
+
+Champion Tree: 
+make_name_obj(if_bool_string(is_suffix(EMPTY_TOKEN
+), 
+get_last_string(split_on_comma(to_lower(extract_gi
+ven_str(tokenize(get_first_string(EMPTY_STR_LIST))
+)))), raw_input), 
+trim(extract_salutation_str(get_tokens_before_comm
+a(tokenize(raw_input)))), 
+extract_particles_list(slice_tokens(EMPTY_TOK_LIST
+, TRUE, 4)), 
+trim(get_first_string(split_on_comma(to_lower(extr
+act_given_str(tokenize(raw_input)))))), 
+trim(to_lower(extract_family_str(tokenize(raw_inpu
+t)))), extract_middle_str(tokenize(raw_input)), 
+FEMALE, extract_middle_str(EMPTY_TOK_LIST), 
+extract_particles_list(tokenize(if_bool_string(has
+_hyphen(EMPTY_TOKEN), raw_input, 
+to_lower(raw_input)))))

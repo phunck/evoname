@@ -35,7 +35,7 @@
     },
     "TOKEN_TITLE": {
         "de": {
-            "pattern": "(Dr\\.?|Prof\\.?|Dipl\\.-?Ing\\.?|Dipl\\.-?Kfm\\.?|Mag\\.|med\\.?)",
+            "pattern": "(Dr\\.?|Prof\\.?|Dipl\\.-?\\s?Ing\\.?|Dipl\\.-?Kfm\\.?|Mag\\.|med\\.?)",
             "flags": "i",
             "description": "Deutsche Titel",
             "examples": [

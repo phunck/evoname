@@ -45,6 +45,24 @@ def setup_gp():
     pset.addPrimitive(index_of_type, [TokenList, RegexToken], int)
     pset.addPrimitive(get_remainder_tokens, [TokenList, TokenList], TokenList)
     
+    # -- New Context Primitives --
+    pset.addPrimitive(get_tokens_before_comma, [TokenList], TokenList)
+    pset.addPrimitive(get_tokens_after_comma, [TokenList], TokenList)
+    pset.addPrimitive(is_all_caps, [Token], bool)
+    pset.addPrimitive(is_capitalized, [Token], bool)
+    pset.addPrimitive(is_short, [Token], bool)
+    pset.addPrimitive(is_common_given_name, [Token], bool)
+    pset.addPrimitive(is_common_family_name, [Token], bool)
+
+    # -- Statistical & Feature Primitives --
+    pset.addPrimitive(token_length, [Token], int)
+    pset.addPrimitive(is_initial, [Token], bool)
+    pset.addPrimitive(has_hyphen, [Token], bool)
+    pset.addPrimitive(has_period, [Token], bool)
+    pset.addPrimitive(is_roman_numeral, [Token], bool)
+    pset.addPrimitive(is_particle, [Token], bool)
+    pset.addPrimitive(is_suffix, [Token], bool)
+    
     # -- Token Muscles --
     pset.addPrimitive(tokenize, [str], TokenList) # Uses default locale for now, or we inject it?
     # Note: tokenize signature is (str, locale). We might need to curry it or fix locale.
@@ -73,7 +91,7 @@ def setup_gp():
     
     # -- Object Builder --
     pset.addPrimitive(make_name_obj, 
-                      [str, str, str, StringList, StringList, str, Gender, StringList, StringList], 
+                      [str, str, StringList, str, str, StringList, Gender, StringList, StringList], 
                       NameObj)
     pset.addPrimitive(set_confidence, [NameObj, float], NameObj)
     
@@ -181,6 +199,8 @@ def main():
     print(f"Loading model from {args.model}...")
     with open(args.model, "rb") as f:
         champion = pickle.load(f)
+    
+    print(f"Champion Tree: {champion}")
         
     print(f"Loading data from {args.data}...")
     with open(args.data, "r", encoding="utf-8") as f:
@@ -189,6 +209,8 @@ def main():
     # Compile
     pset = setup_gp()
     func = gp.compile(champion, pset)
+    
+    print("Evaluating...")
     
     buckets = {
         "100% (Perfect)": [],
@@ -201,6 +223,7 @@ def main():
     for entry in data:
         raw = entry["raw"]
         try:
+            if raw is None: print("DEBUG: raw is None!")
             pred = func(raw)
             # Ensure we have a NameObj
             if not isinstance(pred, NameObj):
@@ -228,6 +251,8 @@ def main():
                 buckets["0% - 49% (Bad)"].append(item)
                 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Error processing '{raw}': {e}")
 
     # Output Report

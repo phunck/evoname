@@ -183,6 +183,11 @@ def drop_last(l: TokenList) -> TokenList:
     return TokenList(l[:-1]) if l else TokenList([])
 
 def remove_type(tokens: TokenList, type_: RegexToken) -> TokenList:
+    if tokens is None:
+        print("DEBUG: remove_type received tokens=None")
+        return TokenList([])
+    if type_ is None:
+        print("DEBUG: remove_type received type_=None")
     return TokenList([t for t in tokens if t.type != type_])
 
 def index_of_type(tokens: TokenList, type_: RegexToken) -> int:
@@ -193,12 +198,23 @@ def index_of_type(tokens: TokenList, type_: RegexToken) -> int:
 
 def get_remainder_tokens(original: TokenList, used: TokenList) -> TokenList:
     # Set subtraction based on object identity or span
+    if original is None:
+        print("DEBUG: get_remainder_tokens received original=None")
+        return TokenList([])
+    if used is None:
+        print("DEBUG: get_remainder_tokens received used=None")
+        return TokenList(original)
     used_spans = {t.span for t in used}
     return TokenList([t for t in original if t.span not in used_spans])
 
 # 3.3 Token Muscles
 def tokenize(s: str, locale: str = "de") -> TokenList:
+    if s is None:
+        return TokenList([])
     patterns = load_regex_definitions(locale=locale)
+    if patterns is None:
+        print("DEBUG: load_regex_definitions returned None!")
+        return TokenList([])
     
     # Priority Order for Matching
     priority = [
@@ -342,16 +358,26 @@ def is_salutation(t: Optional[Token]) -> bool:
     return t.type == RegexToken.SALUTATION if t else False
 
 def identity_token_type(t: RegexToken) -> RegexToken:
+    # print("DEBUG: identity_token_type")
+    if t is None:
+        print("DEBUG: identity_token_type received None")
     return t
 
 # 3.4.1 New Context Primitives
 def get_tokens_before_comma(tokens: TokenList) -> TokenList:
+    if tokens is None:
+        return TokenList([])
+    
     for i, t in enumerate(tokens):
         if t.type == RegexToken.PUNCT and "," in t.value:
             return TokenList(tokens[:i])
+            
     return TokenList(tokens)
 
 def get_tokens_after_comma(tokens: TokenList) -> TokenList:
+    if tokens is None:
+        print("DEBUG: get_tokens_after_comma received None!")
+        return TokenList([])
     for i, t in enumerate(tokens):
         if t.type == RegexToken.PUNCT and "," in t.value:
             return TokenList(tokens[i+1:])
@@ -442,22 +468,50 @@ def extract_given_str(tokens: TokenList) -> str:
     return ""
 
 def extract_family_str(tokens: TokenList) -> str:
-    # Heuristic: Last WORD
-    last_word = ""
-    for t in tokens:
-        if t.type == RegexToken.WORD:
-            last_word = t.value
-    return last_word
+    # Heuristic: Last WORD, plus any preceding PARTICLEs
+    if not tokens:
+        return ""
+        
+    # Find the last WORD
+    last_word_idx = -1
+    for i in range(len(tokens) - 1, -1, -1):
+        if tokens[i].type == RegexToken.WORD:
+            last_word_idx = i
+            break
+            
+    if last_word_idx == -1:
+        return ""
+        
+    # Collect particles preceding the last word
+    start_idx = last_word_idx
+    for i in range(last_word_idx - 1, -1, -1):
+        if tokens[i].type == RegexToken.PARTICLE:
+            start_idx = i
+        else:
+            break
+            
+    # Join tokens from start_idx to last_word_idx
+    parts = [t.value for t in tokens[start_idx : last_word_idx + 1]]
+    return " ".join(parts)
 
 def extract_middle_str(tokens: TokenList) -> StringList:
     # Heuristic: Everything between first and last word
     # Returns a StringList of middle names
-    words = [t.value for t in tokens if t.type == RegexToken.WORD]
-    if len(words) <= 2:
+    if tokens is None:
+        print("DEBUG: extract_middle_str received None!")
         return StringList([])
-    
-    # Return everything between first and last
-    return StringList(words[1:-1])
+        
+    try:
+        words = [t.value for t in tokens if t.type == RegexToken.WORD]
+        if len(words) <= 2:
+            return StringList([])
+        
+        # Return everything between first and last
+        return StringList(words[1:-1])
+    except TypeError as e:
+        print(f"DEBUG: TypeError in extract_middle_str: {e}")
+        print(f"DEBUG: tokens type: {type(tokens)}")
+        raise e
 
 def extract_suffix_list(tokens: TokenList) -> StringList:
     # Returns all suffix values

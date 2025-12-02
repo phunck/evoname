@@ -28,6 +28,8 @@ Islands exchange genetic material (migration) every few generations, allowing th
 We employ several strategies to ensure the model generalizes well:
 
 *   **Curriculum Learning**: The difficulty of the fitness function increases over time ("Bootstrap" -> "Ramp" -> "Strict").
+*   **Adaptive Weighting**: The system automatically adjusts the importance of different components (e.g., Title vs. Suffix) based on their performance in the previous cycle, focusing the model on its current weaknesses.
+*   **Fresh Blood Injection**: If phenotypic diversity drops below 20% (stagnation), the satellite islands are automatically reset to inject random genetic material, while the main champion is preserved.
 *   **Hall of Shame**: We track the "hardest" examples (those the best model consistently fails on) and use **Targeted Data Generation** to oversample them in the next training batch.
 *   **Validation Set**: A separate dataset is used to validate the champion model, ensuring it hasn't just memorized the training data.
 
@@ -160,6 +162,18 @@ node test_bundle.js
 - [x] Post-Processing Layer (Deterministic Repair)
 - [x] Targeted Data Generation (Hall of Shame)
 - [x] Statistical & Feature Primitives
+- [ ] **Experiment**: LLM-assisted Mutation (Ollama/Qwen)
+
+## 🧪 Experimental: LLM-assisted Mutation
+We are exploring using local LLMs (via Ollama) to intelligently repair/mutate individuals that fail on specific "Hall of Shame" examples.
+
+**Setup:**
+1. Install [Ollama](https://ollama.com/).
+2. Pull a lightweight coding model:
+   ```bash
+   ollama run qwen2.5-coder:1.5b
+   ```
+3. (Future) Enable LLM mutation in `config.yaml`.
 
 ## 👥 Credits
 Created by **Paul Hunck**.

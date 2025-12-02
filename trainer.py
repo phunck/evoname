@@ -49,6 +49,7 @@ def main():
     val_data = load_dataset(val_path) if os.path.exists(val_path) else []
     
     print(f"Loaded {len(train_data)} training samples.")
+    print("💡 Tip: Press Ctrl+C once to stop gracefully after the current generation.")
     
     # Initialize and Run Trainer
     trainer = Trainer(args, train_data, val_data)

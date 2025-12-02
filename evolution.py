@@ -5,6 +5,8 @@ import os
 import datetime
 import operator
 import multiprocessing
+import signal
+import sys
 from typing import List, Dict, Any, Tuple
 
 from rich.console import Console
@@ -25,6 +27,10 @@ from config import (
 )
 from ui import draw_bar, print_header
 
+def init_worker():
+    """Initializer for pool workers to ignore SIGINT."""
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
 class Trainer:
     def __init__(self, args, train_data, val_data):
         self.args = args
@@ -36,6 +42,7 @@ class Trainer:
         self.toolbox = self.setup_toolbox()
         
         self.tracker = DifficultyTracker()
+        self.tracker.load() # Load existing difficulty data
         self.usage_tracker = PrimitiveUsageTracker(self.pset)
         
         self.hof = tools.HallOfFame(1)
@@ -64,7 +71,7 @@ class Trainer:
         self.pool = None
         if self.args.jobs > 1:
             self.console.print(f"[bold yellow]Initializing Multiprocessing Pool with {self.args.jobs} processes...[/bold yellow]")
-            self.pool = multiprocessing.Pool(processes=self.args.jobs)
+            self.pool = multiprocessing.Pool(processes=self.args.jobs, initializer=init_worker)
 
     def __del__(self):
         if self.pool:
@@ -128,6 +135,16 @@ class Trainer:
         self.initialize_islands()
         print_header(self.console)
         
+        # Graceful Shutdown Handler
+        self.stop_requested = False
+        original_sigint_handler = signal.getsignal(signal.SIGINT)
+        
+        def signal_handler(sig, frame):
+            self.console.print("\n[bold yellow]🛑 Stop requested! Finishing current generation...[/bold yellow]")
+            self.stop_requested = True
+            
+        signal.signal(signal.SIGINT, signal_handler)
+        
         # Parse Swap Rates
         try:
             if "," in self.args.swap:
@@ -155,7 +172,11 @@ class Trainer:
         try:
             # Run for specified number of generations *from current point*
             end_gen = start_gen + self.args.generations
+            current_gen = start_gen
+            
             for gen in range(start_gen, end_gen):
+                if self.stop_requested:
+                    break
             
                 # --- CURRICULUM UPDATE (Main Island) ---
                 cur_weights_main = get_main_weights(gen)
@@ -166,11 +187,20 @@ class Trainer:
                 if gen <= 20: phase = "Bootstrap"
                 elif gen <= 70: phase = "Ramp"
                 
-                # 1. Migration
+                # 1. Migration (Hub-and-Spoke)
                 mig_occurred = []
-                for i in range(len(self.islands)):
-                    source_idx = i
-                    dest_idx = (i - 1) % len(self.islands)
+                
+                # Define routes: (Source Index, Destination Index)
+                # 0=Main, 1=Detail, 2=Structure
+                # Hub-and-Spoke: Satellites <-> Hub
+                routes = [
+                    (1, 0), # Detail -> Main
+                    (2, 0), # Structure -> Main
+                    (0, 1), # Main -> Detail
+                    (0, 2)  # Main -> Structure
+                ]
+
+                for source_idx, dest_idx in routes:
                     rate = swap_rates[source_idx]
                     
                     if gen > 0 and gen % rate == 0:
@@ -179,10 +209,17 @@ class Trainer:
                         migrants = [self.toolbox.clone(ind) for ind in migrants]
                         
                         for migrant in migrants:
+                            # Tournament selection for replacement (crowding)
                             indexed_pop = list(enumerate(self.islands[dest_idx]))
+                            # Sort by fitness (worst first for replacement candidates?)
+                            # Actually we want to replace bad ones.
+                            # The original code sorted by fitness.
                             sorted_indexed = sorted(indexed_pop, key=lambda x: x[1].fitness.values[0] if x[1].fitness.valid else -999.0)
+                            
+                            # Select from the lower half (worst individuals)
                             cutoff = max(1, len(sorted_indexed) // 2)
                             candidates = sorted_indexed[:cutoff]
+                            
                             victim_entry = random.choice(candidates)
                             victim_idx = victim_entry[0]
                             
@@ -286,12 +323,46 @@ class Trainer:
                      with open("model/champion.pkl", "wb") as f:
                         pickle.dump(best_ind, f)
     
-                if self.args.info:
-                    explain_fitness(self.hof[0], self.pset, self.train_data, weights=cur_weights_main, gates=cur_gates_main)
+                current_gen = gen + 1
+            
+            # Always export stats for adaptive weighting (at end of cycle)
+            if len(self.hof) > 0:
+                explain_fitness(self.hof[0], self.pset, self.train_data, weights=cur_weights_main, gates=cur_gates_main, export_path="cycle_stats.json")
+                
+                # --- DIVERSITY CHECK ---
+                # Calculate Phenotypic Diversity (Unique outputs on validation set)
+                print("Calculating Diversity...")
+                check_data = self.val_data if self.val_data else self.train_data[:100]
+                unique_outputs = set()
+                
+                # Check top 50 individuals from Main Island (or HoF)
+                # Using Main Island population gives better sense of population health than just HoF
+                sample_pop = self.islands[0][:50] 
+                
+                for ind in sample_pop:
+                    try:
+                        func = gp.compile(ind, self.pset)
+                        # Hash the outputs for a few examples
+                        outputs = []
+                        for entry in check_data[:5]: # Check first 5 examples
+                            res = func(entry["raw"])
+                            # Simple string representation for uniqueness
+                            outputs.append(str(res))
+                        unique_outputs.add(tuple(outputs))
+                    except:
+                        pass
+                
+                diversity_score = len(unique_outputs) / len(sample_pop) if len(sample_pop) > 0 else 0.0
+                print(f"🧬 Phenotypic Diversity: {diversity_score:.2f}")
+                
+                with open("diversity_stats.json", "w") as f:
+                    json.dump({"diversity": diversity_score}, f)
+
+            # Save Final State
 
             # Save Final State
             with open("model/state.json", "w") as f:
-                json.dump({"gen": end_gen}, f)
+                json.dump({"gen": current_gen}, f)
 
         except KeyboardInterrupt:
             self.console.print("\n[bold red]🛑 Training Interrupted by User![/bold red]")
@@ -302,11 +373,16 @@ class Trainer:
             if self.pool:
                 self.pool.terminate()
                 self.pool.join()
+            
+            # Restore signal handler
+            signal.signal(signal.SIGINT, original_sigint_handler)
 
             self.console.print("\n[bold green]Training Completed/Stopped![/bold green]")
             if len(self.hof) > 0:
                 best_ind = self.hof[0]
                 self.console.print(f"Final Best Fitness: {best_ind.fitness.values[0]}")
+                self.console.print(f"\n[bold green]🏆 HALL OF FAME (Champion) 🏆[/bold green]")
+                self.console.print(f"{best_ind}\n")
                 
                 # Save Artifacts
                 with open(os.path.join(self.art_dir, "champion.pkl"), "wb") as f: pickle.dump(best_ind, f)

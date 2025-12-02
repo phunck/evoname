@@ -50,6 +50,7 @@ def evaluate_individual(individual, pset, data: List[Dict], weights: Dict[str, f
     sum_f1_given = 0.0
     sum_f1_family = 0.0
     sum_f1_title = 0.0
+    sum_f1_suffix = 0.0
     sum_f1_gender = 0.0
     
     # Bonus Counters
@@ -81,6 +82,7 @@ def evaluate_individual(individual, pset, data: List[Dict], weights: Dict[str, f
         f1_given = calculate_f1(pred_obj.given, solution["given"])
         f1_family = calculate_f1(pred_obj.family, solution["family"])
         f1_title = calculate_f1(pred_obj.title, solution["title"])
+        f1_suffix = calculate_f1(pred_obj.suffix, solution["suffix"])
         
         # Gender
         truth_gender = solution.get("gender")
@@ -96,6 +98,7 @@ def evaluate_individual(individual, pset, data: List[Dict], weights: Dict[str, f
         sum_f1_given += f1_given
         sum_f1_family += f1_family
         sum_f1_title += f1_title
+        sum_f1_suffix += f1_suffix
         sum_f1_gender += f1_gender
 
         # --- 2. BONUS SCORE CALCULATION ---
@@ -251,9 +254,10 @@ def evaluate_individual(individual, pset, data: List[Dict], weights: Dict[str, f
     # Allow negative fitness (important for curriculum learning)
     return final_score,
 
-def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float] = None, gates: Dict[str, float] = None):
+def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float] = None, gates: Dict[str, float] = None, export_path: str = None):
     """
     Runs evaluation but prints detailed breakdown instead of returning score.
+    Optionally exports stats to a JSON file.
     """
     func = gp.compile(individual, pset)
     
@@ -269,6 +273,7 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
     sum_f1_given = 0.0
     sum_f1_family = 0.0
     sum_f1_title = 0.0
+    sum_f1_suffix = 0.0
     sum_f1_gender = 0.0
     
     # Bonus Counters
@@ -297,6 +302,7 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
         f1_given = calculate_f1(pred_obj.given, solution["given"])
         f1_family = calculate_f1(pred_obj.family, solution["family"])
         f1_title = calculate_f1(pred_obj.title, solution["title"])
+        f1_suffix = calculate_f1(pred_obj.suffix, solution["suffix"])
         
         # Gender
         truth_gender = solution.get("gender")
@@ -310,6 +316,7 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
         sum_f1_given += f1_given
         sum_f1_family += f1_family
         sum_f1_title += f1_title
+        sum_f1_suffix += f1_suffix
         sum_f1_gender += f1_gender
 
         # --- 2. BONUS SCORE CALCULATION ---
@@ -413,6 +420,7 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
     avg_given = sum_f1_given / n
     avg_family = sum_f1_family / n
     avg_title = sum_f1_title / n
+    avg_suffix = sum_f1_suffix / n
     avg_gender = sum_f1_gender / valid_gender_count if valid_gender_count > 0 else 1.0
     
     exact_rate = count_exact_match / n
@@ -422,9 +430,11 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
     avg_vital_penalty = sum_vital_penalty / n
     
     # Weighted Score Calculation
+    # Weighted Score Calculation
     core_score = (weights["core_family"] * avg_family) + \
                  (weights["core_given"] * avg_given) + \
                  (weights["core_title"] * avg_title) + \
+                 (weights.get("core_suffix", 0.0) * avg_suffix) + \
                  (weights["core_gender"] * avg_gender)
     
     bonus_score = (weights["bonus_exact"] * exact_rate) + \
@@ -442,6 +452,7 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
     print(f"   - Family:    {avg_family:.4f} (w={weights['core_family']})")
     print(f"   - Given:     {avg_given:.4f} (w={weights['core_given']})")
     print(f"   - Title:     {avg_title:.4f} (w={weights['core_title']})")
+    print(f"   - Suffix:    {avg_suffix:.4f} (w={weights.get('core_suffix', 0.0)})")
     print(f"   - Gender:    {avg_gender:.4f} (w={weights['core_gender']})")
     print(f" BONUS SCORE:   {bonus_score:.4f}")
     print(f"   - Exact:     {exact_rate:.4f} (w={weights['bonus_exact']})")
@@ -468,3 +479,24 @@ def explain_fitness(individual, pset, data: List[Dict], weights: Dict[str, float
             
     print(f" 🏁 FINAL SCORE: {final_score:.4f}")
     print("-"*40 + "\n")
+
+    if export_path:
+        stats = {
+            "family": avg_family,
+            "given": avg_given,
+            "title": avg_title,
+            "suffix": avg_suffix,
+            "gender": avg_gender,
+            "exact": exact_rate,
+            "coverage": avg_coverage,
+            "uncertainty": avg_uncertainty,
+            "hallucination": avg_hallucination,
+            "vital_penalty": avg_vital_penalty,
+            "final_score": final_score
+        }
+        try:
+            with open(export_path, "w") as f:
+                json.dump(stats, f, indent=4)
+            print(f"✅ Stats exported to {export_path}")
+        except Exception as e:
+            print(f"❌ Failed to export stats: {e}")

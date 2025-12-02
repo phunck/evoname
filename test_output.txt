@@ -1,0 +1,14 @@
+============================================================
+VERIFYING FIXES
+============================================================
+
+[TEST 1] Input: 'Mrs. Karin de Jones'
+Tokens: Mrs.(SALUTATION), Karin(WORD), de(PARTICLE), Jones(WORD)
+Extracted Family: 'de Jones'
+[PASS] Family name correctly includes particle.
+
+[TEST 2] Input: 'Frau Dipl. Ing. Petra'
+Tokens: Frau(SALUTATION), Dipl. Ing.(TITLE), Petra(WORD)
+Found Titles: ['Dipl. Ing.']
+[PASS] 'Dipl. Ing.' recognized as single TITLE.
+------------------------------------------------------------
