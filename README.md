@@ -112,7 +112,17 @@ node tests/test_primitives_advanced.js
     git commit -m "Update champion model"
     ```
 
-4.  **Transpile to JavaScript**:
+### 🛠️ Analysis Tools
+
+To inspect the performance of your champion model in detail (including F1 scores per field and color-coded diffs):
+
+```bash
+python analyze_champion.py --model model/champion.pkl --data data/train.json
+```
+
+This will output a report grouping examples by performance (Perfect, Good, Okay, Bad) and showing exactly where the model failed (e.g., `Given: Hans / Hans-Peter`).
+
+5.  **Transpile to JavaScript**:
     ```bash
     python transpiler.py --input model/champion.pkl --output dist/evoname.js
     ```
