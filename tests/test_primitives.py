@@ -77,17 +77,17 @@ def test_make_name_obj():
         raw="Test",
         given="Hans",
         family="Müller",
-        middle=[],
-        title=["Dr."],
+        middle_list=[],
+        title_list=["Dr."],
         salutation="Herr",
         gender=Gender.MALE,
-        suffix=[],
-        particles=[]
+        suffix_list=[],
+        particles_list=[]
     )
     json_out = obj.to_json()
     assert json_out["raw"] == "Test"
     assert json_out["solution"]["given"] == "Hans"
     assert json_out["solution"]["family"] == "Müller"
-    assert json_out["solution"]["title"] == ["Dr."]
+    assert json_out["solution"]["title"] == ["Dr"]
     assert json_out["solution"]["salutation"] == "Herr"
     assert json_out["solution"]["gender"] == "m"

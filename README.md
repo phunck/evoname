@@ -73,6 +73,11 @@ pip install deap pytest rich
 ### Running Tests
 ```bash
 python -m pytest tests/
+
+# JavaScript Tests
+node test_library.js
+node tests/test_primitives_stats.js
+node tests/test_primitives_advanced.js
 ```
 
 ### Training & Building

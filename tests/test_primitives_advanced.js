@@ -57,7 +57,7 @@ function runTests() {
 
     // is_common_given_name
     assert.strictEqual(lib.is_common_given_name(t_john), true);
-    assert.strictEqual(lib.is_common_given_name(t_caps), false, "JAMES caps might fail if not normalized in check?");
+    assert.strictEqual(lib.is_common_given_name(t_caps), true, "JAMES should be identified as common name (case-insensitive)");
     // Let's check logic: t.value.toLowerCase() -> "james". Set has "james". Should be true.
     // Wait, in Python test I assumed it worked. In JS:
     // COMMON_GIVEN_NAMES has "james".
