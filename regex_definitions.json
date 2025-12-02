@@ -159,7 +159,7 @@
     },
     "TOKEN_SUFFIX": {
         "de": {
-            "pattern": "\\b(jun|sen|Jr|Sr|II|III|IV|V|VI|VII|VIII|IX|X)(\\.?|\\b)",
+            "pattern": "\\b(jun|sen|Jr|Sr|VIII|VII|III|VI|IV|IX|II|V|X)(\\.?|\\b)",
             "flags": "i",
             "description": "Suffixe (inkl. Jr/Sr für Mixed Data)",
             "examples": [
@@ -169,7 +169,7 @@
             "category": "suffix"
         },
         "en": {
-            "pattern": "\\b(Jr|Sr|II|III|IV|V|VI|VII|VIII|IX|X|2nd|3rd)(\\.?|\\b)",
+            "pattern": "\\b(Jr|Sr|VIII|VII|III|VI|IV|IX|II|V|X|2nd|3rd)(\\.?|\\b)",
             "flags": "i",
             "description": "Suffixe (mit Boundary)",
             "examples": [
