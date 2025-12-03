@@ -165,15 +165,17 @@ node test_bundle.js
 - [ ] **Experiment**: LLM-assisted Mutation (Ollama/Qwen)
 
 ## 🧪 Experimental: LLM-assisted Mutation
-We are exploring using local LLMs (via Ollama) to intelligently repair/mutate individuals that fail on specific "Hall of Shame" examples.
+We have integrated a local LLM (via Ollama) to intelligently repair/mutate individuals that fail on specific "Hall of Shame" examples.
+
+**How it works:**
+*   **Trigger:** 5% chance during mutation (Main Island only).
+*   **Process:** The system sends the broken code + a failure case to `qwen2.5-coder`.
+*   **Result:** The LLM returns a repaired DEAP expression, which replaces the old one.
 
 **Setup:**
 1. Install [Ollama](https://ollama.com/).
-2. Pull a lightweight coding model:
-   ```bash
-   ollama run qwen2.5-coder:1.5b
-   ```
-3. (Future) Enable LLM mutation in `config.yaml`.
+2. Pull the model: `ollama run qwen2.5-coder:1.5b`.
+3. Run training: `python active_trainer.py`. (If Ollama is offline, it gracefully falls back to standard mutation).
 
 ## 👥 Credits
 Created by **Paul Hunck**.

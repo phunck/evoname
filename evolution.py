@@ -7,6 +7,8 @@ import operator
 import multiprocessing
 import signal
 import sys
+import urllib.request
+import time
 from typing import List, Dict, Any, Tuple
 
 from rich.console import Console
@@ -30,6 +32,23 @@ from ui import draw_bar, print_header
 def init_worker():
     """Initializer for pool workers to ignore SIGINT."""
     signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+def query_ollama(prompt, model="qwen2.5-coder:1.5b"):
+    url = "http://localhost:11434/api/generate"
+    data = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False
+    }
+    
+    try:
+        req = urllib.request.Request(url, data=json.dumps(data).encode('utf-8'), headers={'Content-Type': 'application/json'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            return result.get("response", "")
+    except Exception as e:
+        # print(f"❌ Error connecting to Ollama: {e}")
+        return None
 
 class Trainer:
     def __init__(self, args, train_data, val_data):
@@ -100,6 +119,64 @@ class Trainer:
         toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=BLOAT_LIMIT))
 
         return toolbox
+
+    def mutate_llm(self, individual):
+        """
+        Uses an LLM to try and repair/improve an individual based on a failure case.
+        """
+        # 1. Get a failure case from Hall of Shame
+        shame_list = self.tracker.get_hall_of_shame(10)
+        if not shame_list:
+            return individual, False
+            
+        target_name, _ = random.choice(shame_list)
+        
+        # 2. Convert individual to code
+        code_str = str(individual)
+        
+        # 3. Construct Prompt
+        prompt = f"""
+You are an expert in Genetic Programming and Python.
+The following expression is supposed to parse the name "{target_name}" into a structured object (NameObj), but it fails or produces a suboptimal result.
+
+Current Expression:
+{code_str}
+
+Available Primitives:
+- String Ops: trim, to_lower, split_on_comma, get_first_string, get_last_string
+- Token Ops: tokenize, filter_by_type, count_type, get_first_token, get_last_token, slice_tokens, remove_type, index_of_type, get_remainder_tokens
+- Feature Detectors: has_comma, is_title, is_salutation, is_all_caps, is_capitalized, is_short, is_common_given_name, is_common_family_name
+- Boosters: extract_salutation_str, extract_title_list, extract_given_str, extract_family_str, extract_middle_str, extract_suffix_list, extract_particles_list
+- Object Builder: make_name_obj(raw, salutation, title_list, given, family, middle_list, gender, suffix_list, particles_list)
+
+Task:
+Modify the expression to better handle the name "{target_name}".
+Keep the logic concise.
+Return ONLY the new expression string. Do not use markdown code blocks.
+"""
+
+        # 4. Query LLM
+        response = query_ollama(prompt)
+        if not response:
+            return individual, False
+            
+        # Clean response (remove markdown if present)
+        cleaned_code = response.strip().replace("```python", "").replace("```", "").strip()
+        
+        # 5. Try to compile back to DEAP Individual
+        try:
+            # We need to use gp.PrimitiveTree.from_string but it requires a primitive set context
+            # DEAP's from_string is a bit tricky, it expects a list of primitives.
+            # A safer way is to use the compiler to check syntax, but to get a Tree object we need to parse it.
+            
+            new_ind = gp.PrimitiveTree.from_string(cleaned_code, self.pset)
+            new_ind.fitness = self.toolbox.clone(individual.fitness) # Copy fitness type
+            del new_ind.fitness.values # Invalidate fitness
+            return new_ind, True
+            
+        except Exception as e:
+            # print(f"⚠️ LLM produced invalid code: {e}")
+            return individual, False
 
     def initialize_islands(self):
         print("Initializing Islands...")
@@ -245,6 +322,17 @@ class Trainer:
                             del child2.fitness.values
     
                     for mutant in offspring:
+                        # LLM Mutation (Experimental) - 5% chance, only on Main Island
+                        if i == 0 and random.random() < 0.05:
+                            new_ind, success = self.mutate_llm(mutant)
+                            if success:
+                                # Replace mutant with new_ind (trick: copy content)
+                                mutant[:] = new_ind
+                                mutant.fitness = new_ind.fitness
+                                del mutant.fitness.values
+                                # print("🤖 LLM Mutation triggered!")
+                                continue
+
                         if random.random() < self.mutpb:
                             self.toolbox.mutate(mutant)
                             del mutant.fitness.values
