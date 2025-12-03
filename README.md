@@ -105,6 +105,7 @@ node tests/test_primitives_advanced.js
     *   `--gens-per-cycle`: Generations per loop (default: 30).
     *   `--pop-size`: Population size (default: 300).
     *   `--jobs`: Parallel jobs (default: 8).
+    *   `--swap`: Migration interval in generations (default: 5). Also triggers LLM mutation.
 
 4.  **Save Champion (Best Practice)**:
     To share your best model or use it on other machines, copy it to the `model/` directory and commit it:
@@ -162,15 +163,24 @@ node test_bundle.js
 - [x] Post-Processing Layer (Deterministic Repair)
 - [x] Targeted Data Generation (Hall of Shame)
 - [x] Statistical & Feature Primitives
-- [ ] **Experiment**: LLM-assisted Mutation (Ollama/Qwen)
+- [x] **Experiment**: LLM-assisted Mutation (Ollama/Qwen)
 
 ## 🧪 Experimental: LLM-assisted Mutation
 We have integrated a local LLM (via Ollama) to intelligently repair/mutate individuals that fail on specific "Hall of Shame" examples.
 
 **How it works:**
-*   **Trigger:** 5% chance during mutation (Main Island only).
+*   **Trigger:** Dynamic chance (0-5%) ONLY during migration generations (to save time).
 *   **Process:** The system sends the broken code + a failure case to `qwen2.5-coder`.
 *   **Result:** The LLM returns a repaired DEAP expression, which replaces the old one.
+
+**The "LLM Surgeon" Workflow:**
+1.  **Diagnose (Hall of Shame):** The system identifies a specific name that many individuals fail to parse (e.g., "Mr Dr. med. James Fischer").
+2.  **The Patient:** A random individual (code tree) is selected. It might be too simple, e.g., `make_name_obj(split(raw), ...)`.
+3.  **The Consultation:** The system prompts the local LLM: *"You are an expert. Here is code that fails on 'Mr Dr. med. James Fischer'. Rewrite it using these primitives to fix the error."*
+4.  **The Operation:** The LLM rewrites the code, potentially adding logic like `extract_title_list` or `get_tokens_before_comma`.
+5.  **Transplantation:**
+    *   **Success:** If the new code is valid and compiles to a `NameObj`, it replaces the old individual.
+    *   **Rejection:** If the LLM produces invalid code or text, the operation is aborted, and the original individual remains unchanged.
 
 **Setup:**
 1. Install [Ollama](https://ollama.com/).

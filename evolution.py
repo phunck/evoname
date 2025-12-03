@@ -12,6 +12,7 @@ import time
 from typing import List, Dict, Any, Tuple
 
 from rich.console import Console
+from rich.table import Table
 
 
 from deap import base, creator, tools, gp
@@ -127,7 +128,7 @@ class Trainer:
         # 1. Get a failure case from Hall of Shame
         shame_list = self.tracker.get_hall_of_shame(10)
         if not shame_list:
-            return individual, False
+            return individual, False, None
             
         target_name, _ = random.choice(shame_list)
         
@@ -151,14 +152,15 @@ Available Primitives:
 
 Task:
 Modify the expression to better handle the name "{target_name}".
-Keep the logic concise.
+CRITICAL: The expression MUST start with `make_name_obj(...)`. Do not return a list or string directly.
 Return ONLY the new expression string. Do not use markdown code blocks.
 """
 
         # 4. Query LLM
+        print(f"  🤖 Asking LLM to fix '{target_name}'...") 
         response = query_ollama(prompt)
         if not response:
-            return individual, False
+            return individual, False, None
             
         # Clean response (remove markdown if present)
         cleaned_code = response.strip().replace("```python", "").replace("```", "").strip()
@@ -170,13 +172,19 @@ Return ONLY the new expression string. Do not use markdown code blocks.
             # A safer way is to use the compiler to check syntax, but to get a Tree object we need to parse it.
             
             new_ind = gp.PrimitiveTree.from_string(cleaned_code, self.pset)
+            
+            # CHECK ROOT NODE: Must be make_name_obj (Primitive) and name must match
+            if not isinstance(new_ind[0], gp.Primitive) or new_ind[0].name != "make_name_obj":
+                # print(f"⚠️ LLM returned invalid root node: {new_ind[0].name}")
+                return individual, False, None
+            
             new_ind.fitness = self.toolbox.clone(individual.fitness) # Copy fitness type
             del new_ind.fitness.values # Invalidate fitness
-            return new_ind, True
+            return new_ind, True, target_name
             
         except Exception as e:
             # print(f"⚠️ LLM produced invalid code: {e}")
-            return individual, False
+            return individual, False, None
 
     def initialize_islands(self):
         print("Initializing Islands...")
@@ -251,6 +259,32 @@ Return ONLY the new expression string. Do not use markdown code blocks.
             end_gen = start_gen + self.args.generations
             current_gen = start_gen
             
+            # Evaluate Initial Population if needed
+            if start_gen == 0:
+                # Register evaluate_main for Gen 0
+                cur_weights_main = get_main_weights(0)
+                cur_gates_main = get_main_gates(0)
+                self.toolbox.register("evaluate_main", evaluate_individual, pset=self.pset, data=self.train_data, weights=cur_weights_main, gates=cur_gates_main)
+
+                self.console.print("[bold yellow]Evaluating Initial Population (this may take a moment)...[/bold yellow]")
+                for i, island in enumerate(self.islands):
+                    if i == 0: eval_func = self.toolbox.evaluate_main
+                    elif i == 1: eval_func = self.toolbox.evaluate_detail
+                    else: eval_func = self.toolbox.evaluate_structure
+                    
+                    # Evaluate invalid individuals
+                    invalid_ind = [ind for ind in island if not ind.fitness.valid]
+                    if self.pool:
+                        fitnesses = self.pool.map(eval_func, invalid_ind)
+                    else:
+                        fitnesses = map(eval_func, invalid_ind)
+                    
+                    for ind, fit in zip(invalid_ind, fitnesses):
+                        ind.fitness.values = fit
+                        
+                    # Update HoF and Stats for Gen 0
+                    if i == 0: self.hof.update(island)
+            
             for gen in range(start_gen, end_gen):
                 if self.stop_requested:
                     break
@@ -261,8 +295,14 @@ Return ONLY the new expression string. Do not use markdown code blocks.
                 self.toolbox.register("evaluate_main", evaluate_individual, pset=self.pset, data=self.train_data, weights=cur_weights_main, gates=cur_gates_main)
                 
                 phase = "Strict"
-                if gen <= 20: phase = "Bootstrap"
-                elif gen <= 70: phase = "Ramp"
+                llm_mutpb = 0.05
+                
+                if gen <= 20: 
+                    phase = "Bootstrap"
+                    llm_mutpb = 0.0
+                elif gen <= 70: 
+                    phase = "Ramp"
+                    llm_mutpb = 0.03
                 
                 # 1. Migration (Hub-and-Spoke)
                 mig_occurred = []
@@ -312,6 +352,7 @@ Return ONLY the new expression string. Do not use markdown code blocks.
                 
                 # 2. Evolve Each Island
                 for i, island in enumerate(self.islands):
+                    print(f"  > Processing Island {self.island_names[i]}...")
                     offspring = self.toolbox.select(island, len(island))
                     offspring = list(map(self.toolbox.clone, offspring))
                     
@@ -322,15 +363,24 @@ Return ONLY the new expression string. Do not use markdown code blocks.
                             del child2.fitness.values
     
                     for mutant in offspring:
-                        # LLM Mutation (Experimental) - 5% chance, only on Main Island
-                        if i == 0 and random.random() < 0.05:
-                            new_ind, success = self.mutate_llm(mutant)
+                        # LLM Mutation (Experimental) - Only on Main Island AND only during migration (swap)
+                        # This saves time by not querying LLM every generation
+                        if i == 0 and mig_occurred and random.random() < llm_mutpb:
+                            original_code = str(mutant)
+                            new_ind, success, target_name = self.mutate_llm(mutant)
                             if success:
                                 # Replace mutant with new_ind (trick: copy content)
-                                mutant[:] = new_ind
-                                mutant.fitness = new_ind.fitness
+                                del mutant[:]
+                                mutant.extend(new_ind)
+                                # mutant.fitness is already there, just invalidate it
                                 del mutant.fitness.values
-                                # print("🤖 LLM Mutation triggered!")
+                                
+                                # Show Comparison Table
+                                table = Table(title=f"🤖 LLM Intervention: {target_name}", show_header=True, header_style="bold magenta", box=None)
+                                table.add_column("Original Code", style="dim red", width=60, no_wrap=False)
+                                table.add_column("New Code", style="bold green", width=60, no_wrap=False)
+                                table.add_row(original_code, str(new_ind))
+                                self.console.print(table)
                                 continue
 
                         if random.random() < self.mutpb:

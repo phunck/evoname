@@ -72,7 +72,11 @@ def evaluate_individual(individual, pset, data: List[Dict], weights: Dict[str, f
         solution = entry["solution"]
         
         try:
-            pred_obj: NameObj = func(raw)
+            pred_obj = func(raw)
+            # Check if it's actually a NameObj (LLM might return StringList etc.)
+            if not isinstance(pred_obj, NameObj):
+                return 0.0,
+                
             # --- POST-PROCESSING ---
             pred_obj = repair_name_object(pred_obj)
         except Exception:
