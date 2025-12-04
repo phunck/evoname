@@ -100,8 +100,8 @@ def update_weights(stats_path, config_path):
         for comp in target_components:
             f1 = stats.get(comp, 0.5)
             # Base weight is inverse of performance
-            # Min weight 0.05 to prevent forgetting
-            w = max(0.05, (1.0 - f1)) 
+            # Min weight 0.20 to prevent forgetting (Catastrophic Forgetting)
+            w = max(0.20, (1.0 - f1)) 
             raw_weights[comp] = w
             
         # Normalize to keep total core weight around 0.8 (leaving 0.2 for gender/bonuses)

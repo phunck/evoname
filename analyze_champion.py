@@ -11,131 +11,7 @@ import operator
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax)
 
-def setup_gp():
-    # Define Types
-    # Input: str (raw name)
-    # Output: NameObj
-    
-    pset = gp.PrimitiveSetTyped("MAIN", [str], NameObj)
-    
-    # Register Terminals (Regex Patterns are handled inside tokenize, but we need types)
-    # Actually, we don't pass tokens as arguments to MAIN.
-    # MAIN takes 'raw' string.
-    # The first step in the tree usually is 'tokenize(raw)'.
-    
-    # Register Primitives
-    # -- Control Flow --
-    pset.addPrimitive(if_bool_string, [bool, str, str], str)
-    pset.addPrimitive(if_bool_tokenlist, [bool, TokenList, TokenList], TokenList)
-    
-    # -- String/List Ops --
-    pset.addPrimitive(trim, [str], str)
-    pset.addPrimitive(to_lower, [str], str)
-    pset.addPrimitive(split_on_comma, [str], StringList)
-    pset.addPrimitive(get_first_string, [StringList], str)
-    pset.addPrimitive(get_last_string, [StringList], str)
-    
-    pset.addPrimitive(get_first_token, [TokenList], Token) # Returns Optional[Token], handled as Token for now
-    pset.addPrimitive(get_last_token, [TokenList], Token)
-    pset.addPrimitive(slice_tokens, [TokenList, int, int], TokenList)
-    pset.addPrimitive(len_tokens, [TokenList], int)
-    pset.addPrimitive(drop_first, [TokenList], TokenList)
-    pset.addPrimitive(drop_last, [TokenList], TokenList)
-    pset.addPrimitive(remove_type, [TokenList, RegexToken], TokenList)
-    pset.addPrimitive(index_of_type, [TokenList, RegexToken], int)
-    pset.addPrimitive(get_remainder_tokens, [TokenList, TokenList], TokenList)
-    
-    # -- New Context Primitives --
-    pset.addPrimitive(get_tokens_before_comma, [TokenList], TokenList)
-    pset.addPrimitive(get_tokens_after_comma, [TokenList], TokenList)
-    pset.addPrimitive(is_all_caps, [Token], bool)
-    pset.addPrimitive(is_capitalized, [Token], bool)
-    pset.addPrimitive(is_short, [Token], bool)
-    pset.addPrimitive(is_common_given_name, [Token], bool)
-    pset.addPrimitive(is_common_family_name, [Token], bool)
 
-    # -- Statistical & Feature Primitives --
-    pset.addPrimitive(token_length, [Token], int)
-    pset.addPrimitive(is_initial, [Token], bool)
-    pset.addPrimitive(has_hyphen, [Token], bool)
-    pset.addPrimitive(has_period, [Token], bool)
-    pset.addPrimitive(is_roman_numeral, [Token], bool)
-    pset.addPrimitive(is_particle, [Token], bool)
-    pset.addPrimitive(is_suffix, [Token], bool)
-    
-    # -- Token Muscles --
-    pset.addPrimitive(tokenize, [str], TokenList) # Uses default locale for now, or we inject it?
-    # Note: tokenize signature is (str, locale). We might need to curry it or fix locale.
-    # For now, let's assume default locale or fix it in the primitive wrapper if needed.
-    # But wait, tokenize is the entry point.
-    
-    pset.addPrimitive(filter_by_type, [TokenList, RegexToken], TokenList)
-    pset.addPrimitive(count_type, [TokenList, RegexToken], int)
-    pset.addPrimitive(get_gender_from_salutation, [Token], Gender)
-    pset.addPrimitive(get_gender_from_name, [str], Gender)
-    
-    # -- Feature Detectors --
-    pset.addPrimitive(has_comma, [str], bool)
-    pset.addPrimitive(is_title, [Token], bool)
-    pset.addPrimitive(is_salutation, [Token], bool)
-    pset.addPrimitive(identity_token_type, [RegexToken], RegexToken)
-
-    # -- Macro-Primitives (Boosters) --
-    pset.addPrimitive(extract_salutation_str, [TokenList], str)
-    pset.addPrimitive(extract_title_list, [TokenList], StringList)
-    pset.addPrimitive(extract_given_str, [TokenList], str)
-    pset.addPrimitive(extract_family_str, [TokenList], str)
-    pset.addPrimitive(extract_middle_str, [TokenList], StringList)
-    pset.addPrimitive(extract_suffix_list, [TokenList], StringList)
-    pset.addPrimitive(extract_particles_list, [TokenList], StringList)
-    
-    # -- Object Builder --
-    pset.addPrimitive(make_name_obj, 
-                      [str, str, StringList, str, str, StringList, Gender, StringList, StringList], 
-                      NameObj)
-    pset.addPrimitive(set_confidence, [NameObj, float], NameObj)
-    
-    # -- Float Math --
-    pset.addPrimitive(operator.add, [float, float], float)
-    pset.addPrimitive(operator.sub, [float, float], float)
-    pset.addPrimitive(operator.mul, [float, float], float)
-    
-    # -- Ephemeral Constants --
-    # Integers for slicing
-    pset.addEphemeralConstant("rand_int", gen_rand_int, int)
-    # Floats for confidence
-    pset.addEphemeralConstant("rand_float", gen_rand_float, float)
-    
-    # -- Enums as Terminals --
-    # We need to register the Enum values so the tree can use them (e.g. RegexToken.SALUTATION)
-    # DEAP handles this by adding them as terminals of their type.
-    for token_type in RegexToken:
-        pset.addTerminal(token_type, RegexToken, name=token_type.name)
-        
-    # Gender Enums? Usually output of function, but maybe input to builder.
-    # But builder takes Gender type.
-    # We can add Gender.UNKNOWN etc as terminals if needed, but usually they come from extraction.
-    # Let's add them just in case fallback is needed.
-    for g in Gender:
-        pset.addTerminal(g, Gender, name=g.name)
-
-    # Empty Lists/Strings for fallbacks
-    pset.addTerminal("", str, name="EMPTY_STR")
-    pset.addTerminal(StringList([]), StringList, name="EMPTY_STR_LIST")
-    pset.addTerminal(TokenList([]), TokenList, name="EMPTY_TOK_LIST")
-    
-    # Fallback Objects
-    pset.addTerminal(NameObj(""), NameObj, name="EMPTY_NAME_OBJ")
-    pset.addTerminal(Token("", RegexToken.PUNCT, (0,0), -1), Token, name="EMPTY_TOKEN")
-    
-    # Booleans
-    pset.addTerminal(True, bool, name="TRUE")
-    pset.addTerminal(False, bool, name="FALSE")
-
-    # Rename arguments for clarity
-    pset.renameArguments(ARG0="raw_input")
-    
-    return pset
 
 def calculate_entry_f1(pred: NameObj, truth: Dict) -> float:
     """Calculates F1 score for a single entry across all fields."""
@@ -207,7 +83,7 @@ def main():
         data = json.load(f)
         
     # Compile
-    pset = setup_gp()
+    pset = create_pset()
     func = gp.compile(champion, pset)
     
     print("Evaluating...")

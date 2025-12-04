@@ -28,3 +28,6 @@ runs/
 model/
 *.pkl
 monitor.json
+
+# Local Env
+.env.local

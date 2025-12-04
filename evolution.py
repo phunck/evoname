@@ -13,6 +13,7 @@ from typing import List, Dict, Any, Tuple
 
 from rich.console import Console
 from rich.table import Table
+from oracle import OracleParser
 
 
 from deap import base, creator, tools, gp
@@ -26,7 +27,8 @@ from config import (
     get_main_weights, get_main_gates,
     weights_main_strict, weights_detail, weights_structure,
     GATES_DETAIL, GATES_STRUCTURE,
-    DEFAULT_CXPB, DEFAULT_MUTPB, BLOAT_LIMIT
+    DEFAULT_CXPB, DEFAULT_MUTPB, BLOAT_LIMIT,
+    WARMUP_GENS, RAMP_SPAN
 )
 from ui import draw_bar, print_header
 
@@ -44,11 +46,11 @@ def query_ollama(prompt, model="qwen2.5-coder:1.5b"):
     
     try:
         req = urllib.request.Request(url, data=json.dumps(data).encode('utf-8'), headers={'Content-Type': 'application/json'})
-        with urllib.request.urlopen(req, timeout=10) as response:
+        with urllib.request.urlopen(req, timeout=30) as response:
             result = json.loads(response.read().decode('utf-8'))
             return result.get("response", "")
     except Exception as e:
-        # print(f"❌ Error connecting to Ollama: {e}")
+        print(f"❌ Error connecting to Ollama: {e}")
         return None
 
 class Trainer:
@@ -58,6 +60,7 @@ class Trainer:
         self.val_data = val_data
         
         self.console = Console()
+        # self.oracle = OracleParser() # PAUSED
         self.pset = create_pset()
         self.toolbox = self.setup_toolbox()
         
@@ -135,20 +138,68 @@ class Trainer:
         # 2. Convert individual to code
         code_str = str(individual)
         
-        # 3. Construct Prompt
+        # 3. Get Oracle Hint (Ground Truth)
+        oracle_hint = ""
+        try:
+            oracle_obj = self.oracle.parse(target_name)
+            # We want to show the JSON structure or a summary
+            oracle_hint = json.dumps(oracle_obj.to_json()["solution"], indent=2)
+        except Exception as e:
+            oracle_hint = "Unavailable"
+
+        # 4. Construct Prompt
         prompt = f"""
 You are an expert in Genetic Programming and Python.
 The following expression is supposed to parse the name "{target_name}" into a structured object (NameObj), but it fails or produces a suboptimal result.
 
+Target Output (Oracle Hint):
+{oracle_hint}
+
 Current Expression:
 {code_str}
 
-Available Primitives:
-- String Ops: trim, to_lower, split_on_comma, get_first_string, get_last_string
-- Token Ops: tokenize, filter_by_type, count_type, get_first_token, get_last_token, slice_tokens, remove_type, index_of_type, get_remainder_tokens
-- Feature Detectors: has_comma, is_title, is_salutation, is_all_caps, is_capitalized, is_short, is_common_given_name, is_common_family_name
-- Boosters: extract_salutation_str, extract_title_list, extract_given_str, extract_family_str, extract_middle_str, extract_suffix_list, extract_particles_list
-- Object Builder: make_name_obj(raw, salutation, title_list, given, family, middle_list, gender, suffix_list, particles_list)
+Available Primitives (Signatures):
+- String Ops:
+  - trim(str) -> str
+  - to_lower(str) -> str
+  - split_on_comma(str) -> StringList
+  - get_first_string(StringList) -> str
+  - get_last_string(StringList) -> str
+- Token Ops:
+  - tokenize(str) -> TokenList
+  - filter_by_type(TokenList, RegexToken) -> TokenList
+  - get_first_token(TokenList) -> Token
+  - get_last_token(TokenList) -> Token
+  - slice_tokens(TokenList, start:int, end:int) -> TokenList
+  - remove_type(TokenList, RegexToken) -> TokenList
+  - get_remainder_tokens(original:TokenList, used:TokenList) -> TokenList
+- Shape & N-Grams:
+  - get_token_shape(Token) -> str
+  - is_shape(Token, shape:str) -> bool
+  - filter_by_shape(TokenList, shape:str) -> TokenList
+  - ends_with_ngram(Token, ngram:str) -> bool
+  - starts_with_ngram(Token, ngram:str) -> bool
+- Feature Detectors:
+  - has_comma(str) -> bool
+  - is_title(Token) -> bool
+  - is_salutation(Token) -> bool
+  - is_suffix(Token) -> bool
+  - is_common_family_name(Token) -> bool
+- Boosters (High Level):
+  - extract_salutation_str(TokenList) -> str
+  - extract_title_list(TokenList) -> StringList
+  - extract_given_str(TokenList) -> str
+  - extract_family_str(TokenList) -> str
+  - extract_middle_str(TokenList) -> StringList
+  - extract_suffix_list(TokenList) -> StringList
+  - extract_particles_list(TokenList) -> StringList
+- Object Builder:
+  - make_name_obj(raw:str, salutation:str, title:StringList, given:str, family:str, middle:StringList, gender:Gender, suffix:StringList, particles:StringList) -> NameObj
+
+Example Transformation:
+Input: make_name_obj(raw, "", [], split(raw), "", [], UNKNOWN, [], [])
+Goal: Extract title "Dr."
+Output: make_name_obj(raw, "", extract_title_list(tokenize(raw)), split(raw), "", [], UNKNOWN, [], [])
 
 Task:
 Modify the expression to better handle the name "{target_name}".
@@ -158,12 +209,18 @@ Return ONLY the new expression string. Do not use markdown code blocks.
 
         # 4. Query LLM
         print(f"  🤖 Asking LLM to fix '{target_name}'...") 
+        # print(f"    (Oracle Hint: {oracle_hint[:100]}...)") # DEBUG
+        
         response = query_ollama(prompt)
         if not response:
+            print("    ❌ No response from LLM.")
             return individual, False, None
             
         # Clean response (remove markdown if present)
         cleaned_code = response.strip().replace("```python", "").replace("```", "").strip()
+        
+        # DEBUG: Show what we got
+        # print(f"    📝 LLM Response: {cleaned_code[:100]}...")
         
         # 5. Try to compile back to DEAP Individual
         try:
@@ -173,9 +230,12 @@ Return ONLY the new expression string. Do not use markdown code blocks.
             
             new_ind = gp.PrimitiveTree.from_string(cleaned_code, self.pset)
             
+            # DEBUG
+            # print(f"DEBUG: LLM Code Root: {new_ind[0].name}")
+            
             # CHECK ROOT NODE: Must be make_name_obj (Primitive) and name must match
             if not isinstance(new_ind[0], gp.Primitive) or new_ind[0].name != "make_name_obj":
-                # print(f"⚠️ LLM returned invalid root node: {new_ind[0].name}")
+                print(f"⚠️ LLM returned invalid root node: {new_ind[0].name}. REJECTING.")
                 return individual, False, None
             
             new_ind.fitness = self.toolbox.clone(individual.fitness) # Copy fitness type
@@ -297,10 +357,10 @@ Return ONLY the new expression string. Do not use markdown code blocks.
                 phase = "Strict"
                 llm_mutpb = 0.05
                 
-                if gen <= 20: 
+                if gen <= WARMUP_GENS: 
                     phase = "Bootstrap"
                     llm_mutpb = 0.0
-                elif gen <= 70: 
+                elif gen <= (WARMUP_GENS + RAMP_SPAN): 
                     phase = "Ramp"
                     llm_mutpb = 0.03
                 
@@ -361,28 +421,7 @@ Return ONLY the new expression string. Do not use markdown code blocks.
                             self.toolbox.mate(child1, child2)
                             del child1.fitness.values
                             del child2.fitness.values
-    
                     for mutant in offspring:
-                        # LLM Mutation (Experimental) - Only on Main Island AND only during migration (swap)
-                        # This saves time by not querying LLM every generation
-                        if i == 0 and mig_occurred and random.random() < llm_mutpb:
-                            original_code = str(mutant)
-                            new_ind, success, target_name = self.mutate_llm(mutant)
-                            if success:
-                                # Replace mutant with new_ind (trick: copy content)
-                                del mutant[:]
-                                mutant.extend(new_ind)
-                                # mutant.fitness is already there, just invalidate it
-                                del mutant.fitness.values
-                                
-                                # Show Comparison Table
-                                table = Table(title=f"🤖 LLM Intervention: {target_name}", show_header=True, header_style="bold magenta", box=None)
-                                table.add_column("Original Code", style="dim red", width=60, no_wrap=False)
-                                table.add_column("New Code", style="bold green", width=60, no_wrap=False)
-                                table.add_row(original_code, str(new_ind))
-                                self.console.print(table)
-                                continue
-
                         if random.random() < self.mutpb:
                             self.toolbox.mutate(mutant)
                             del mutant.fitness.values

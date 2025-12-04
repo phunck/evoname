@@ -4,6 +4,7 @@ import enum
 from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass, field
 import operator
+import unicodedata
 
 # --- 1. Types & Enums ---
 
@@ -20,6 +21,7 @@ class RegexToken(enum.Enum):
     INITIAL = "TOKEN_INITIAL"
     PARTICLE = "TOKEN_PARTICLE"
     SUFFIX = "TOKEN_SUFFIX"
+    CONJUNCTION = "TOKEN_CONJUNCTION"
     WORD = "TOKEN_WORD"
     PUNCT = "TOKEN_PUNCT"
 
@@ -95,6 +97,7 @@ def load_regex_definitions(path: str = "regex_definitions.json", locale: str = "
         "TOKEN_INITIAL": RegexToken.INITIAL,
         "TOKEN_PARTICLE": RegexToken.PARTICLE,
         "TOKEN_SUFFIX": RegexToken.SUFFIX,
+        "TOKEN_CONJUNCTION": RegexToken.CONJUNCTION,
         "TOKEN_WORD": RegexToken.WORD,
         "TOKEN_PUNCT": RegexToken.PUNCT
     }
@@ -141,8 +144,49 @@ def load_regex_definitions(path: str = "regex_definitions.json", locale: str = "
 def if_bool_string(cond: bool, a: str, b: str) -> str:
     return a if cond else b
 
+def bool_to_int(b: bool) -> int:
+    return 1 if b else 0
+
+def bool_to_float(b: bool) -> float:
+    return 1.0 if b else 0.0
+
 def if_bool_tokenlist(cond: bool, a: TokenList, b: TokenList) -> TokenList:
     return TokenList(a if cond else b)
+
+# 3.1.1 Logic & Comparison
+def bool_and(a: bool, b: bool) -> bool:
+    return a and b
+
+def bool_or(a: bool, b: bool) -> bool:
+    return a or b
+
+def bool_not(a: bool) -> bool:
+    return not a
+
+def int_lt(a: int, b: int) -> bool:
+    return a < b
+
+def int_gt(a: int, b: int) -> bool:
+    return a > b
+
+def int_eq(a: int, b: int) -> bool:
+    return a == b
+
+def float_lt(a: float, b: float) -> bool:
+    return a < b
+
+def float_gt(a: float, b: float) -> bool:
+    return a > b
+
+# 3.1.2 Scoring Math
+def float_min(a: float, b: float) -> float:
+    return a if a < b else b
+
+def float_max(a: float, b: float) -> float:
+    return a if a > b else b
+
+def clamp_float(x: float, lo: float, hi: float) -> float:
+    return lo if x < lo else hi if x > hi else x
 
 # 3.2 String & List Ops
 def trim(s: str) -> str:
@@ -159,6 +203,29 @@ def get_first_string(l: StringList) -> str:
 
 def get_last_string(l: StringList) -> str:
     return l[-1] if l else ""
+
+def default_str_if_empty(s: str, fallback: str) -> str:
+    return s if s else fallback
+
+# 3.2.3 String/Unicode Ops
+def str_equals_normalized(a: str, b: str) -> bool:
+    def norm(s):
+        if not s: return ""
+        s = s.lower()
+        replacements = {"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss"}
+        for k, v in replacements.items():
+            s = s.replace(k, v)
+        return ''.join(c for c in unicodedata.normalize("NFKD", s) if not unicodedata.combining(c))
+    return norm(a) == norm(b)
+
+def str_contains(haystack: str, needle: str) -> bool:
+    return bool(needle) and needle in haystack
+
+def str_equals_ci(a: str, b: str) -> bool:
+    return a.lower() == b.lower()
+
+def join_stringlist(l: StringList) -> str:
+    return " ".join(l)
 
 def get_first_token(l: TokenList) -> Optional[Token]:
     return l[0] if l else None
@@ -207,6 +274,61 @@ def get_remainder_tokens(original: TokenList, used: TokenList) -> TokenList:
     used_spans = {t.span for t in used}
     return TokenList([t for t in original if t.span not in used_spans])
 
+# 3.2.0 Singletons & List Checks
+def token_to_tokenlist(t: Optional[Token]) -> TokenList:
+    return TokenList([t]) if t else TokenList([])
+
+def token_to_stringlist(t: Optional[Token]) -> StringList:
+    return StringList([t.value]) if t else StringList([])
+
+def is_not_empty_tokenlist(l: TokenList) -> bool:
+    return bool(l)
+
+def is_not_empty_stringlist(l: StringList) -> bool:
+    return bool(l)
+
+# 3.2.1 Token Accessors (ZVAL-style)
+def token_value(t: Optional[Token]) -> str:
+    return t.value if t else ""
+
+def token_type_of(t: Optional[Token]) -> RegexToken:
+    return t.type if t else RegexToken.WORD
+
+def token_index(t: Optional[Token]) -> int:
+    return t.index if t else -1
+
+def token_span_start(t: Optional[Token]) -> int:
+    return t.span[0] if t else -1
+
+def token_span_end(t: Optional[Token]) -> int:
+    return t.span[1] if t else -1
+
+def default_token_if_none(t: Optional[Token], fallback: Token) -> Token:
+    return t if t else fallback
+
+# 3.2.2 Context Primitives
+def get_prev_token(tokens: TokenList, t: Optional[Token]) -> Optional[Token]:
+    if not t or not tokens:
+        return None
+    idx = t.index
+    if idx <= 0 or idx >= len(tokens):
+        return None
+    return tokens[idx - 1]
+
+def get_next_token(tokens: TokenList, t: Optional[Token]) -> Optional[Token]:
+    if not t or not tokens:
+        return None
+    idx = t.index
+    if idx < 0 or idx >= len(tokens) - 1:
+        return None
+    return tokens[idx + 1]
+
+def is_first_token(t: Optional[Token]) -> bool:
+    return bool(t and t.index == 0)
+
+def is_last_token_in_list(tokens: TokenList, t: Optional[Token]) -> bool:
+    return bool(tokens and t and t.index == len(tokens) - 1)
+
 # 3.3 Token Muscles
 def tokenize(s: str, locale: str = "de") -> TokenList:
     if s is None:
@@ -223,6 +345,7 @@ def tokenize(s: str, locale: str = "de") -> TokenList:
         RegexToken.DEGREE,
         RegexToken.SUFFIX,
         RegexToken.PARTICLE,
+        RegexToken.CONJUNCTION,
         RegexToken.INITIAL,
         RegexToken.WORD,
         RegexToken.PUNCT
@@ -259,6 +382,19 @@ def filter_by_type(tokens: TokenList, type_: RegexToken) -> TokenList:
 
 def count_type(tokens: TokenList, type_: RegexToken) -> int:
     return sum(1 for t in tokens if t.type == type_)
+
+# 3.3.1 List Aggregators
+def tokens_contain_type(tokens: TokenList, type_: RegexToken) -> bool:
+    return any(t.type == type_ for t in tokens)
+
+def tokens_start_with_type(tokens: TokenList, type_: RegexToken) -> bool:
+    return bool(tokens and tokens[0].type == type_)
+
+def tokens_end_with_type(tokens: TokenList, type_: RegexToken) -> bool:
+    return bool(tokens and tokens[-1].type == type_)
+
+def tokens_to_stringlist(tokens: TokenList) -> StringList:
+    return StringList([t.value for t in tokens])
 
 def get_gender_from_salutation(token: Optional[Token]) -> Gender:
     if not token or token.type != RegexToken.SALUTATION:
@@ -347,6 +483,12 @@ def get_gender_from_name(name: str) -> Gender:
         if g == "f": return Gender.FEMALE
         
     return Gender.UNKNOWN
+
+def is_male(g: Gender) -> bool:
+    return g == Gender.MALE
+
+def is_female(g: Gender) -> bool:
+    return g == Gender.FEMALE
 
 # 3.4 Feature Detectors
 def has_comma(s: str) -> bool:
@@ -447,6 +589,97 @@ def is_suffix(t: Optional[Token]) -> bool:
     if not t: return False
     return t.type == RegexToken.SUFFIX
 
+def is_conjunction(t: Optional[Token]) -> bool:
+    if not t: return False
+    return t.type == RegexToken.CONJUNCTION
+
+# 3.4.3 Shape & N-Gram Primitives
+def get_token_shape(t: Optional[Token]) -> str:
+    if not t: return ""
+    shape = []
+    for char in t.value:
+        if char.isupper():
+            shape.append("X")
+        elif char.islower():
+            shape.append("x")
+        elif char.isdigit():
+            shape.append("d")
+        else:
+            shape.append(char)
+    return "".join(shape)
+
+def is_shape(t: Optional[Token], shape: str) -> bool:
+    if not t: return False
+    return get_token_shape(t) == shape
+
+def ends_with_ngram(t: Optional[Token], ngram: str) -> bool:
+    if not t or not ngram: return False
+    return t.value.lower().endswith(ngram.lower())
+
+def starts_with_ngram(t: Optional[Token], ngram: str) -> bool:
+    if not t or not ngram: return False
+    return t.value.lower().startswith(ngram.lower())
+
+def filter_by_shape(tokens: TokenList, shape: str) -> TokenList:
+    if not tokens: return TokenList([])
+    return TokenList([t for t in tokens if get_token_shape(t) == shape])
+
+    return TokenList([t for t in tokens if get_token_shape(t) == shape])
+
+def merge_particles(tokens: TokenList) -> TokenList:
+    """
+    Merges PARTICLE tokens with the following token.
+    e.g. [von, Goethe] -> [von Goethe]
+    Handles chains: [de, la, Cruz] -> [de la Cruz]
+    """
+    if not tokens:
+        return TokenList([])
+    
+    merged = []
+    i = 0
+    while i < len(tokens):
+        t = tokens[i]
+        
+        # If it's a particle and there is a next token
+        if t.type == RegexToken.PARTICLE and i + 1 < len(tokens):
+            # Start merging
+            current_val = t.value
+            current_span_start = t.span[0]
+            
+            # Look ahead for more particles or the final word
+            j = i + 1
+            while j < len(tokens):
+                next_t = tokens[j]
+                # If next is particle or word, merge it
+                # (We assume particles always attach to the right)
+                if next_t.type == RegexToken.PARTICLE or next_t.type == RegexToken.WORD:
+                    current_val += " " + next_t.value
+                    # If it was a word, we stop merging after this
+                    if next_t.type == RegexToken.WORD:
+                        j += 1
+                        break
+                    j += 1
+                else:
+                    # Found something else (e.g. comma), stop merging
+                    break
+            
+            # Create new merged token
+            # We give it the type of the last merged component (usually WORD)
+            # or PARTICLE if it ended with a particle (unlikely for valid names)
+            last_type = tokens[j-1].type
+            new_span = (current_span_start, tokens[j-1].span[1])
+            merged.append(Token(current_val, last_type, new_span, len(merged)))
+            
+            # Advance main loop
+            i = j
+        else:
+            # Just copy
+            t.index = len(merged)
+            merged.append(t)
+            i += 1
+            
+    return TokenList(merged)
+
 # 3.6 Macro-Primitives (Boosters)
 def extract_salutation_str(tokens: TokenList) -> str:
     # Finds the first salutation token and returns its value
@@ -517,6 +750,10 @@ def extract_suffix_list(tokens: TokenList) -> StringList:
     # Returns all suffix values
     return StringList([t.value for t in tokens if t.type == RegexToken.SUFFIX])
 
+def extract_degree_list(tokens: TokenList) -> StringList:
+    # Returns all degree values
+    return StringList([t.value for t in tokens if t.type == RegexToken.DEGREE])
+
 def extract_particles_list(tokens: TokenList) -> StringList:
     # Returns all particle values
     return StringList([t.value for t in tokens if t.type == RegexToken.PARTICLE])
@@ -585,8 +822,35 @@ def create_pset() -> gp.PrimitiveSetTyped:
     # -- Control Flow --
     pset.addPrimitive(if_bool_string, [bool, str, str], str)
     pset.addPrimitive(if_bool_tokenlist, [bool, TokenList, TokenList], TokenList)
+    pset.addPrimitive(bool_to_int, [bool], int)
+    pset.addPrimitive(bool_to_float, [bool], float)
     
+    # -- Logic & Comparison --
+    # pset.addPrimitive(bool_and, [bool, bool], bool)
+    # pset.addPrimitive(bool_or, [bool, bool], bool)
+    # pset.addPrimitive(bool_not, [bool], bool)
+    # pset.addPrimitive(int_lt, [int, int], bool)
+    # pset.addPrimitive(int_gt, [int, int], bool)
+    # pset.addPrimitive(int_eq, [int, int], bool)
+    # pset.addPrimitive(float_lt, [float, float], bool)
+    # pset.addPrimitive(float_gt, [float, float], bool)
+    
+    # -- Scoring Math --
+    pset.addPrimitive(float_min, [float, float], float)
+    pset.addPrimitive(float_max, [float, float], float)
+    pset.addPrimitive(clamp_float, [float, float, float], float)
+
     # -- String/List Ops --
+    pset.addPrimitive(default_str_if_empty, [str, str], str)
+    # pset.addPrimitive(str_equals_normalized, [str, str], bool)
+    # pset.addPrimitive(str_contains, [str, str], bool)
+    # pset.addPrimitive(str_equals_ci, [str, str], bool)
+    # pset.addPrimitive(join_stringlist, [StringList], str)
+    pset.addPrimitive(tokens_to_stringlist, [TokenList], StringList)
+    pset.addPrimitive(token_to_tokenlist, [Token], TokenList)
+    pset.addPrimitive(token_to_stringlist, [Token], StringList)
+    pset.addPrimitive(is_not_empty_tokenlist, [TokenList], bool)
+    pset.addPrimitive(is_not_empty_stringlist, [StringList], bool)
     pset.addPrimitive(trim, [str], str)
     pset.addPrimitive(to_lower, [str], str)
     pset.addPrimitive(split_on_comma, [str], StringList)
@@ -600,15 +864,19 @@ def create_pset() -> gp.PrimitiveSetTyped:
     pset.addPrimitive(drop_first, [TokenList], TokenList)
     pset.addPrimitive(drop_last, [TokenList], TokenList)
     pset.addPrimitive(remove_type, [TokenList, RegexToken], TokenList)
-    pset.addPrimitive(index_of_type, [TokenList, RegexToken], int)
+    pset.addPrimitive(is_conjunction, [Token], bool)
+    pset.addPrimitive(merge_particles, [TokenList], TokenList)
+    # pset.addPrimitive(index_of_type, [TokenList, RegexToken], int)
     pset.addPrimitive(get_remainder_tokens, [TokenList, TokenList], TokenList)
     
     # -- Token Muscles --
     pset.addPrimitive(tokenize, [str], TokenList)
     pset.addPrimitive(filter_by_type, [TokenList, RegexToken], TokenList)
-    pset.addPrimitive(count_type, [TokenList, RegexToken], int)
+    # pset.addPrimitive(count_type, [TokenList, RegexToken], int)
     pset.addPrimitive(get_gender_from_salutation, [Token], Gender)
     pset.addPrimitive(get_gender_from_name, [str], Gender)
+    pset.addPrimitive(is_male, [Gender], bool)
+    pset.addPrimitive(is_female, [Gender], bool)
     
     # -- Feature Detectors --
     pset.addPrimitive(has_comma, [str], bool)
@@ -616,7 +884,26 @@ def create_pset() -> gp.PrimitiveSetTyped:
     pset.addPrimitive(is_salutation, [Token], bool)
     pset.addPrimitive(identity_token_type, [RegexToken], RegexToken)
     
-    # -- New Context Primitives --
+    # -- Token Accessors --
+    pset.addPrimitive(token_value, [Token], str)
+    pset.addPrimitive(token_type_of, [Token], RegexToken)
+    pset.addPrimitive(token_index, [Token], int)
+    pset.addPrimitive(token_span_start, [Token], int)
+    pset.addPrimitive(token_span_end, [Token], int)
+    pset.addPrimitive(default_token_if_none, [Token, Token], Token)
+
+    # -- Context Primitives --
+    pset.addPrimitive(get_prev_token, [TokenList, Token], Token)
+    pset.addPrimitive(get_next_token, [TokenList, Token], Token)
+    pset.addPrimitive(is_first_token, [Token], bool)
+    pset.addPrimitive(is_last_token_in_list, [TokenList, Token], bool)
+
+    # -- List Aggregators --
+    # pset.addPrimitive(tokens_contain_type, [TokenList, RegexToken], bool)
+    # pset.addPrimitive(tokens_start_with_type, [TokenList, RegexToken], bool)
+    # pset.addPrimitive(tokens_end_with_type, [TokenList, RegexToken], bool)
+    
+    # -- New Context Primitives (Old) --
     pset.addPrimitive(get_tokens_before_comma, [TokenList], TokenList)
     pset.addPrimitive(get_tokens_after_comma, [TokenList], TokenList)
     pset.addPrimitive(is_all_caps, [Token], bool)
@@ -634,25 +921,14 @@ def create_pset() -> gp.PrimitiveSetTyped:
     pset.addPrimitive(is_roman_numeral, [Token], bool)
     pset.addPrimitive(is_particle, [Token], bool)
     pset.addPrimitive(is_suffix, [Token], bool)
+    
+    # -- Shape & N-Grams --
+    pset.addPrimitive(get_token_shape, [Token], str)
+    pset.addPrimitive(is_shape, [Token, str], bool)
+    pset.addPrimitive(ends_with_ngram, [Token, str], bool)
+    pset.addPrimitive(starts_with_ngram, [Token, str], bool)
+    pset.addPrimitive(filter_by_shape, [TokenList, str], TokenList)
 
-    # -- Macro-Primitives (Boosters) --
-    pset.addPrimitive(extract_salutation_str, [TokenList], str)
-    pset.addPrimitive(extract_title_list, [TokenList], StringList)
-    pset.addPrimitive(extract_given_str, [TokenList], str)
-    pset.addPrimitive(extract_family_str, [TokenList], str)
-    pset.addPrimitive(extract_middle_str, [TokenList], StringList)
-    pset.addPrimitive(extract_suffix_list, [TokenList], StringList)
-    pset.addPrimitive(extract_particles_list, [TokenList], StringList)
-    
-    # -- Object Builder --
-    pset.addPrimitive(make_name_obj, 
-                      [str, str, StringList, str, str, StringList, Gender, StringList, StringList], 
-                      NameObj)
-    pset.addPrimitive(set_confidence, [NameObj, float], NameObj)
-    
-    # -- Float Math --
-    pset.addPrimitive(operator.add, [float, float], float)
-    pset.addPrimitive(operator.sub, [float, float], float)
     pset.addPrimitive(operator.mul, [float, float], float)
     
     # -- Ephemeral Constants --
@@ -668,6 +944,14 @@ def create_pset() -> gp.PrimitiveSetTyped:
 
     # Empty Lists/Strings for fallbacks
     pset.addTerminal("", str, name="EMPTY_STR")
+    
+    # -- Common Shapes --
+    for s in ["Xx.", "X.", "Xxxxx", "x", "d"]:
+        pset.addTerminal(s, str, name=f"SHAPE_{s.replace('.', 'dot')}")
+        
+    # -- Common N-Grams --
+    for ng in ["ski", "son", "mc", "von", "zu", "van", "de", "ov", "vic"]:
+        pset.addTerminal(ng, str, name=f"NGRAM_{ng}")
     pset.addTerminal(StringList([]), StringList, name="EMPTY_STR_LIST")
     pset.addTerminal(TokenList([]), TokenList, name="EMPTY_TOK_LIST")
     

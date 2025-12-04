@@ -3,8 +3,8 @@ ga_parameters:
   mutpb: 0.5
   bloat_limit: 17
 curriculum:
-  warmup: 20
-  ramp_span: 50
+  warmup: 10000
+  ramp_span: 150
 weights_main_easy:
   core_family: 0.4
   core_given: 0.4
@@ -22,10 +22,10 @@ gates_main_easy:
   min_given: 0.0
   max_penalty: 0.0
 weights_main_strict:
-  core_family: 0.107
-  core_given: 0.051
-  core_title: 0.464
-  core_suffix: 0.178
+  core_family: 0.297
+  core_given: 0.297
+  core_title: 0.143
+  core_suffix: 0.063
   core_gender: 0.05
   bonus_exact: 0.1
   bonus_coverage: 0.05

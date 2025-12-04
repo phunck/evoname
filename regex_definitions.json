@@ -69,7 +69,7 @@
     },
     "TOKEN_DEGREE": {
         "de": {
-            "pattern": "\\b(B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|Dr\\. h\\.c\\.|PhD|MBA)\\b",
+            "pattern": "\\b(B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|Dr\\. h\\.c\\.|PhD|MBA)(?:\\b|(?<=\\.))",
             "flags": "i",
             "description": "Akademische Grade (mit Word Boundary)",
             "examples": [
@@ -79,7 +79,7 @@
             "category": "degree"
         },
         "en": {
-            "pattern": "\\b(Ph\\.?D\\.?|M\\.?D\\.?|B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|M\\.?B\\.?A\\.?|MBA|Esq\\.?)\\b",
+            "pattern": "\\b(Ph\\.?D\\.?|M\\.?D\\.?|B\\.?A\\.?|M\\.?A\\.?|B\\.?Sc\\.?|M\\.?Sc\\.?|M\\.?B\\.?A\\.?|MBA|Esq\\.?)(?:\\b|(?<=\\.))",
             "flags": "i",
             "description": "Englische Grade",
             "examples": [
@@ -89,7 +89,7 @@
             "category": "degree"
         },
         "fr": {
-            "pattern": "\\b(Ph\\.?D\\.?|M\\.?D\\.?|Doc\\.)\\b",
+            "pattern": "\\b(Ph\\.?D\\.?|M\\.?D\\.?|Doc\\.)(?:\\b|(?<=\\.))",
             "flags": "i",
             "description": "Französische Grade",
             "examples": [
@@ -157,9 +157,41 @@
             "category": "particle"
         }
     },
+    "TOKEN_CONJUNCTION": {
+        "de": {
+            "pattern": "\\b(und)\\b|&",
+            "flags": "i",
+            "description": "Konjunktionen",
+            "examples": [
+                "und",
+                "&"
+            ],
+            "category": "conjunction"
+        },
+        "en": {
+            "pattern": "\\b(and)\\b|&",
+            "flags": "i",
+            "description": "Conjunctions",
+            "examples": [
+                "and",
+                "&"
+            ],
+            "category": "conjunction"
+        },
+        "fr": {
+            "pattern": "\\b(et)\\b|&",
+            "flags": "i",
+            "description": "Conjonctions",
+            "examples": [
+                "et",
+                "&"
+            ],
+            "category": "conjunction"
+        }
+    },
     "TOKEN_SUFFIX": {
         "de": {
-            "pattern": "\\b(jun|sen|Jr|Sr|VIII|VII|III|VI|IV|IX|II|V|X)(\\.?|\\b)",
+            "pattern": "\\b(jun|sen|Jr|Sr|VIII|VII|III|VI|IV|IX|II|V|X)(\\.|\\b)",
             "flags": "i",
             "description": "Suffixe (inkl. Jr/Sr für Mixed Data)",
             "examples": [
@@ -169,7 +201,7 @@
             "category": "suffix"
         },
         "en": {
-            "pattern": "\\b(Jr|Sr|VIII|VII|III|VI|IV|IX|II|V|X|2nd|3rd)(\\.?|\\b)",
+            "pattern": "\\b(Jr|Sr|VIII|VII|III|VI|IV|IX|II|V|X|2nd|3rd)(\\.|\\b)",
             "flags": "i",
             "description": "Suffixe (mit Boundary)",
             "examples": [

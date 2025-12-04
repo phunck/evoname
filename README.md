@@ -40,8 +40,10 @@ The parser has access to a rich set of primitives:
 *   **Basic**: `tokenize`, `split_on_comma`, `trim`, `to_lower`.
 *   **Contextual**: `get_tokens_before_comma`, `get_tokens_after_comma`.
 *   **Statistical**: `token_length`, `is_short`, `is_all_caps`.
-*   **Feature Detectors**: `is_initial`, `has_hyphen`, `has_period`, `is_roman_numeral`.
+*   **Shape & N-Grams**: `get_token_shape` ("Xx."), `ends_with_ngram` ("-ski"), `is_shape`.
+*   **Feature Detectors**: `is_initial`, `has_hyphen`, `has_period`, `is_roman_numeral`, `is_conjunction`.
 *   **Lexicon**: `is_common_given_name`, `is_common_family_name`.
+*   **Advanced**: `merge_particles`, `extract_degree_list`.
 *   **Post-Processing**: A deterministic repair layer fixes obvious errors (e.g., "2 words, no title -> Given Family") before evaluation.
 
 ## 📂 Project Structure
@@ -165,8 +167,8 @@ node test_bundle.js
 - [x] Statistical & Feature Primitives
 - [x] **Experiment**: LLM-assisted Mutation (Ollama/Qwen)
 
-## 🧪 Experimental: LLM-assisted Mutation
-We have integrated a local LLM (via Ollama) to intelligently repair/mutate individuals that fail on specific "Hall of Shame" examples.
+## 🧪 Experimental: LLM-assisted Mutation (PAUSED)
+We have integrated a local LLM (via Ollama) to intelligently repair/mutate individuals. **Note: This feature is currently PAUSED until further notice.**
 
 **How it works:**
 *   **Trigger:** Dynamic chance (0-5%) ONLY during migration generations (to save time).
@@ -176,8 +178,9 @@ We have integrated a local LLM (via Ollama) to intelligently repair/mutate indiv
 **The "LLM Surgeon" Workflow:**
 1.  **Diagnose (Hall of Shame):** The system identifies a specific name that many individuals fail to parse (e.g., "Mr Dr. med. James Fischer").
 2.  **The Patient:** A random individual (code tree) is selected. It might be too simple, e.g., `make_name_obj(split(raw), ...)`.
-3.  **The Consultation:** The system prompts the local LLM: *"You are an expert. Here is code that fails on 'Mr Dr. med. James Fischer'. Rewrite it using these primitives to fix the error."*
-4.  **The Operation:** The LLM rewrites the code, potentially adding logic like `extract_title_list` or `get_tokens_before_comma`.
+3.  **The Oracle (Hinting):** The system asks a rule-based `OracleParser` for the "perfect" solution (Optional/Comparison only).
+4.  **The Consultation:** The system prompts the local LLM: *"You are an expert. Here is code that fails on 'Mr Dr. med. James Fischer'. The Oracle says the result should be {...}. Rewrite the code using these primitives."*
+5.  **The Operation:** The LLM rewrites the code, potentially adding logic like `extract_title_list` or `get_tokens_before_comma`.
 5.  **Transplantation:**
     *   **Success:** If the new code is valid and compiles to a `NameObj`, it replaces the old individual.
     *   **Rejection:** If the LLM produces invalid code or text, the operation is aborted, and the original individual remains unchanged.
