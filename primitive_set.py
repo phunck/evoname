@@ -929,6 +929,22 @@ def create_pset() -> gp.PrimitiveSetTyped:
     pset.addPrimitive(starts_with_ngram, [Token, str], bool)
     pset.addPrimitive(filter_by_shape, [TokenList, str], TokenList)
 
+    # -- Macro-Primitives (Boosters) --
+    # pset.addPrimitive(extract_salutation_str, [TokenList], str)
+    # pset.addPrimitive(extract_title_list, [TokenList], StringList)
+    # pset.addPrimitive(extract_given_str, [TokenList], str)
+    # pset.addPrimitive(extract_family_str, [TokenList], str)
+    pset.addPrimitive(extract_middle_str, [TokenList], StringList)
+    pset.addPrimitive(extract_suffix_list, [TokenList], StringList)
+    pset.addPrimitive(extract_degree_list, [TokenList], StringList)
+    pset.addPrimitive(extract_particles_list, [TokenList], StringList)
+    
+    # -- Object Builder --
+    pset.addPrimitive(make_name_obj, 
+                      [str, str, StringList, str, str, StringList, Gender, StringList, StringList], 
+                      NameObj)
+    pset.addPrimitive(set_confidence, [NameObj, float], NameObj)
+
     pset.addPrimitive(operator.mul, [float, float], float)
     
     # -- Ephemeral Constants --
